@@ -1,0 +1,5 @@
+# Test-only dependencies. The suite stubs the embedder, so fastembed and
+# anthropic from requirements.txt are not needed to run it.
+-r requirements.txt
+pytest==8.4.2
+httpx==0.28.1

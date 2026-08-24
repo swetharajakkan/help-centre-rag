@@ -1,0 +1,100 @@
+{
+  "_note": "Written by reading the 6 articles directly, BEFORE any chunker or index existed. Git history proves the ordering: this file is committed in the same commit as the corpus, before backend/app/chunkers.py exists. 'must_contain' is the pre-registered hit criterion: a retrieved chunk counts as a hit only if ALL strings appear in it (whitespace-normalised, case-insensitive).",
+  "questions": [
+    {
+      "id": "Q1",
+      "type": "table_row",
+      "question": "What does ERR-4032 mean and what is the fix?",
+      "gold_article": "BM-002",
+      "gold_section": "Troubleshooting (table row ERR-4032)",
+      "known_answer": "The stored payment token came from the legacy vault and has no provider-side equivalent. Fix: have the customer re-add the payment method, then re-run the migration for that workspace only using 'Retry failed instruments' - not the full workspace migration.",
+      "must_contain": ["ERR-4032", "re-add the payment method", "Retry failed instruments"]
+    },
+    {
+      "id": "Q2",
+      "type": "table_row",
+      "question": "Reconciliation found a rounding difference above one cent on an invoice. What should I do?",
+      "gold_article": "BM-003",
+      "gold_section": "Troubleshooting (table row ERR-4217)",
+      "known_answer": "ERR-4217. File a reconciliation ticket; do not adjust the invoice by hand because hand adjustments break the cutover backfill.",
+      "must_contain": ["ERR-4217", "reconciliation ticket", "Do not adjust the invoice by hand"]
+    },
+    {
+      "id": "Q3",
+      "type": "table_row",
+      "question": "Our client gets a 409 idempotency_reuse error on the billing API after migrating. What is the documented fix?",
+      "gold_article": "BM-006",
+      "gold_section": "Troubleshooting (table row ERR-4111)",
+      "known_answer": "ERR-4111: the idempotency key was reused within the workspace in the last 24 hours. Fix: generate a fresh UUID per logical operation and retry; do not derive the key from a request hash.",
+      "must_contain": ["ERR-4111", "fresh UUID", "Do not derive the key from a request hash"]
+    },
+    {
+      "id": "Q4",
+      "type": "table_row",
+      "question": "A customer's tax ID failed revalidation. What is the fix?",
+      "gold_article": "BM-005",
+      "gold_section": "Troubleshooting (table row ERR-4501)",
+      "known_answer": "ERR-4501. Ask the customer to confirm the ID, correct it if wrong, then re-run the backfill with --force-tax-refresh. CAVEAT that lives in prose, not in the row: the tax cache has a hard 24-hour TTL, so a re-run before the entry expires silently no-ops and looks identical to a second genuine failure.",
+      "must_contain": ["ERR-4501", "--force-tax-refresh"]
+    },
+    {
+      "id": "Q5",
+      "type": "prose",
+      "question": "How long does a workspace have to stay in the dual-write phase, and can support waive it?",
+      "gold_article": "BM-001",
+      "gold_section": "Cutover phases",
+      "known_answer": "Minimum seven days. The seven-day floor is not configurable by support and cannot be waived by an account manager.",
+      "must_contain": ["minimum of seven days", "cannot be waived"]
+    },
+    {
+      "id": "Q6",
+      "type": "prose",
+      "question": "What happens to a subscription whose billing anchor is the 31st after it migrates during a short month?",
+      "gold_article": "BM-004",
+      "gold_section": "Billing anchors",
+      "known_answer": "v2 clamps permanently, so it stays anchored to the 28th or 29th for every subsequent period. Restoring the original anchor needs a support action and cannot be done from the customer-facing UI.",
+      "must_contain": ["v2 clamps permanently", "cannot be done from the customer-facing UI"]
+    },
+    {
+      "id": "Q7",
+      "type": "prose",
+      "question": "A customer's card expires next month. Does that block their billing migration?",
+      "gold_article": "BM-002",
+      "gold_section": "Expired and soon-to-expire cards",
+      "known_answer": "No. Cards expiring within 30 days are deliberately skipped, listed as 'deferred_expiring', and the customer is emailed a card-update link. A skipped card does not block the migration and needs no ticket.",
+      "must_contain": ["deferred_expiring", "does not block the migration"]
+    },
+    {
+      "id": "Q8",
+      "type": "prose",
+      "question": "A customer got a credit note during dual-write and their v2 totals now look too high. Should we issue another credit note?",
+      "gold_article": "BM-003",
+      "gold_section": "Credit notes are the common surprise",
+      "known_answer": "No. Credit notes are not copied hourly, so v2 totals read high until cutover; the difference resolves itself at cutover. Issuing a second credit note creates a real double credit that has to be clawed back manually.",
+      "must_contain": ["Do not issue a second credit note", "resolves itself at cutover"]
+    }
+  ],
+  "generation_answerable": ["Q1", "Q3", "Q5"],
+  "generation_unanswerable": [
+    {
+      "id": "U1",
+      "question": "What is the refund SLA for a disputed invoice during the billing migration?",
+      "why_absent": "No article states any refund SLA or refund turnaround time."
+    },
+    {
+      "id": "U2",
+      "question": "How do I roll a workspace back from Ledger v2 to Ledger v1 after cutover completes?",
+      "why_absent": "No rollback procedure exists anywhere in the corpus; 'complete' is documented as terminal."
+    },
+    {
+      "id": "U3",
+      "question": "What does error ERR-4099 mean and how do I fix it?",
+      "why_absent": "ERR-4099 is not a real code in this corpus."
+    }
+  ],
+  "filter_demo": {
+    "query": "idempotency key reuse during migration retries",
+    "filter": {"product_area": "payments"},
+    "expectation_written_in_advance": "Unfiltered should favour BM-006 (developer-api) because its idempotency prose is denser and names the 409 error. Filtering to product_area=payments should surface BM-002's manual-re-queue race instead, flipping top-1."
+  }
+}

@@ -1,0 +1,1021 @@
+{
+ "k": 5,
+ "per_question": {
+  "Q1": {
+   "fixed_window": {
+    "hit_at_5": false,
+    "first_hit_rank": null,
+    "union_at_5": false,
+    "top1_chunk_id": "fixed_window::BM-002-payment-method-migration-errors.md::002"
+   },
+   "structure_aware": {
+    "hit_at_5": true,
+    "first_hit_rank": 1,
+    "union_at_5": true,
+    "top1_chunk_id": "structure_aware::BM-002-payment-method-migration-errors.md::004"
+   }
+  },
+  "Q2": {
+   "fixed_window": {
+    "hit_at_5": true,
+    "first_hit_rank": 1,
+    "union_at_5": true,
+    "top1_chunk_id": "fixed_window::BM-003-invoice-sync-troubleshooting.md::003"
+   },
+   "structure_aware": {
+    "hit_at_5": true,
+    "first_hit_rank": 1,
+    "union_at_5": true,
+    "top1_chunk_id": "structure_aware::BM-003-invoice-sync-troubleshooting.md::005"
+   }
+  },
+  "Q3": {
+   "fixed_window": {
+    "hit_at_5": true,
+    "first_hit_rank": 3,
+    "union_at_5": true,
+    "top1_chunk_id": "fixed_window::BM-006-api-webhook-migration.md::001"
+   },
+   "structure_aware": {
+    "hit_at_5": true,
+    "first_hit_rank": 2,
+    "union_at_5": true,
+    "top1_chunk_id": "structure_aware::BM-006-api-webhook-migration.md::001"
+   }
+  },
+  "Q4": {
+   "fixed_window": {
+    "hit_at_5": true,
+    "first_hit_rank": 1,
+    "union_at_5": true,
+    "top1_chunk_id": "fixed_window::BM-005-tax-id-validation-migration.md::002"
+   },
+   "structure_aware": {
+    "hit_at_5": true,
+    "first_hit_rank": 1,
+    "union_at_5": true,
+    "top1_chunk_id": "structure_aware::BM-005-tax-id-validation-migration.md::003"
+   }
+  },
+  "Q5": {
+   "fixed_window": {
+    "hit_at_5": true,
+    "first_hit_rank": 1,
+    "union_at_5": true,
+    "top1_chunk_id": "fixed_window::BM-001-billing-migration-overview.md::001"
+   },
+   "structure_aware": {
+    "hit_at_5": true,
+    "first_hit_rank": 1,
+    "union_at_5": true,
+    "top1_chunk_id": "structure_aware::BM-001-billing-migration-overview.md::001"
+   }
+  },
+  "Q6": {
+   "fixed_window": {
+    "hit_at_5": true,
+    "first_hit_rank": 2,
+    "union_at_5": true,
+    "top1_chunk_id": "fixed_window::BM-004-subscription-proration-migration.md::002"
+   },
+   "structure_aware": {
+    "hit_at_5": true,
+    "first_hit_rank": 1,
+    "union_at_5": true,
+    "top1_chunk_id": "structure_aware::BM-004-subscription-proration-migration.md::001"
+   }
+  },
+  "Q7": {
+   "fixed_window": {
+    "hit_at_5": true,
+    "first_hit_rank": 1,
+    "union_at_5": true,
+    "top1_chunk_id": "fixed_window::BM-002-payment-method-migration-errors.md::002"
+   },
+   "structure_aware": {
+    "hit_at_5": true,
+    "first_hit_rank": 1,
+    "union_at_5": true,
+    "top1_chunk_id": "structure_aware::BM-002-payment-method-migration-errors.md::002"
+   }
+  },
+  "Q8": {
+   "fixed_window": {
+    "hit_at_5": true,
+    "first_hit_rank": 1,
+    "union_at_5": true,
+    "top1_chunk_id": "fixed_window::BM-003-invoice-sync-troubleshooting.md::001"
+   },
+   "structure_aware": {
+    "hit_at_5": true,
+    "first_hit_rank": 1,
+    "union_at_5": true,
+    "top1_chunk_id": "structure_aware::BM-003-invoice-sync-troubleshooting.md::002"
+   }
+  }
+ },
+ "totals": {
+  "fixed_window": {
+   "hit_at_5": "7/8",
+   "union_at_5": "7/8",
+   "chunks_indexed": 25
+  },
+  "structure_aware": {
+   "hit_at_5": "8/8",
+   "union_at_5": "8/8",
+   "chunks_indexed": 35
+  }
+ },
+ "dump": {
+  "fixed_window": {
+   "Q1": {
+    "question": "What does ERR-4032 mean and what is the fix?",
+    "gold": "BM-002 / Troubleshooting (table row ERR-4032)",
+    "must_contain": [
+     "ERR-4032",
+     "re-add the payment method",
+     "Retry failed instruments"
+    ],
+    "results": [
+     {
+      "rank": 1,
+      "chunk_id": "fixed_window::BM-002-payment-method-migration-errors.md::002",
+      "score": 0.8412,
+      "dense": 0.6549,
+      "bm25": 5.2614,
+      "text": "ration date are deliberately\nskipped rather than re-tokenised, because the provider would reject the token\nat first use. Skipped cards are listed in the migration report as\n\"deferred_expiring\" and the customer is emailed a card-update link. A skipped\ncard does not block the migration and does not need a support ticket.\n\n## Troubleshooting\n\n| Error code | Cause | Fix |\n| --- | --- | --- |\n| ERR-4030 | Card network declined the tokenisation request | Ask the customer to re-enter the card in Billing then Payment methods; the old vault entry cannot be recovered |\n| ERR-4031 | SEPA mandate reference is older than the 36-month mandate validity limit | Collect a fresh mandate from the customer; the migration will pick it up on the next hourly sweep |\n| ERR-4032 | The stored payment token was issued by the legacy vault and has no provider-side equivalent | Ask the customer to re-add the payment",
+      "contains_all_gold_spans": false
+     },
+     {
+      "rank": 2,
+      "chunk_id": "fixed_window::BM-002-payment-method-migration-errors.md::004",
+      "score": 0.7456,
+      "dense": 0.7115,
+      "bm25": 2.6363,
+      "text": "rker backs off and resumes within fifteen minutes |\n| ERR-4036 | Billing address country does not match the card issuing country and the provider requires a match | Update the billing address to the issuing country, then retry the instrument |\n| ERR-4037 | Payment method belongs to a workspace that was deleted mid-migration | No action needed. The instrument is dropped and the migration continues |\n| ERR-4038 | Customer revoked the mandate while re-tokenisation was in flight | Collect a fresh mandate. The migration does not retry revoked mandates automatically |\n| ERR-4039 | Legacy vault entry is encrypted with a key that has been rotated out | File a ticket with the vault entry id. Support cannot fix this from the console; a key-recovery job must be run by engineering |",
+      "contains_all_gold_spans": false
+     },
+     {
+      "rank": 3,
+      "chunk_id": "fixed_window::BM-006-api-webhook-migration.md::002",
+      "score": 0.6853,
+      "dense": 0.7097,
+      "bm25": 2.0488,
+      "text": "ed by the migration.\n\n## Troubleshooting\n\n| Error code | Cause | Fix |\n| --- | --- | --- |\n| ERR-4110 | Webhook endpoint returned a non-2xx during the post-cutover flush | No action needed for the first six hours; the flush retries with backoff. After six hours, replay from Developers then Webhooks then Replay |\n| ERR-4111 | Idempotency key reused within the workspace in the last 24 hours | Generate a fresh UUID per logical operation and retry. Do not derive the key from a request hash |\n| ERR-4112 | Client is still reading next_payment_attempt, which is null on v2 | Update the client to read the retry_schedule array. The field is not restored |\n| ERR-4113 | Webhook queue exceeded the 72-hour retention during an extended outage | The dropped events cannot be replayed. Reconcile by polling GET /v1/invoices for the affected window |\n| ERR-4114 | Request used a /v2 path that does not exist",
+      "contains_all_gold_spans": false
+     },
+     {
+      "rank": 4,
+      "chunk_id": "fixed_window::BM-003-invoice-sync-troubleshooting.md::000",
+      "score": 0.5922,
+      "dense": 0.5606,
+      "bm25": 5.3237,
+      "text": "# Invoice Sync and Reconciliation Troubleshooting\n\n## What invoice sync does\n\nDuring the dual-write phase Ledger v1 still owns closed invoices while\nLedger v2 owns open usage. The invoice sync job runs every hour and copies\nclosed v1 invoices into v2 as immutable historical records so that the\ncustomer sees one continuous invoice list. Sync copies the invoice header,\nthe line items and the PDF checksum. It does not copy dunning state, credit\nnotes or manual adjustments; those are migrated once, at cutover, by a\nseparate backfill.\n\n## Reading a partial invoice\n\nA partial invoice is an invoice where the header has been copied but at least\none line item is still missing. Partial invoices are displayed with an amber\n\"syncing\" badge and are excluded from revenue reports until they complete. A\npartial invoice that has not completed within three hourly sweeps is\nautomatically escalated to the",
+      "contains_all_gold_spans": false
+     },
+     {
+      "rank": 5,
+      "chunk_id": "fixed_window::BM-006-api-webhook-migration.md::003",
+      "score": 0.5752,
+      "dense": 0.6816,
+      "bm25": 1.6888,
+      "text": "Reconcile by polling GET /v1/invoices for the affected window |\n| ERR-4114 | Request used a /v2 path that does not exist | Use the /v1 path. Ledger v2 is served from /v1 |\n| ERR-4115 | Signature verification failed after the customer rotated their secret mid-cutover | Re-issue the signing secret in Developers then Webhooks and update the endpoint. The migration itself does not rotate secrets |",
+      "contains_all_gold_spans": false
+     }
+    ]
+   },
+   "Q2": {
+    "question": "Reconciliation found a rounding difference above one cent on an invoice. What should I do?",
+    "gold": "BM-003 / Troubleshooting (table row ERR-4217)",
+    "must_contain": [
+     "ERR-4217",
+     "reconciliation ticket",
+     "Do not adjust the invoice by hand"
+    ],
+    "results": [
+     {
+      "rank": 1,
+      "chunk_id": "fixed_window::BM-003-invoice-sync-troubleshooting.md::003",
+      "score": 1.0,
+      "dense": 0.8282,
+      "bm25": 25.5546,
+      "text": "the invoice has no v2 equivalent adjustment type | Convert the adjustment to a credit note in Ledger v1, then retry the sync |\n| ERR-4216 | Sync ran while the invoice was being edited | No action needed. The next hourly sweep picks it up |\n| ERR-4217 | Reconciliation found a rounding difference above one cent | File a reconciliation ticket. Do not adjust the invoice by hand; hand adjustments break the cutover backfill |",
+      "contains_all_gold_spans": true
+     },
+     {
+      "rank": 2,
+      "chunk_id": "fixed_window::BM-003-invoice-sync-troubleshooting.md::001",
+      "score": 0.5185,
+      "dense": 0.7781,
+      "bm25": 6.7711,
+      "text": "til they complete. A\npartial invoice that has not completed within three hourly sweeps is\nautomatically escalated to the reconciliation queue.\n\n## Credit notes are the common surprise\n\nBecause credit notes are not copied hourly, a customer who received a credit\nnote during the dual-write window will see a v2 invoice list whose totals are\nhigher than the v1 totals until cutover completes. This is not a billing\nerror and the difference resolves itself at cutover. Do not issue a second\ncredit note to compensate; doing so creates a real double credit that has to\nbe clawed back manually.\n\n## Troubleshooting\n\n| Error code | Cause | Fix |\n| --- | --- | --- |\n| ERR-4210 | Invoice PDF checksum does not match after copy | Re-run the sync for that invoice from Invoicing then Sync then Retry invoice. The PDF is regenerated from the v1 source |\n| ERR-4211 | Line item references a product SKU that no",
+      "contains_all_gold_spans": false
+     },
+     {
+      "rank": 3,
+      "chunk_id": "fixed_window::BM-003-invoice-sync-troubleshooting.md::000",
+      "score": 0.459,
+      "dense": 0.7275,
+      "bm25": 9.5933,
+      "text": "# Invoice Sync and Reconciliation Troubleshooting\n\n## What invoice sync does\n\nDuring the dual-write phase Ledger v1 still owns closed invoices while\nLedger v2 owns open usage. The invoice sync job runs every hour and copies\nclosed v1 invoices into v2 as immutable historical records so that the\ncustomer sees one continuous invoice list. Sync copies the invoice header,\nthe line items and the PDF checksum. It does not copy dunning state, credit\nnotes or manual adjustments; those are migrated once, at cutover, by a\nseparate backfill.\n\n## Reading a partial invoice\n\nA partial invoice is an invoice where the header has been copied but at least\none line item is still missing. Partial invoices are displayed with an amber\n\"syncing\" badge and are excluded from revenue reports until they complete. A\npartial invoice that has not completed within three hourly sweeps is\nautomatically escalated to the",
+      "contains_all_gold_spans": false
+     },
+     {
+      "rank": 4,
+      "chunk_id": "fixed_window::BM-003-invoice-sync-troubleshooting.md::002",
+      "score": 0.3791,
+      "dense": 0.7539,
+      "bm25": 2.4607,
+      "text": "then Retry invoice. The PDF is regenerated from the v1 source |\n| ERR-4211 | Line item references a product SKU that no longer exists in v2 | Map the retired SKU to its v2 replacement in Settings then Catalogue then SKU mapping, then retry |\n| ERR-4212 | Invoice is still open in Ledger v1 | No action needed. Only closed invoices are synced; it will copy after it closes |\n| ERR-4213 | Currency on the invoice is not enabled on the v2 workspace | Enable the currency in Settings then Billing then Currencies, then retry the sync |\n| ERR-4214 | Invoice total exceeds the per-invoice ceiling configured for the workspace | Raise the ceiling in Settings then Billing then Limits. If the ceiling is already at the plan maximum, file a ticket |\n| ERR-4215 | Manual adjustment on the invoice has no v2 equivalent adjustment type | Convert the adjustment to a credit note in Ledger v1, then retry the",
+      "contains_all_gold_spans": false
+     },
+     {
+      "rank": 5,
+      "chunk_id": "fixed_window::BM-001-billing-migration-overview.md::003",
+      "score": 0.2805,
+      "dense": 0.6724,
+      "bm25": 6.8656,
+      "text": "| ERR-4002 | Organisation owner account is unverified | Have the owner complete email verification, then retry from the Migration panel |\n| ERR-4003 | Shadow totals differ by more than 0.5 percent | Do not retry. File a reconciliation ticket with the workspace id; engineering must rebase the shadow ledger |\n| ERR-4004 | Workspace is on a legacy annual contract with custom terms | Contact your account manager to have the contract re-papered onto v2 terms before migrating |\n| ERR-4005 | Migration halted because usage spiked above the guardrail | Wait for the hourly window to close, then clear the halt from Billing then Advanced then Resume |",
+      "contains_all_gold_spans": false
+     }
+    ]
+   },
+   "Q3": {
+    "question": "Our client gets a 409 idempotency_reuse error on the billing API after migrating. What is the documented fix?",
+    "gold": "BM-006 / Troubleshooting (table row ERR-4111)",
+    "must_contain": [
+     "ERR-4111",
+     "fresh UUID",
+     "Do not derive the key from a request hash"
+    ],
+    "results": [
+     {
+      "rank": 1,
+      "chunk_id": "fixed_window::BM-006-api-webhook-migration.md::001",
+      "score": 1.0,
+      "dense": 0.8013,
+      "bm25": 12.4159,
+      "text": "is scoped to the workspace and the whole billing surface. Reusing a key that\nwas already used anywhere in the workspace within the last twenty-four hours\nreturns 409 with an idempotency_reuse error body, even if the original request\ntargeted a different endpoint. Client libraries that derive keys from a\nrequest hash rather than from a fresh UUID are the usual casualty. Generate a\nfresh UUID per logical operation.\n\n## Webhook delivery during cutover\n\nWebhooks are paused for the duration of Phase 3, which is under an hour.\nEvents generated while delivery is paused are queued, not dropped, and are\ndelivered in original order once cutover completes. The queue holds events for\nseventy-two hours. Signature verification is unchanged and the signing secret\nis not rotated by the migration.\n\n## Troubleshooting\n\n| Error code | Cause | Fix |\n| --- | --- | --- |\n| ERR-4110 | Webhook endpoint",
+      "contains_all_gold_spans": false
+     },
+     {
+      "rank": 2,
+      "chunk_id": "fixed_window::BM-006-api-webhook-migration.md::000",
+      "score": 0.7884,
+      "dense": 0.7918,
+      "bm25": 7.8285,
+      "text": "# API and Webhook Changes for the Billing Migration\n\n## Versioned endpoints\n\nLedger v2 is served from the same /v1 API surface. There is no /v2 path. The\ndifference is visible in the response body: invoice objects gain an\nengine_version field and a settled_at timestamp, and the deprecated\nnext_payment_attempt field is null for every workspace on Ledger v2. Clients\nthat treat a null next_payment_attempt as \"no retry scheduled\" will silently\nstop retrying. Read the new retry_schedule array instead.\n\n## Idempotency keys on the billing API\n\nLedger v2 enforces idempotency keys far more strictly than v1 did. In v1 an\nidempotency key was scoped to the endpoint, so the same key could be reused\nagainst POST /v1/invoices and POST /v1/charges without conflict. In v2 the key\nis scoped to the workspace and the whole billing surface. Reusing a key that\nwas already used anywhere in the workspace",
+      "contains_all_gold_spans": false
+     },
+     {
+      "rank": 3,
+      "chunk_id": "fixed_window::BM-006-api-webhook-migration.md::002",
+      "score": 0.6852,
+      "dense": 0.7392,
+      "bm25": 8.701,
+      "text": "ed by the migration.\n\n## Troubleshooting\n\n| Error code | Cause | Fix |\n| --- | --- | --- |\n| ERR-4110 | Webhook endpoint returned a non-2xx during the post-cutover flush | No action needed for the first six hours; the flush retries with backoff. After six hours, replay from Developers then Webhooks then Replay |\n| ERR-4111 | Idempotency key reused within the workspace in the last 24 hours | Generate a fresh UUID per logical operation and retry. Do not derive the key from a request hash |\n| ERR-4112 | Client is still reading next_payment_attempt, which is null on v2 | Update the client to read the retry_schedule array. The field is not restored |\n| ERR-4113 | Webhook queue exceeded the 72-hour retention during an extended outage | The dropped events cannot be replayed. Reconcile by polling GET /v1/invoices for the affected window |\n| ERR-4114 | Request used a /v2 path that does not exist",
+      "contains_all_gold_spans": true
+     },
+     {
+      "rank": 4,
+      "chunk_id": "fixed_window::BM-001-billing-migration-overview.md::003",
+      "score": 0.4656,
+      "dense": 0.7209,
+      "bm25": 4.4891,
+      "text": "| ERR-4002 | Organisation owner account is unverified | Have the owner complete email verification, then retry from the Migration panel |\n| ERR-4003 | Shadow totals differ by more than 0.5 percent | Do not retry. File a reconciliation ticket with the workspace id; engineering must rebase the shadow ledger |\n| ERR-4004 | Workspace is on a legacy annual contract with custom terms | Contact your account manager to have the contract re-papered onto v2 terms before migrating |\n| ERR-4005 | Migration halted because usage spiked above the guardrail | Wait for the hourly window to close, then clear the halt from Billing then Advanced then Resume |",
+      "contains_all_gold_spans": false
+     },
+     {
+      "rank": 5,
+      "chunk_id": "fixed_window::BM-002-payment-method-migration-errors.md::001",
+      "score": 0.4618,
+      "dense": 0.7168,
+      "bm25": 4.6589,
+      "text": "ge is a real charge from ordinary usage and is unrelated to the\nre-tokenisation job.\n\n## Idempotency during retries\n\nThe re-tokenisation worker retries each instrument up to five times. Every\nretry reuses the same idempotency key, which is derived from the internal\nvault id and the migration run id. If you manually re-queue a single\ninstrument from the admin console while the automatic retry chain is still\nin flight, the manual request carries a freshly generated idempotency key and\nthe provider will see two distinct requests for the same instrument. That is\nwhat produces duplicate tokens. Wait for the automatic chain to exhaust its\nfive attempts before re-queueing anything by hand.\n\n## Expired and soon-to-expire cards\n\nCards that expire within thirty days of the migration date are deliberately\nskipped rather than re-tokenised, because the provider would reject the token\nat first use.",
+      "contains_all_gold_spans": false
+     }
+    ]
+   },
+   "Q4": {
+    "question": "A customer's tax ID failed revalidation. What is the fix?",
+    "gold": "BM-005 / Troubleshooting (table row ERR-4501)",
+    "must_contain": [
+     "ERR-4501",
+     "--force-tax-refresh"
+    ],
+    "results": [
+     {
+      "rank": 1,
+      "chunk_id": "fixed_window::BM-005-tax-id-validation-migration.md::002",
+      "score": 0.9925,
+      "dense": 0.7632,
+      "bm25": 10.7936,
+      "text": "empt customers\n\nCustomers marked exempt in v1 are carried across as exempt. The exemption\ncertificate expiry date is now enforced: an expired certificate makes the\ncustomer taxable at the next invoice, where v1 would have kept applying the\nexemption indefinitely.\n\n## Troubleshooting\n\n| Error code | Cause | Fix |\n| --- | --- | --- |\n| ERR-4501 | Tax ID failed revalidation against the authority | Ask the customer to confirm the ID, correct it if wrong, then re-run the backfill with --force-tax-refresh |\n| ERR-4502 | Tax authority endpoint was unreachable during the sweep | No action needed. The sweep retries the unreachable authority on the next daily run |\n| ERR-4503 | Exemption certificate has expired | Collect a new certificate and upload it in Billing then Tax then Certificates. The customer is taxable until it is uploaded |\n| ERR-4504 | Customer address is in a jurisdiction that v2",
+      "contains_all_gold_spans": true
+     },
+     {
+      "rank": 2,
+      "chunk_id": "fixed_window::BM-005-tax-id-validation-migration.md::000",
+      "score": 0.8923,
+      "dense": 0.7668,
+      "bm25": 8.4848,
+      "text": "# Tax ID Validation and the Tax Backfill\n\n## Why tax IDs are revalidated\n\nLedger v1 validated a customer tax ID once, at the moment it was entered, and\nnever rechecked it. Ledger v2 revalidates against the tax authority on a\nrolling ninety-day cycle. The migration therefore runs a one-off revalidation\nof every stored tax ID, and IDs that were accepted years ago under looser\nrules can come back invalid. An invalid tax ID does not block the migration,\nbut it does mean the next invoice is issued without the reverse-charge\ntreatment the customer expects.\n\n## The tax cache and why re-running the backfill too early does nothing\n\nValidation results are written to a tax cache with a hard twenty-four hour\ntime to live. The backfill reads from that cache. If you re-run the backfill\nbefore the entry has expired, the job reads the cached failure, reports the\nsame result, and exits successfully with",
+      "contains_all_gold_spans": false
+     },
+     {
+      "rank": 3,
+      "chunk_id": "fixed_window::BM-005-tax-id-validation-migration.md::001",
+      "score": 0.8609,
+      "dense": 0.7668,
+      "bm25": 7.8144,
+      "text": "ill\nbefore the entry has expired, the job reads the cached failure, reports the\nsame result, and exits successfully with no change. It does not log a warning\nand it does not tell you it read from cache, so it looks exactly like a\ngenuine second failure. Always check the cache_written_at timestamp on the\ntax record before re-running, and wait until twenty-four hours have elapsed\nsince that timestamp. Support engineers lose a great deal of time to this\nbecause a no-op run and a real failed run are indistinguishable in the UI.\n\nThere is no supported way to flush the tax cache early. Requests to purge it\nare declined because a purge would re-hit the tax authority for every stored\nID in the workspace and trip the authority's own rate limits.\n\n## Reverse charge and exempt customers\n\nCustomers marked exempt in v1 are carried across as exempt. The exemption\ncertificate expiry date is now",
+      "contains_all_gold_spans": false
+     },
+     {
+      "rank": 4,
+      "chunk_id": "fixed_window::BM-005-tax-id-validation-migration.md::003",
+      "score": 0.7451,
+      "dense": 0.7507,
+      "bm25": 6.0567,
+      "text": "Certificates. The customer is taxable until it is uploaded |\n| ERR-4504 | Customer address is in a jurisdiction that v2 does not yet support | File a ticket. The customer is billed without tax until the jurisdiction is enabled |\n| ERR-4505 | Two customers in the workspace share the same tax ID | Merge or correct the duplicate customer records, then re-run the backfill with --force-tax-refresh |\n| ERR-4506 | Reverse-charge flag is set but the customer country is domestic | Clear the reverse-charge flag in Billing then Tax, then retry |",
+      "contains_all_gold_spans": false
+     },
+     {
+      "rank": 5,
+      "chunk_id": "fixed_window::BM-002-payment-method-migration-errors.md::004",
+      "score": 0.52,
+      "dense": 0.714,
+      "bm25": 2.8843,
+      "text": "rker backs off and resumes within fifteen minutes |\n| ERR-4036 | Billing address country does not match the card issuing country and the provider requires a match | Update the billing address to the issuing country, then retry the instrument |\n| ERR-4037 | Payment method belongs to a workspace that was deleted mid-migration | No action needed. The instrument is dropped and the migration continues |\n| ERR-4038 | Customer revoked the mandate while re-tokenisation was in flight | Collect a fresh mandate. The migration does not retry revoked mandates automatically |\n| ERR-4039 | Legacy vault entry is encrypted with a key that has been rotated out | File a ticket with the vault entry id. Support cannot fix this from the console; a key-recovery job must be run by engineering |",
+      "contains_all_gold_spans": false
+     }
+    ]
+   },
+   "Q5": {
+    "question": "How long does a workspace have to stay in the dual-write phase, and can support waive it?",
+    "gold": "BM-001 / Cutover phases",
+    "must_contain": [
+     "minimum of seven days",
+     "cannot be waived"
+    ],
+    "results": [
+     {
+      "rank": 1,
+      "chunk_id": "fixed_window::BM-001-billing-migration-overview.md::001",
+      "score": 1.0,
+      "dense": 0.7526,
+      "bm25": 9.6476,
+      "text": "ngines and compares totals. No customer-visible\nchange. Phase 2 (dual-write) makes Ledger v2 authoritative for new usage while\nLedger v1 continues to own historical invoices. Phase 3 (cutover) disables\nLedger v1 writes entirely. A workspace stays in Phase 2 for a minimum of seven\ndays. The seven-day floor is not configurable by support and cannot be waived\nby an account manager; it exists so the shadow comparison has at least one\nfull weekly billing boundary to check against.\n\n## How to tell which engine a workspace is on\n\nOpen Settings then Billing then Advanced. The Engine field reads either\n\"Ledger v1\" or \"Ledger v2 (phase N)\". The same value is exposed on the API at\nGET /v1/workspaces/{id}/billing with the field billing_engine_version.\n\n## Migration status codes\n\nThe status endpoint returns a coarse status string. These are not error codes;\nthey describe where the workspace sits in",
+      "contains_all_gold_spans": true
+     },
+     {
+      "rank": 2,
+      "chunk_id": "fixed_window::BM-002-payment-method-migration-errors.md::000",
+      "score": 0.8133,
+      "dense": 0.7053,
+      "bm25": 8.7926,
+      "text": "# Payment Method Migration Errors\n\n## Why payment methods have to move separately\n\nLedger v2 stores payment instruments as tokenised references held by the\npayment service provider rather than as rows in our own vault. Every stored\ncard, SEPA mandate and ACH authorisation therefore has to be re-tokenised\nbefore a workspace can leave the dual-write phase. Re-tokenisation is\ninitiated automatically when a workspace enters Phase 2 and normally finishes\nwithin four hours for a workspace with fewer than five hundred stored\ninstruments.\n\nRe-tokenisation never moves money. It exchanges an internal vault id for a\nprovider token. Customers are not charged, and no authorisation hold is\nplaced on the card. If a customer reports a pending charge during migration,\nthat charge is a real charge from ordinary usage and is unrelated to the\nre-tokenisation job.\n\n## Idempotency during retries\n\nThe",
+      "contains_all_gold_spans": false
+     },
+     {
+      "rank": 3,
+      "chunk_id": "fixed_window::BM-004-subscription-proration-migration.md::001",
+      "score": 0.7708,
+      "dense": 0.6959,
+      "bm25": 8.5244,
+      "text": "ews, is\npreserved exactly. Anchors that fall on the 29th, 30th or 31st behave\ndifferently in v2: v1 clamped these to the last day of a short month and then\nrestored the original anchor the following month, whereas v2 clamps\npermanently. A subscription anchored to the 31st that renews in February will,\nafter migration, stay anchored to the 28th or 29th for every subsequent\nperiod. Restoring the original anchor requires a support action and cannot be\ndone from the customer-facing UI.\n\n## Trials in flight\n\nA trial that is running when the workspace enters Phase 2 keeps its original\nend timestamp. Trials are not extended, shortened or restarted by the\nmigration. If a trial ends during the dual-write window the resulting first\ninvoice is issued by Ledger v2.\n\n## Troubleshooting\n\n| Error code | Cause | Fix |\n| --- | --- | --- |\n| ERR-4301 | Subscription has a proration mode that does not",
+      "contains_all_gold_spans": false
+     },
+     {
+      "rank": 4,
+      "chunk_id": "fixed_window::BM-001-billing-migration-overview.md::000",
+      "score": 0.7377,
+      "dense": 0.7076,
+      "bm25": 7.3471,
+      "text": "# Billing Migration Overview and Cutover Timeline\n\n## What is changing\n\nBetween 2026-07-01 and 2026-09-30 all workspaces move from the legacy billing\nengine (Ledger v1) to the new metered billing engine (Ledger v2). Ledger v2\ncomputes usage on a rolling hourly window instead of the nightly batch that\nLedger v1 used. The practical effect for most customers is that invoice line\nitems appear within 90 minutes of usage rather than the next morning.\n\nThe migration is performed per workspace, not per organisation. A single\norganisation can therefore have some workspaces on Ledger v1 and some on\nLedger v2 at the same time. This is expected and is the most common source of\nconfusing invoice totals during the cutover window.\n\n## Cutover phases\n\nPhase 1 (shadow) runs both engines and compares totals. No customer-visible\nchange. Phase 2 (dual-write) makes Ledger v2 authoritative for new usage",
+      "contains_all_gold_spans": false
+     },
+     {
+      "rank": 5,
+      "chunk_id": "fixed_window::BM-005-tax-id-validation-migration.md::001",
+      "score": 0.6859,
+      "dense": 0.7116,
+      "bm25": 6.2377,
+      "text": "ill\nbefore the entry has expired, the job reads the cached failure, reports the\nsame result, and exits successfully with no change. It does not log a warning\nand it does not tell you it read from cache, so it looks exactly like a\ngenuine second failure. Always check the cache_written_at timestamp on the\ntax record before re-running, and wait until twenty-four hours have elapsed\nsince that timestamp. Support engineers lose a great deal of time to this\nbecause a no-op run and a real failed run are indistinguishable in the UI.\n\nThere is no supported way to flush the tax cache early. Requests to purge it\nare declined because a purge would re-hit the tax authority for every stored\nID in the workspace and trip the authority's own rate limits.\n\n## Reverse charge and exempt customers\n\nCustomers marked exempt in v1 are carried across as exempt. The exemption\ncertificate expiry date is now",
+      "contains_all_gold_spans": false
+     }
+    ]
+   },
+   "Q6": {
+    "question": "What happens to a subscription whose billing anchor is the 31st after it migrates during a short month?",
+    "gold": "BM-004 / Billing anchors",
+    "must_contain": [
+     "v2 clamps permanently",
+     "cannot be done from the customer-facing UI"
+    ],
+    "results": [
+     {
+      "rank": 1,
+      "chunk_id": "fixed_window::BM-004-subscription-proration-migration.md::002",
+      "score": 0.989,
+      "dense": 0.7988,
+      "bm25": 15.0606,
+      "text": "eshooting\n\n| Error code | Cause | Fix |\n| --- | --- | --- |\n| ERR-4301 | Subscription has a proration mode that does not exist in v2 | Set the subscription to the closest supported mode in Subscriptions then Edit then Proration, then retry |\n| ERR-4302 | Billing anchor is the 31st and the workspace migrated during a short month | No action needed at migration time. To restore the original anchor afterwards, file a ticket; the anchor cannot be reset from the UI |\n| ERR-4303 | Subscription references a plan that was archived in v1 | Un-archive the plan, migrate, then re-archive it |\n| ERR-4304 | Trial end timestamp is in the past but the trial is still marked active | Close the trial manually in Subscriptions then Edit then End trial, then retry the migration |\n| ERR-4305 | Quantity on a metered subscription is negative because of a v1 adjustment | File a ticket with the subscription id.",
+      "contains_all_gold_spans": false
+     },
+     {
+      "rank": 2,
+      "chunk_id": "fixed_window::BM-004-subscription-proration-migration.md::001",
+      "score": 0.9883,
+      "dense": 0.7944,
+      "bm25": 15.3807,
+      "text": "ews, is\npreserved exactly. Anchors that fall on the 29th, 30th or 31st behave\ndifferently in v2: v1 clamped these to the last day of a short month and then\nrestored the original anchor the following month, whereas v2 clamps\npermanently. A subscription anchored to the 31st that renews in February will,\nafter migration, stay anchored to the 28th or 29th for every subsequent\nperiod. Restoring the original anchor requires a support action and cannot be\ndone from the customer-facing UI.\n\n## Trials in flight\n\nA trial that is running when the workspace enters Phase 2 keeps its original\nend timestamp. Trials are not extended, shortened or restarted by the\nmigration. If a trial ends during the dual-write window the resulting first\ninvoice is issued by Ledger v2.\n\n## Troubleshooting\n\n| Error code | Cause | Fix |\n| --- | --- | --- |\n| ERR-4301 | Subscription has a proration mode that does not",
+      "contains_all_gold_spans": true
+     },
+     {
+      "rank": 3,
+      "chunk_id": "fixed_window::BM-004-subscription-proration-migration.md::000",
+      "score": 0.9008,
+      "dense": 0.7864,
+      "bm25": 13.4492,
+      "text": "# Subscription and Proration Behaviour After Migration\n\n## Proration changes at cutover\n\nLedger v1 prorated subscription changes to the nearest whole day. Ledger v2\nprorates to the second. A customer who upgrades at 14:30 on the fifteenth of\nthe month is charged for exactly the remaining seconds of the period rather\nthan for the whole of the fifteenth. This means most upgrade invoices get\nslightly smaller after migration and most downgrade credits get slightly\nlarger.\n\nProration mode is set per subscription and is carried across unchanged. If a\nsubscription was set to \"no proration\" in v1 it remains \"no proration\" in v2.\nThe migration never silently changes a proration mode.\n\n## Billing anchors\n\nThe billing anchor, which is the day of the month the subscription renews, is\npreserved exactly. Anchors that fall on the 29th, 30th or 31st behave\ndifferently in v2: v1 clamped these to the",
+      "contains_all_gold_spans": false
+     },
+     {
+      "rank": 4,
+      "chunk_id": "fixed_window::BM-001-billing-migration-overview.md::000",
+      "score": 0.3697,
+      "dense": 0.7105,
+      "bm25": 3.8168,
+      "text": "# Billing Migration Overview and Cutover Timeline\n\n## What is changing\n\nBetween 2026-07-01 and 2026-09-30 all workspaces move from the legacy billing\nengine (Ledger v1) to the new metered billing engine (Ledger v2). Ledger v2\ncomputes usage on a rolling hourly window instead of the nightly batch that\nLedger v1 used. The practical effect for most customers is that invoice line\nitems appear within 90 minutes of usage rather than the next morning.\n\nThe migration is performed per workspace, not per organisation. A single\norganisation can therefore have some workspaces on Ledger v1 and some on\nLedger v2 at the same time. This is expected and is the most common source of\nconfusing invoice totals during the cutover window.\n\n## Cutover phases\n\nPhase 1 (shadow) runs both engines and compares totals. No customer-visible\nchange. Phase 2 (dual-write) makes Ledger v2 authoritative for new usage",
+      "contains_all_gold_spans": false
+     },
+     {
+      "rank": 5,
+      "chunk_id": "fixed_window::BM-004-subscription-proration-migration.md::003",
+      "score": 0.2763,
+      "dense": 0.6763,
+      "bm25": 3.7314,
+      "text": "05 | Quantity on a metered subscription is negative because of a v1 adjustment | File a ticket with the subscription id. Negative quantities must be corrected in v1 before migration |\n| ERR-4306 | Subscription is scheduled to change plan at the next renewal and the schedule has no v2 equivalent | Cancel the scheduled change, migrate, then re-create the schedule in v2 |",
+      "contains_all_gold_spans": false
+     }
+    ]
+   },
+   "Q7": {
+    "question": "A customer's card expires next month. Does that block their billing migration?",
+    "gold": "BM-002 / Expired and soon-to-expire cards",
+    "must_contain": [
+     "deferred_expiring",
+     "does not block the migration"
+    ],
+    "results": [
+     {
+      "rank": 1,
+      "chunk_id": "fixed_window::BM-002-payment-method-migration-errors.md::002",
+      "score": 1.0,
+      "dense": 0.7545,
+      "bm25": 9.776,
+      "text": "ration date are deliberately\nskipped rather than re-tokenised, because the provider would reject the token\nat first use. Skipped cards are listed in the migration report as\n\"deferred_expiring\" and the customer is emailed a card-update link. A skipped\ncard does not block the migration and does not need a support ticket.\n\n## Troubleshooting\n\n| Error code | Cause | Fix |\n| --- | --- | --- |\n| ERR-4030 | Card network declined the tokenisation request | Ask the customer to re-enter the card in Billing then Payment methods; the old vault entry cannot be recovered |\n| ERR-4031 | SEPA mandate reference is older than the 36-month mandate validity limit | Collect a fresh mandate from the customer; the migration will pick it up on the next hourly sweep |\n| ERR-4032 | The stored payment token was issued by the legacy vault and has no provider-side equivalent | Ask the customer to re-add the payment",
+      "contains_all_gold_spans": true
+     },
+     {
+      "rank": 2,
+      "chunk_id": "fixed_window::BM-002-payment-method-migration-errors.md::004",
+      "score": 0.5889,
+      "dense": 0.7066,
+      "bm25": 5.4221,
+      "text": "rker backs off and resumes within fifteen minutes |\n| ERR-4036 | Billing address country does not match the card issuing country and the provider requires a match | Update the billing address to the issuing country, then retry the instrument |\n| ERR-4037 | Payment method belongs to a workspace that was deleted mid-migration | No action needed. The instrument is dropped and the migration continues |\n| ERR-4038 | Customer revoked the mandate while re-tokenisation was in flight | Collect a fresh mandate. The migration does not retry revoked mandates automatically |\n| ERR-4039 | Legacy vault entry is encrypted with a key that has been rotated out | File a ticket with the vault entry id. Support cannot fix this from the console; a key-recovery job must be run by engineering |",
+      "contains_all_gold_spans": false
+     },
+     {
+      "rank": 3,
+      "chunk_id": "fixed_window::BM-004-subscription-proration-migration.md::000",
+      "score": 0.546,
+      "dense": 0.7004,
+      "bm25": 5.0476,
+      "text": "# Subscription and Proration Behaviour After Migration\n\n## Proration changes at cutover\n\nLedger v1 prorated subscription changes to the nearest whole day. Ledger v2\nprorates to the second. A customer who upgrades at 14:30 on the fifteenth of\nthe month is charged for exactly the remaining seconds of the period rather\nthan for the whole of the fifteenth. This means most upgrade invoices get\nslightly smaller after migration and most downgrade credits get slightly\nlarger.\n\nProration mode is set per subscription and is carried across unchanged. If a\nsubscription was set to \"no proration\" in v1 it remains \"no proration\" in v2.\nThe migration never silently changes a proration mode.\n\n## Billing anchors\n\nThe billing anchor, which is the day of the month the subscription renews, is\npreserved exactly. Anchors that fall on the 29th, 30th or 31st behave\ndifferently in v2: v1 clamped these to the",
+      "contains_all_gold_spans": false
+     },
+     {
+      "rank": 4,
+      "chunk_id": "fixed_window::BM-005-tax-id-validation-migration.md::002",
+      "score": 0.4949,
+      "dense": 0.7043,
+      "bm25": 3.8939,
+      "text": "empt customers\n\nCustomers marked exempt in v1 are carried across as exempt. The exemption\ncertificate expiry date is now enforced: an expired certificate makes the\ncustomer taxable at the next invoice, where v1 would have kept applying the\nexemption indefinitely.\n\n## Troubleshooting\n\n| Error code | Cause | Fix |\n| --- | --- | --- |\n| ERR-4501 | Tax ID failed revalidation against the authority | Ask the customer to confirm the ID, correct it if wrong, then re-run the backfill with --force-tax-refresh |\n| ERR-4502 | Tax authority endpoint was unreachable during the sweep | No action needed. The sweep retries the unreachable authority on the next daily run |\n| ERR-4503 | Exemption certificate has expired | Collect a new certificate and upload it in Billing then Tax then Certificates. The customer is taxable until it is uploaded |\n| ERR-4504 | Customer address is in a jurisdiction that v2",
+      "contains_all_gold_spans": false
+     },
+     {
+      "rank": 5,
+      "chunk_id": "fixed_window::BM-002-payment-method-migration-errors.md::003",
+      "score": 0.4706,
+      "dense": 0.6821,
+      "bm25": 4.8372,
+      "text": "ayment token was issued by the legacy vault and has no provider-side equivalent | Ask the customer to re-add the payment method, then re-run the migration for that workspace only from the Migration panel using Retry failed instruments. Do not re-run the full workspace migration |\n| ERR-4033 | Duplicate token created because a manual re-queue raced the automatic retry chain | Delete the newer of the two tokens in the provider dashboard, then let the automatic chain finish. Do not delete the older token |\n| ERR-4034 | ACH authorisation is missing a micro-deposit verification record | Re-run micro-deposit verification from Billing then Payment methods then Verify |\n| ERR-4035 | Provider returned a rate limit during a bulk re-tokenisation sweep | No action needed. The worker backs off and resumes within fifteen minutes |\n| ERR-4036 | Billing address country does not match the card issuing",
+      "contains_all_gold_spans": false
+     }
+    ]
+   },
+   "Q8": {
+    "question": "A customer got a credit note during dual-write and their v2 totals now look too high. Should we issue another credit note?",
+    "gold": "BM-003 / Credit notes are the common surprise",
+    "must_contain": [
+     "Do not issue a second credit note",
+     "resolves itself at cutover"
+    ],
+    "results": [
+     {
+      "rank": 1,
+      "chunk_id": "fixed_window::BM-003-invoice-sync-troubleshooting.md::001",
+      "score": 1.0,
+      "dense": 0.7842,
+      "bm25": 20.3665,
+      "text": "til they complete. A\npartial invoice that has not completed within three hourly sweeps is\nautomatically escalated to the reconciliation queue.\n\n## Credit notes are the common surprise\n\nBecause credit notes are not copied hourly, a customer who received a credit\nnote during the dual-write window will see a v2 invoice list whose totals are\nhigher than the v1 totals until cutover completes. This is not a billing\nerror and the difference resolves itself at cutover. Do not issue a second\ncredit note to compensate; doing so creates a real double credit that has to\nbe clawed back manually.\n\n## Troubleshooting\n\n| Error code | Cause | Fix |\n| --- | --- | --- |\n| ERR-4210 | Invoice PDF checksum does not match after copy | Re-run the sync for that invoice from Invoicing then Sync then Retry invoice. The PDF is regenerated from the v1 source |\n| ERR-4211 | Line item references a product SKU that no",
+      "contains_all_gold_spans": true
+     },
+     {
+      "rank": 2,
+      "chunk_id": "fixed_window::BM-003-invoice-sync-troubleshooting.md::003",
+      "score": 0.5815,
+      "dense": 0.7276,
+      "bm25": 9.9628,
+      "text": "the invoice has no v2 equivalent adjustment type | Convert the adjustment to a credit note in Ledger v1, then retry the sync |\n| ERR-4216 | Sync ran while the invoice was being edited | No action needed. The next hourly sweep picks it up |\n| ERR-4217 | Reconciliation found a rounding difference above one cent | File a reconciliation ticket. Do not adjust the invoice by hand; hand adjustments break the cutover backfill |",
+      "contains_all_gold_spans": false
+     },
+     {
+      "rank": 3,
+      "chunk_id": "fixed_window::BM-003-invoice-sync-troubleshooting.md::002",
+      "score": 0.4563,
+      "dense": 0.7034,
+      "bm25": 7.6096,
+      "text": "then Retry invoice. The PDF is regenerated from the v1 source |\n| ERR-4211 | Line item references a product SKU that no longer exists in v2 | Map the retired SKU to its v2 replacement in Settings then Catalogue then SKU mapping, then retry |\n| ERR-4212 | Invoice is still open in Ledger v1 | No action needed. Only closed invoices are synced; it will copy after it closes |\n| ERR-4213 | Currency on the invoice is not enabled on the v2 workspace | Enable the currency in Settings then Billing then Currencies, then retry the sync |\n| ERR-4214 | Invoice total exceeds the per-invoice ceiling configured for the workspace | Raise the ceiling in Settings then Billing then Limits. If the ceiling is already at the plan maximum, file a ticket |\n| ERR-4215 | Manual adjustment on the invoice has no v2 equivalent adjustment type | Convert the adjustment to a credit note in Ledger v1, then retry the",
+      "contains_all_gold_spans": false
+     },
+     {
+      "rank": 4,
+      "chunk_id": "fixed_window::BM-003-invoice-sync-troubleshooting.md::000",
+      "score": 0.3453,
+      "dense": 0.6676,
+      "bm25": 7.012,
+      "text": "# Invoice Sync and Reconciliation Troubleshooting\n\n## What invoice sync does\n\nDuring the dual-write phase Ledger v1 still owns closed invoices while\nLedger v2 owns open usage. The invoice sync job runs every hour and copies\nclosed v1 invoices into v2 as immutable historical records so that the\ncustomer sees one continuous invoice list. Sync copies the invoice header,\nthe line items and the PDF checksum. It does not copy dunning state, credit\nnotes or manual adjustments; those are migrated once, at cutover, by a\nseparate backfill.\n\n## Reading a partial invoice\n\nA partial invoice is an invoice where the header has been copied but at least\none line item is still missing. Partial invoices are displayed with an amber\n\"syncing\" badge and are excluded from revenue reports until they complete. A\npartial invoice that has not completed within three hourly sweeps is\nautomatically escalated to the",
+      "contains_all_gold_spans": false
+     },
+     {
+      "rank": 5,
+      "chunk_id": "fixed_window::BM-005-tax-id-validation-migration.md::001",
+      "score": 0.3164,
+      "dense": 0.6987,
+      "bm25": 2.6488,
+      "text": "ill\nbefore the entry has expired, the job reads the cached failure, reports the\nsame result, and exits successfully with no change. It does not log a warning\nand it does not tell you it read from cache, so it looks exactly like a\ngenuine second failure. Always check the cache_written_at timestamp on the\ntax record before re-running, and wait until twenty-four hours have elapsed\nsince that timestamp. Support engineers lose a great deal of time to this\nbecause a no-op run and a real failed run are indistinguishable in the UI.\n\nThere is no supported way to flush the tax cache early. Requests to purge it\nare declined because a purge would re-hit the tax authority for every stored\nID in the workspace and trip the authority's own rate limits.\n\n## Reverse charge and exempt customers\n\nCustomers marked exempt in v1 are carried across as exempt. The exemption\ncertificate expiry date is now",
+      "contains_all_gold_spans": false
+     }
+    ]
+   }
+  },
+  "structure_aware": {
+   "Q1": {
+    "question": "What does ERR-4032 mean and what is the fix?",
+    "gold": "BM-002 / Troubleshooting (table row ERR-4032)",
+    "must_contain": [
+     "ERR-4032",
+     "re-add the payment method",
+     "Retry failed instruments"
+    ],
+    "results": [
+     {
+      "rank": 1,
+      "chunk_id": "structure_aware::BM-002-payment-method-migration-errors.md::004",
+      "score": 0.7861,
+      "dense": 0.7031,
+      "bm25": 4.0357,
+      "text": "Payment Method Migration Errors > Troubleshooting\n\n| Error code | Cause | Fix |\n| --- | --- | --- |\n| ERR-4032 | The stored payment token was issued by the legacy vault and has no provider-side equivalent | Ask the customer to re-add the payment method, then re-run the migration for that workspace only from the Migration panel using Retry failed instruments. Do not re-run the full workspace migration |\n| ERR-4033 | Duplicate token created because a manual re-queue raced the automatic retry chain | Delete the newer of the two tokens in the provider dashboard, then let the automatic chain finish. Do not delete the older token |",
+      "contains_all_gold_spans": true
+     },
+     {
+      "rank": 2,
+      "chunk_id": "structure_aware::BM-002-payment-method-migration-errors.md::006",
+      "score": 0.7056,
+      "dense": 0.7108,
+      "bm25": 2.7533,
+      "text": "Payment Method Migration Errors > Troubleshooting\n\n| Error code | Cause | Fix |\n| --- | --- | --- |\n| ERR-4037 | Payment method belongs to a workspace that was deleted mid-migration | No action needed. The instrument is dropped and the migration continues |\n| ERR-4038 | Customer revoked the mandate while re-tokenisation was in flight | Collect a fresh mandate. The migration does not retry revoked mandates automatically |\n| ERR-4039 | Legacy vault entry is encrypted with a key that has been rotated out | File a ticket with the vault entry id. Support cannot fix this from the console; a key-recovery job must be run by engineering |",
+      "contains_all_gold_spans": false
+     },
+     {
+      "rank": 3,
+      "chunk_id": "structure_aware::BM-002-payment-method-migration-errors.md::005",
+      "score": 0.6787,
+      "dense": 0.7087,
+      "bm25": 2.4621,
+      "text": "Payment Method Migration Errors > Troubleshooting\n\n| Error code | Cause | Fix |\n| --- | --- | --- |\n| ERR-4034 | ACH authorisation is missing a micro-deposit verification record | Re-run micro-deposit verification from Billing then Payment methods then Verify |\n| ERR-4035 | Provider returned a rate limit during a bulk re-tokenisation sweep | No action needed. The worker backs off and resumes within fifteen minutes |\n| ERR-4036 | Billing address country does not match the card issuing country and the provider requires a match | Update the billing address to the issuing country, then retry the instrument |",
+      "contains_all_gold_spans": false
+     },
+     {
+      "rank": 4,
+      "chunk_id": "structure_aware::BM-006-api-webhook-migration.md::004",
+      "score": 0.6525,
+      "dense": 0.6828,
+      "bm25": 2.8734,
+      "text": "API and Webhook Changes for the Billing Migration > Troubleshooting\n\n| Error code | Cause | Fix |\n| --- | --- | --- |\n| ERR-4113 | Webhook queue exceeded the 72-hour retention during an extended outage | The dropped events cannot be replayed. Reconcile by polling GET /v1/invoices for the affected window |\n| ERR-4114 | Request used a /v2 path that does not exist | Use the /v1 path. Ledger v2 is served from /v1 |\n| ERR-4115 | Signature verification failed after the customer rotated their secret mid-cutover | Re-issue the signing secret in Developers then Webhooks and update the endpoint. The migration itself does not rotate secrets |",
+      "contains_all_gold_spans": false
+     },
+     {
+      "rank": 5,
+      "chunk_id": "structure_aware::BM-005-tax-id-validation-migration.md::004",
+      "score": 0.6452,
+      "dense": 0.6906,
+      "bm25": 2.552,
+      "text": "Tax ID Validation and the Tax Backfill > Troubleshooting\n\n| Error code | Cause | Fix |\n| --- | --- | --- |\n| ERR-4504 | Customer address is in a jurisdiction that v2 does not yet support | File a ticket. The customer is billed without tax until the jurisdiction is enabled |\n| ERR-4505 | Two customers in the workspace share the same tax ID | Merge or correct the duplicate customer records, then re-run the backfill with --force-tax-refresh |\n| ERR-4506 | Reverse-charge flag is set but the customer country is domestic | Clear the reverse-charge flag in Billing then Tax, then retry |",
+      "contains_all_gold_spans": false
+     }
+    ]
+   },
+   "Q2": {
+    "question": "Reconciliation found a rounding difference above one cent on an invoice. What should I do?",
+    "gold": "BM-003 / Troubleshooting (table row ERR-4217)",
+    "must_contain": [
+     "ERR-4217",
+     "reconciliation ticket",
+     "Do not adjust the invoice by hand"
+    ],
+    "results": [
+     {
+      "rank": 1,
+      "chunk_id": "structure_aware::BM-003-invoice-sync-troubleshooting.md::005",
+      "score": 1.0,
+      "dense": 0.8007,
+      "bm25": 27.0521,
+      "text": "Invoice Sync and Reconciliation Troubleshooting > Troubleshooting\n\n| Error code | Cause | Fix |\n| --- | --- | --- |\n| ERR-4216 | Sync ran while the invoice was being edited | No action needed. The next hourly sweep picks it up |\n| ERR-4217 | Reconciliation found a rounding difference above one cent | File a reconciliation ticket. Do not adjust the invoice by hand; hand adjustments break the cutover backfill |",
+      "contains_all_gold_spans": true
+     },
+     {
+      "rank": 2,
+      "chunk_id": "structure_aware::BM-003-invoice-sync-troubleshooting.md::002",
+      "score": 0.5544,
+      "dense": 0.7548,
+      "bm25": 7.6438,
+      "text": "Invoice Sync and Reconciliation Troubleshooting > Credit notes are the common surprise\n\nBecause credit notes are not copied hourly, a customer who received a credit\nnote during the dual-write window will see a v2 invoice list whose totals are\nhigher than the v1 totals until cutover completes. This is not a billing\nerror and the difference resolves itself at cutover. Do not issue a second\ncredit note to compensate; doing so creates a real double credit that has to\nbe clawed back manually.",
+      "contains_all_gold_spans": false
+     },
+     {
+      "rank": 3,
+      "chunk_id": "structure_aware::BM-003-invoice-sync-troubleshooting.md::001",
+      "score": 0.5279,
+      "dense": 0.7288,
+      "bm25": 8.8084,
+      "text": "Invoice Sync and Reconciliation Troubleshooting > Reading a partial invoice\n\nA partial invoice is an invoice where the header has been copied but at least\none line item is still missing. Partial invoices are displayed with an amber\n\"syncing\" badge and are excluded from revenue reports until they complete. A\npartial invoice that has not completed within three hourly sweeps is\nautomatically escalated to the reconciliation queue.",
+      "contains_all_gold_spans": false
+     },
+     {
+      "rank": 4,
+      "chunk_id": "structure_aware::BM-003-invoice-sync-troubleshooting.md::004",
+      "score": 0.5242,
+      "dense": 0.7678,
+      "bm25": 4.7265,
+      "text": "Invoice Sync and Reconciliation Troubleshooting > Troubleshooting\n\n| Error code | Cause | Fix |\n| --- | --- | --- |\n| ERR-4213 | Currency on the invoice is not enabled on the v2 workspace | Enable the currency in Settings then Billing then Currencies, then retry the sync |\n| ERR-4214 | Invoice total exceeds the per-invoice ceiling configured for the workspace | Raise the ceiling in Settings then Billing then Limits. If the ceiling is already at the plan maximum, file a ticket |\n| ERR-4215 | Manual adjustment on the invoice has no v2 equivalent adjustment type | Convert the adjustment to a credit note in Ledger v1, then retry the sync |",
+      "contains_all_gold_spans": false
+     },
+     {
+      "rank": 5,
+      "chunk_id": "structure_aware::BM-003-invoice-sync-troubleshooting.md::003",
+      "score": 0.4609,
+      "dense": 0.7445,
+      "bm25": 3.6307,
+      "text": "Invoice Sync and Reconciliation Troubleshooting > Troubleshooting\n\n| Error code | Cause | Fix |\n| --- | --- | --- |\n| ERR-4210 | Invoice PDF checksum does not match after copy | Re-run the sync for that invoice from Invoicing then Sync then Retry invoice. The PDF is regenerated from the v1 source |\n| ERR-4211 | Line item references a product SKU that no longer exists in v2 | Map the retired SKU to its v2 replacement in Settings then Catalogue then SKU mapping, then retry |\n| ERR-4212 | Invoice is still open in Ledger v1 | No action needed. Only closed invoices are synced; it will copy after it closes |",
+      "contains_all_gold_spans": false
+     }
+    ]
+   },
+   "Q3": {
+    "question": "Our client gets a 409 idempotency_reuse error on the billing API after migrating. What is the documented fix?",
+    "gold": "BM-006 / Troubleshooting (table row ERR-4111)",
+    "must_contain": [
+     "ERR-4111",
+     "fresh UUID",
+     "Do not derive the key from a request hash"
+    ],
+    "results": [
+     {
+      "rank": 1,
+      "chunk_id": "structure_aware::BM-006-api-webhook-migration.md::001",
+      "score": 1.0,
+      "dense": 0.8195,
+      "bm25": 16.0058,
+      "text": "API and Webhook Changes for the Billing Migration > Idempotency keys on the billing API\n\nLedger v2 enforces idempotency keys far more strictly than v1 did. In v1 an\nidempotency key was scoped to the endpoint, so the same key could be reused\nagainst POST /v1/invoices and POST /v1/charges without conflict. In v2 the key\nis scoped to the workspace and the whole billing surface. Reusing a key that\nwas already used anywhere in the workspace within the last twenty-four hours\nreturns 409 with an idempotency_reuse error body, even if the original request\ntargeted a different endpoint. Client libraries that derive keys from a\nrequest hash rather than from a fresh UUID are the usual casualty. Generate a\nfresh UUID per logical operation.",
+      "contains_all_gold_spans": false
+     },
+     {
+      "rank": 2,
+      "chunk_id": "structure_aware::BM-006-api-webhook-migration.md::003",
+      "score": 0.75,
+      "dense": 0.7598,
+      "bm25": 11.7959,
+      "text": "API and Webhook Changes for the Billing Migration > Troubleshooting\n\n| Error code | Cause | Fix |\n| --- | --- | --- |\n| ERR-4110 | Webhook endpoint returned a non-2xx during the post-cutover flush | No action needed for the first six hours; the flush retries with backoff. After six hours, replay from Developers then Webhooks then Replay |\n| ERR-4111 | Idempotency key reused within the workspace in the last 24 hours | Generate a fresh UUID per logical operation and retry. Do not derive the key from a request hash |\n| ERR-4112 | Client is still reading next_payment_attempt, which is null on v2 | Update the client to read the retry_schedule array. The field is not restored |",
+      "contains_all_gold_spans": true
+     },
+     {
+      "rank": 3,
+      "chunk_id": "structure_aware::BM-001-billing-migration-overview.md::006",
+      "score": 0.5918,
+      "dense": 0.7484,
+      "bm25": 7.5406,
+      "text": "Billing Migration Overview and Cutover Timeline > Troubleshooting\n\n| Error code | Cause | Fix |\n| --- | --- | --- |\n| ERR-4004 | Workspace is on a legacy annual contract with custom terms | Contact your account manager to have the contract re-papered onto v2 terms before migrating |\n| ERR-4005 | Migration halted because usage spiked above the guardrail | Wait for the hourly window to close, then clear the halt from Billing then Advanced then Resume |",
+      "contains_all_gold_spans": false
+     },
+     {
+      "rank": 4,
+      "chunk_id": "structure_aware::BM-006-api-webhook-migration.md::004",
+      "score": 0.5314,
+      "dense": 0.7498,
+      "bm25": 5.5653,
+      "text": "API and Webhook Changes for the Billing Migration > Troubleshooting\n\n| Error code | Cause | Fix |\n| --- | --- | --- |\n| ERR-4113 | Webhook queue exceeded the 72-hour retention during an extended outage | The dropped events cannot be replayed. Reconcile by polling GET /v1/invoices for the affected window |\n| ERR-4114 | Request used a /v2 path that does not exist | Use the /v1 path. Ledger v2 is served from /v1 |\n| ERR-4115 | Signature verification failed after the customer rotated their secret mid-cutover | Re-issue the signing secret in Developers then Webhooks and update the endpoint. The migration itself does not rotate secrets |",
+      "contains_all_gold_spans": false
+     },
+     {
+      "rank": 5,
+      "chunk_id": "structure_aware::BM-001-billing-migration-overview.md::005",
+      "score": 0.5193,
+      "dense": 0.7756,
+      "bm25": 3.636,
+      "text": "Billing Migration Overview and Cutover Timeline > Troubleshooting\n\n| Error code | Cause | Fix |\n| --- | --- | --- |\n| ERR-4001 | Workspace has an open dispute on a legacy invoice | Resolve or withdraw the dispute in Billing then Disputes, then re-queue the migration |\n| ERR-4002 | Organisation owner account is unverified | Have the owner complete email verification, then retry from the Migration panel |\n| ERR-4003 | Shadow totals differ by more than 0.5 percent | Do not retry. File a reconciliation ticket with the workspace id; engineering must rebase the shadow ledger |",
+      "contains_all_gold_spans": false
+     }
+    ]
+   },
+   "Q4": {
+    "question": "A customer's tax ID failed revalidation. What is the fix?",
+    "gold": "BM-005 / Troubleshooting (table row ERR-4501)",
+    "must_contain": [
+     "ERR-4501",
+     "--force-tax-refresh"
+    ],
+    "results": [
+     {
+      "rank": 1,
+      "chunk_id": "structure_aware::BM-005-tax-id-validation-migration.md::003",
+      "score": 1.0,
+      "dense": 0.8258,
+      "bm25": 12.9399,
+      "text": "Tax ID Validation and the Tax Backfill > Troubleshooting\n\n| Error code | Cause | Fix |\n| --- | --- | --- |\n| ERR-4501 | Tax ID failed revalidation against the authority | Ask the customer to confirm the ID, correct it if wrong, then re-run the backfill with --force-tax-refresh |\n| ERR-4502 | Tax authority endpoint was unreachable during the sweep | No action needed. The sweep retries the unreachable authority on the next daily run |\n| ERR-4503 | Exemption certificate has expired | Collect a new certificate and upload it in Billing then Tax then Certificates. The customer is taxable until it is uploaded |",
+      "contains_all_gold_spans": true
+     },
+     {
+      "rank": 2,
+      "chunk_id": "structure_aware::BM-005-tax-id-validation-migration.md::000",
+      "score": 0.814,
+      "dense": 0.775,
+      "bm25": 10.2238,
+      "text": "Tax ID Validation and the Tax Backfill > Why tax IDs are revalidated\n\nLedger v1 validated a customer tax ID once, at the moment it was entered, and\nnever rechecked it. Ledger v2 revalidates against the tax authority on a\nrolling ninety-day cycle. The migration therefore runs a one-off revalidation\nof every stored tax ID, and IDs that were accepted years ago under looser\nrules can come back invalid. An invalid tax ID does not block the migration,\nbut it does mean the next invoice is issued without the reverse-charge\ntreatment the customer expects.",
+      "contains_all_gold_spans": false
+     },
+     {
+      "rank": 3,
+      "chunk_id": "structure_aware::BM-005-tax-id-validation-migration.md::004",
+      "score": 0.7744,
+      "dense": 0.7926,
+      "bm25": 8.4737,
+      "text": "Tax ID Validation and the Tax Backfill > Troubleshooting\n\n| Error code | Cause | Fix |\n| --- | --- | --- |\n| ERR-4504 | Customer address is in a jurisdiction that v2 does not yet support | File a ticket. The customer is billed without tax until the jurisdiction is enabled |\n| ERR-4505 | Two customers in the workspace share the same tax ID | Merge or correct the duplicate customer records, then re-run the backfill with --force-tax-refresh |\n| ERR-4506 | Reverse-charge flag is set but the customer country is domestic | Clear the reverse-charge flag in Billing then Tax, then retry |",
+      "contains_all_gold_spans": false
+     },
+     {
+      "rank": 4,
+      "chunk_id": "structure_aware::BM-005-tax-id-validation-migration.md::001",
+      "score": 0.6608,
+      "dense": 0.7201,
+      "bm25": 8.5259,
+      "text": "Tax ID Validation and the Tax Backfill > The tax cache and why re-running the backfill too early does nothing\n\nValidation results are written to a tax cache with a hard twenty-four hour\ntime to live. The backfill reads from that cache. If you re-run the backfill\nbefore the entry has expired, the job reads the cached failure, reports the\nsame result, and exits successfully with no change. It does not log a warning\nand it does not tell you it read from cache, so it looks exactly like a\ngenuine second failure. Always check the cache_written_at timestamp on the\ntax record before re-running, and wait until twenty-four hours have elapsed\nsince that timestamp. Support engineers lose a great deal of time to this\nbecause a no-op run and a real failed run are indistinguishable in the UI.\n\nThere is no supported way to flush the tax cache early. Requests to purge it\nare declined because a purge would re-hit the tax authority for every stored\nID in the workspace and trip the authority's own rate limits.",
+      "contains_all_gold_spans": false
+     },
+     {
+      "rank": 5,
+      "chunk_id": "structure_aware::BM-005-tax-id-validation-migration.md::002",
+      "score": 0.5083,
+      "dense": 0.6855,
+      "bm25": 6.0093,
+      "text": "Tax ID Validation and the Tax Backfill > Reverse charge and exempt customers\n\nCustomers marked exempt in v1 are carried across as exempt. The exemption\ncertificate expiry date is now enforced: an expired certificate makes the\ncustomer taxable at the next invoice, where v1 would have kept applying the\nexemption indefinitely.",
+      "contains_all_gold_spans": false
+     }
+    ]
+   },
+   "Q5": {
+    "question": "How long does a workspace have to stay in the dual-write phase, and can support waive it?",
+    "gold": "BM-001 / Cutover phases",
+    "must_contain": [
+     "minimum of seven days",
+     "cannot be waived"
+    ],
+    "results": [
+     {
+      "rank": 1,
+      "chunk_id": "structure_aware::BM-001-billing-migration-overview.md::001",
+      "score": 0.9613,
+      "dense": 0.7427,
+      "bm25": 9.2025,
+      "text": "Billing Migration Overview and Cutover Timeline > Cutover phases\n\nPhase 1 (shadow) runs both engines and compares totals. No customer-visible\nchange. Phase 2 (dual-write) makes Ledger v2 authoritative for new usage while\nLedger v1 continues to own historical invoices. Phase 3 (cutover) disables\nLedger v1 writes entirely. A workspace stays in Phase 2 for a minimum of seven\ndays. The seven-day floor is not configurable by support and cannot be waived\nby an account manager; it exists so the shadow comparison has at least one\nfull weekly billing boundary to check against.",
+      "contains_all_gold_spans": true
+     },
+     {
+      "rank": 2,
+      "chunk_id": "structure_aware::BM-002-payment-method-migration-errors.md::000",
+      "score": 0.8944,
+      "dense": 0.7037,
+      "bm25": 9.9091,
+      "text": "Payment Method Migration Errors > Why payment methods have to move separately\n\nLedger v2 stores payment instruments as tokenised references held by the\npayment service provider rather than as rows in our own vault. Every stored\ncard, SEPA mandate and ACH authorisation therefore has to be re-tokenised\nbefore a workspace can leave the dual-write phase. Re-tokenisation is\ninitiated automatically when a workspace enters Phase 2 and normally finishes\nwithin four hours for a workspace with fewer than five hundred stored\ninstruments.\n\nRe-tokenisation never moves money. It exchanges an internal vault id for a\nprovider token. Customers are not charged, and no authorisation hold is\nplaced on the card. If a customer reports a pending charge during migration,\nthat charge is a real charge from ordinary usage and is unrelated to the\nre-tokenisation job.",
+      "contains_all_gold_spans": false
+     },
+     {
+      "rank": 3,
+      "chunk_id": "structure_aware::BM-004-subscription-proration-migration.md::002",
+      "score": 0.686,
+      "dense": 0.71,
+      "bm25": 5.7949,
+      "text": "Subscription and Proration Behaviour After Migration > Trials in flight\n\nA trial that is running when the workspace enters Phase 2 keeps its original\nend timestamp. Trials are not extended, shortened or restarted by the\nmigration. If a trial ends during the dual-write window the resulting first\ninvoice is issued by Ledger v2.",
+      "contains_all_gold_spans": false
+     },
+     {
+      "rank": 4,
+      "chunk_id": "structure_aware::BM-005-tax-id-validation-migration.md::001",
+      "score": 0.6806,
+      "dense": 0.672,
+      "bm25": 7.5741,
+      "text": "Tax ID Validation and the Tax Backfill > The tax cache and why re-running the backfill too early does nothing\n\nValidation results are written to a tax cache with a hard twenty-four hour\ntime to live. The backfill reads from that cache. If you re-run the backfill\nbefore the entry has expired, the job reads the cached failure, reports the\nsame result, and exits successfully with no change. It does not log a warning\nand it does not tell you it read from cache, so it looks exactly like a\ngenuine second failure. Always check the cache_written_at timestamp on the\ntax record before re-running, and wait until twenty-four hours have elapsed\nsince that timestamp. Support engineers lose a great deal of time to this\nbecause a no-op run and a real failed run are indistinguishable in the UI.\n\nThere is no supported way to flush the tax cache early. Requests to purge it\nare declined because a purge would re-hit the tax authority for every stored\nID in the workspace and trip the authority's own rate limits.",
+      "contains_all_gold_spans": false
+     },
+     {
+      "rank": 5,
+      "chunk_id": "structure_aware::BM-003-invoice-sync-troubleshooting.md::000",
+      "score": 0.6174,
+      "dense": 0.6675,
+      "bm25": 6.6405,
+      "text": "Invoice Sync and Reconciliation Troubleshooting > What invoice sync does\n\nDuring the dual-write phase Ledger v1 still owns closed invoices while\nLedger v2 owns open usage. The invoice sync job runs every hour and copies\nclosed v1 invoices into v2 as immutable historical records so that the\ncustomer sees one continuous invoice list. Sync copies the invoice header,\nthe line items and the PDF checksum. It does not copy dunning state, credit\nnotes or manual adjustments; those are migrated once, at cutover, by a\nseparate backfill.",
+      "contains_all_gold_spans": false
+     }
+    ]
+   },
+   "Q6": {
+    "question": "What happens to a subscription whose billing anchor is the 31st after it migrates during a short month?",
+    "gold": "BM-004 / Billing anchors",
+    "must_contain": [
+     "v2 clamps permanently",
+     "cannot be done from the customer-facing UI"
+    ],
+    "results": [
+     {
+      "rank": 1,
+      "chunk_id": "structure_aware::BM-004-subscription-proration-migration.md::001",
+      "score": 1.0,
+      "dense": 0.8759,
+      "bm25": 21.1078,
+      "text": "Subscription and Proration Behaviour After Migration > Billing anchors\n\nThe billing anchor, which is the day of the month the subscription renews, is\npreserved exactly. Anchors that fall on the 29th, 30th or 31st behave\ndifferently in v2: v1 clamped these to the last day of a short month and then\nrestored the original anchor the following month, whereas v2 clamps\npermanently. A subscription anchored to the 31st that renews in February will,\nafter migration, stay anchored to the 28th or 29th for every subsequent\nperiod. Restoring the original anchor requires a support action and cannot be\ndone from the customer-facing UI.",
+      "contains_all_gold_spans": true
+     },
+     {
+      "rank": 2,
+      "chunk_id": "structure_aware::BM-004-subscription-proration-migration.md::003",
+      "score": 0.842,
+      "dense": 0.7977,
+      "bm25": 20.3814,
+      "text": "Subscription and Proration Behaviour After Migration > Troubleshooting\n\n| Error code | Cause | Fix |\n| --- | --- | --- |\n| ERR-4301 | Subscription has a proration mode that does not exist in v2 | Set the subscription to the closest supported mode in Subscriptions then Edit then Proration, then retry |\n| ERR-4302 | Billing anchor is the 31st and the workspace migrated during a short month | No action needed at migration time. To restore the original anchor afterwards, file a ticket; the anchor cannot be reset from the UI |\n| ERR-4303 | Subscription references a plan that was archived in v1 | Un-archive the plan, migrate, then re-archive it |",
+      "contains_all_gold_spans": false
+     },
+     {
+      "rank": 3,
+      "chunk_id": "structure_aware::BM-004-subscription-proration-migration.md::000",
+      "score": 0.493,
+      "dense": 0.7479,
+      "bm25": 9.5724,
+      "text": "Subscription and Proration Behaviour After Migration > Proration changes at cutover\n\nLedger v1 prorated subscription changes to the nearest whole day. Ledger v2\nprorates to the second. A customer who upgrades at 14:30 on the fifteenth of\nthe month is charged for exactly the remaining seconds of the period rather\nthan for the whole of the fifteenth. This means most upgrade invoices get\nslightly smaller after migration and most downgrade credits get slightly\nlarger.\n\nProration mode is set per subscription and is carried across unchanged. If a\nsubscription was set to \"no proration\" in v1 it remains \"no proration\" in v2.\nThe migration never silently changes a proration mode.",
+      "contains_all_gold_spans": false
+     },
+     {
+      "rank": 4,
+      "chunk_id": "structure_aware::BM-004-subscription-proration-migration.md::004",
+      "score": 0.3558,
+      "dense": 0.7223,
+      "bm25": 5.7762,
+      "text": "Subscription and Proration Behaviour After Migration > Troubleshooting\n\n| Error code | Cause | Fix |\n| --- | --- | --- |\n| ERR-4304 | Trial end timestamp is in the past but the trial is still marked active | Close the trial manually in Subscriptions then Edit then End trial, then retry the migration |\n| ERR-4305 | Quantity on a metered subscription is negative because of a v1 adjustment | File a ticket with the subscription id. Negative quantities must be corrected in v1 before migration |\n| ERR-4306 | Subscription is scheduled to change plan at the next renewal and the schedule has no v2 equivalent | Cancel the scheduled change, migrate, then re-create the schedule in v2 |",
+      "contains_all_gold_spans": false
+     },
+     {
+      "rank": 5,
+      "chunk_id": "structure_aware::BM-001-billing-migration-overview.md::000",
+      "score": 0.313,
+      "dense": 0.7115,
+      "bm25": 4.7948,
+      "text": "Billing Migration Overview and Cutover Timeline > What is changing\n\nBetween 2026-07-01 and 2026-09-30 all workspaces move from the legacy billing\nengine (Ledger v1) to the new metered billing engine (Ledger v2). Ledger v2\ncomputes usage on a rolling hourly window instead of the nightly batch that\nLedger v1 used. The practical effect for most customers is that invoice line\nitems appear within 90 minutes of usage rather than the next morning.\n\nThe migration is performed per workspace, not per organisation. A single\norganisation can therefore have some workspaces on Ledger v1 and some on\nLedger v2 at the same time. This is expected and is the most common source of\nconfusing invoice totals during the cutover window.",
+      "contains_all_gold_spans": false
+     }
+    ]
+   },
+   "Q7": {
+    "question": "A customer's card expires next month. Does that block their billing migration?",
+    "gold": "BM-002 / Expired and soon-to-expire cards",
+    "must_contain": [
+     "deferred_expiring",
+     "does not block the migration"
+    ],
+    "results": [
+     {
+      "rank": 1,
+      "chunk_id": "structure_aware::BM-002-payment-method-migration-errors.md::002",
+      "score": 1.0,
+      "dense": 0.8142,
+      "bm25": 9.7242,
+      "text": "Payment Method Migration Errors > Expired and soon-to-expire cards\n\nCards that expire within thirty days of the migration date are deliberately\nskipped rather than re-tokenised, because the provider would reject the token\nat first use. Skipped cards are listed in the migration report as\n\"deferred_expiring\" and the customer is emailed a card-update link. A skipped\ncard does not block the migration and does not need a support ticket.",
+      "contains_all_gold_spans": true
+     },
+     {
+      "rank": 2,
+      "chunk_id": "structure_aware::BM-002-payment-method-migration-errors.md::003",
+      "score": 0.6628,
+      "dense": 0.713,
+      "bm25": 7.5245,
+      "text": "Payment Method Migration Errors > Troubleshooting\n\n| Error code | Cause | Fix |\n| --- | --- | --- |\n| ERR-4030 | Card network declined the tokenisation request | Ask the customer to re-enter the card in Billing then Payment methods; the old vault entry cannot be recovered |\n| ERR-4031 | SEPA mandate reference is older than the 36-month mandate validity limit | Collect a fresh mandate from the customer; the migration will pick it up on the next hourly sweep |",
+      "contains_all_gold_spans": false
+     },
+     {
+      "rank": 3,
+      "chunk_id": "structure_aware::BM-006-api-webhook-migration.md::004",
+      "score": 0.6137,
+      "dense": 0.689,
+      "bm25": 7.5477,
+      "text": "API and Webhook Changes for the Billing Migration > Troubleshooting\n\n| Error code | Cause | Fix |\n| --- | --- | --- |\n| ERR-4113 | Webhook queue exceeded the 72-hour retention during an extended outage | The dropped events cannot be replayed. Reconcile by polling GET /v1/invoices for the affected window |\n| ERR-4114 | Request used a /v2 path that does not exist | Use the /v1 path. Ledger v2 is served from /v1 |\n| ERR-4115 | Signature verification failed after the customer rotated their secret mid-cutover | Re-issue the signing secret in Developers then Webhooks and update the endpoint. The migration itself does not rotate secrets |",
+      "contains_all_gold_spans": false
+     },
+     {
+      "rank": 4,
+      "chunk_id": "structure_aware::BM-005-tax-id-validation-migration.md::000",
+      "score": 0.5937,
+      "dense": 0.6626,
+      "bm25": 8.1797,
+      "text": "Tax ID Validation and the Tax Backfill > Why tax IDs are revalidated\n\nLedger v1 validated a customer tax ID once, at the moment it was entered, and\nnever rechecked it. Ledger v2 revalidates against the tax authority on a\nrolling ninety-day cycle. The migration therefore runs a one-off revalidation\nof every stored tax ID, and IDs that were accepted years ago under looser\nrules can come back invalid. An invalid tax ID does not block the migration,\nbut it does mean the next invoice is issued without the reverse-charge\ntreatment the customer expects.",
+      "contains_all_gold_spans": false
+     },
+     {
+      "rank": 5,
+      "chunk_id": "structure_aware::BM-004-subscription-proration-migration.md::001",
+      "score": 0.5749,
+      "dense": 0.7136,
+      "bm25": 5.9444,
+      "text": "Subscription and Proration Behaviour After Migration > Billing anchors\n\nThe billing anchor, which is the day of the month the subscription renews, is\npreserved exactly. Anchors that fall on the 29th, 30th or 31st behave\ndifferently in v2: v1 clamped these to the last day of a short month and then\nrestored the original anchor the following month, whereas v2 clamps\npermanently. A subscription anchored to the 31st that renews in February will,\nafter migration, stay anchored to the 28th or 29th for every subsequent\nperiod. Restoring the original anchor requires a support action and cannot be\ndone from the customer-facing UI.",
+      "contains_all_gold_spans": false
+     }
+    ]
+   },
+   "Q8": {
+    "question": "A customer got a credit note during dual-write and their v2 totals now look too high. Should we issue another credit note?",
+    "gold": "BM-003 / Credit notes are the common surprise",
+    "must_contain": [
+     "Do not issue a second credit note",
+     "resolves itself at cutover"
+    ],
+    "results": [
+     {
+      "rank": 1,
+      "chunk_id": "structure_aware::BM-003-invoice-sync-troubleshooting.md::002",
+      "score": 1.0,
+      "dense": 0.8547,
+      "bm25": 27.751,
+      "text": "Invoice Sync and Reconciliation Troubleshooting > Credit notes are the common surprise\n\nBecause credit notes are not copied hourly, a customer who received a credit\nnote during the dual-write window will see a v2 invoice list whose totals are\nhigher than the v1 totals until cutover completes. This is not a billing\nerror and the difference resolves itself at cutover. Do not issue a second\ncredit note to compensate; doing so creates a real double credit that has to\nbe clawed back manually.",
+      "contains_all_gold_spans": true
+     },
+     {
+      "rank": 2,
+      "chunk_id": "structure_aware::BM-003-invoice-sync-troubleshooting.md::004",
+      "score": 0.468,
+      "dense": 0.7049,
+      "bm25": 10.6895,
+      "text": "Invoice Sync and Reconciliation Troubleshooting > Troubleshooting\n\n| Error code | Cause | Fix |\n| --- | --- | --- |\n| ERR-4213 | Currency on the invoice is not enabled on the v2 workspace | Enable the currency in Settings then Billing then Currencies, then retry the sync |\n| ERR-4214 | Invoice total exceeds the per-invoice ceiling configured for the workspace | Raise the ceiling in Settings then Billing then Limits. If the ceiling is already at the plan maximum, file a ticket |\n| ERR-4215 | Manual adjustment on the invoice has no v2 equivalent adjustment type | Convert the adjustment to a credit note in Ledger v1, then retry the sync |",
+      "contains_all_gold_spans": false
+     },
+     {
+      "rank": 3,
+      "chunk_id": "structure_aware::BM-003-invoice-sync-troubleshooting.md::000",
+      "score": 0.3658,
+      "dense": 0.6485,
+      "bm25": 9.6427,
+      "text": "Invoice Sync and Reconciliation Troubleshooting > What invoice sync does\n\nDuring the dual-write phase Ledger v1 still owns closed invoices while\nLedger v2 owns open usage. The invoice sync job runs every hour and copies\nclosed v1 invoices into v2 as immutable historical records so that the\ncustomer sees one continuous invoice list. Sync copies the invoice header,\nthe line items and the PDF checksum. It does not copy dunning state, credit\nnotes or manual adjustments; those are migrated once, at cutover, by a\nseparate backfill.",
+      "contains_all_gold_spans": false
+     },
+     {
+      "rank": 4,
+      "chunk_id": "structure_aware::BM-001-billing-migration-overview.md::001",
+      "score": 0.2857,
+      "dense": 0.6576,
+      "bm25": 4.5222,
+      "text": "Billing Migration Overview and Cutover Timeline > Cutover phases\n\nPhase 1 (shadow) runs both engines and compares totals. No customer-visible\nchange. Phase 2 (dual-write) makes Ledger v2 authoritative for new usage while\nLedger v1 continues to own historical invoices. Phase 3 (cutover) disables\nLedger v1 writes entirely. A workspace stays in Phase 2 for a minimum of seven\ndays. The seven-day floor is not configurable by support and cannot be waived\nby an account manager; it exists so the shadow comparison has at least one\nfull weekly billing boundary to check against.",
+      "contains_all_gold_spans": false
+     },
+     {
+      "rank": 5,
+      "chunk_id": "structure_aware::BM-002-payment-method-migration-errors.md::000",
+      "score": 0.2764,
+      "dense": 0.6573,
+      "bm25": 4.0373,
+      "text": "Payment Method Migration Errors > Why payment methods have to move separately\n\nLedger v2 stores payment instruments as tokenised references held by the\npayment service provider rather than as rows in our own vault. Every stored\ncard, SEPA mandate and ACH authorisation therefore has to be re-tokenised\nbefore a workspace can leave the dual-write phase. Re-tokenisation is\ninitiated automatically when a workspace enters Phase 2 and normally finishes\nwithin four hours for a workspace with fewer than five hundred stored\ninstruments.\n\nRe-tokenisation never moves money. It exchanges an internal vault id for a\nprovider token. Customers are not charged, and no authorisation hold is\nplaced on the card. If a customer reports a pending charge during migration,\nthat charge is a real charge from ordinary usage and is unrelated to the\nre-tokenisation job.",
+      "contains_all_gold_spans": false
+     }
+    ]
+   }
+  }
+ }
+}

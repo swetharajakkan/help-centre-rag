@@ -1,0 +1,8 @@
+.venv/
+.venv-test/
+.pytest_cache/
+__pycache__/
+node_modules/
+*.pyc
+.fastembed_cache/
+backend/data/*.json

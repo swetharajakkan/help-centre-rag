@@ -1,0 +1,7 @@
+anthropic==1.0.0
+fastapi==0.141.1
+fastembed==0.8.0
+numpy==2.5.2
+pydantic==2.13.4
+pydantic_core==2.46.4
+uvicorn==0.52.4

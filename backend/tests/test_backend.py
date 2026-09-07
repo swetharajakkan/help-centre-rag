@@ -22,7 +22,7 @@ import re
 import numpy as np
 import pytest
 
-from backend.app import chunkers, generation, store
+from backend.app import chunkers, generation, ocr, store, uploads
 from backend.app.chunkers import (
     FIXED_WINDOW_CHARS,
     STRUCTURE_TABLE_BUDGET,
@@ -33,7 +33,7 @@ from backend.app.chunkers import (
 from backend.app.embeddings import Bm25, minmax, tokenize
 from backend.app.ingest import CHUNKERS, REQUIRED_META, build_index, validate
 from backend.app.store import Index, Record
-from backend.tests.conftest import REAL_EMBED
+from backend.tests.conftest import EVAL_DIR, REAL_EMBED
 
 # --------------------------------------------------------------------------
 # helpers
@@ -550,29 +550,46 @@ class TestGeneration:
                 assert norm(claim["supporting_quote"]) in norm(rec.text)
                 assert claim["article_id"] and claim["source_file"]
 
-    def test_questions_hinging_on_absent_terms_are_refused(
+    def test_a_coined_error_code_is_refused_whatever_was_retrieved(
             self, structure_index, questions):
-        """U1 (refund/SLA) and U3 (ERR-4099) turn on words the corpus never
-        uses, so no retrieval can cover them and the refusal is robust."""
-        checked = 0
-        for spec in questions["generation_unanswerable"]:
-            hits = structure_index.search(spec["question"], k=5)
-            _, uncovered = generation.coverage(spec["question"], hits, structure_index)
-            if not uncovered:
-                continue
-            checked += 1
-            out = generation.answer_auto(structure_index, spec["question"], k=5)
-            assert out["answered"] is False, f"{spec['id']} should be refused"
+        """U3's escape is the only refusal that does not depend on retrieval:
+        ERR-4099 is absent from the corpus, so no set of chunks can define it.
+        That makes it the one refusal this stubbed-embedder suite can assert.
+
+        U1's refusal depends on the real scorer putting the right chunks in
+        front of the gate, so it lives in TestShippedCalibration instead."""
+        spec = next(q for q in questions["generation_unanswerable"]
+                    if q["id"] == "U3")
+        for k in (3, 5):
+            out = generation.answer_auto(structure_index, spec["question"], k=k)
+            assert out["answered"] is False, f"U3 should be refused at k={k}"
             assert out["claims"] == []
-            assert out["refusal"].strip()
-        assert checked >= 2
+            assert "err-4099" in out["refusal"].lower()
+
+    def test_u2_is_the_known_gap_in_the_grounding_gate(
+            self, structure_index, questions):
+        """U2 ("roll a workspace back from Ledger v2 to v1") is ANSWERED.
+
+        This is a deliberate, measured regression, not an oversight. Its
+        in-corpus coverage is 0.59, above 8 of the 12 golden-set questions that
+        must answer, so no floor rejects it while admitting them; a sweep of
+        five candidate signals over every threshold found no separator. Pinned
+        here so that if a future change fixes it, this test fails loudly and
+        the fix gets recorded rather than passing unnoticed."""
+        spec = next(q for q in questions["generation_unanswerable"]
+                    if q["id"] == "U2")
+        out = generation.answer_auto(structure_index, spec["question"], k=3)
+        assert out["answered"] is True, (
+            "U2 now refuses -- the grounding gate improved. Update this test, "
+            "results_week4.md and frontend/UI.md to claim 3/3 refusals."
+        )
 
     def test_the_refusal_names_what_is_missing(self, structure_index):
         out = generation.answer_auto(
-            structure_index, "What is the refund SLA for a disputed invoice?", k=5)
+            structure_index, "What does error ERR-4099 mean and how do I fix it?",
+            k=5)
         assert out["answered"] is False
-        assert "grounding coverage" in out["refusal"]
-        assert "refund" in out["refusal"] or "sla" in out["refusal"]
+        assert "err-4099" in out["refusal"].lower()
 
     def test_every_claim_for_every_question_is_verifiable(
             self, structure_index, questions):
@@ -637,14 +654,29 @@ class TestShippedCalibration:
         ]
         assert not unanswered, f"{unanswered} stopped answering"
 
-    def test_three_of_three_out_of_corpus_questions_are_refused(
+    @pytest.mark.parametrize("k", [3, 5])
+    def test_u1_refuses_under_the_real_scorer(self, structure_index, questions, k):
+        """The refund/SLA probe is caught by the perfect-coverage escape, which
+        needs the retrieval to actually cover the corpus terms in the question.
+        That is a property of bge-small-en-v1.5, not of the gate's arithmetic,
+        so it is asserted here rather than against the hashed stub."""
+        spec = next(q for q in questions["generation_unanswerable"]
+                    if q["id"] == "U1")
+        out = generation.answer_auto(structure_index, spec["question"], k=k)
+        assert out["answered"] is False
+        assert "refund" in out["refusal"].lower() or "sla" in out["refusal"].lower()
+
+    def test_two_of_three_out_of_corpus_questions_are_refused(
             self, structure_index, questions):
+        """Was 3/3 under the Week 3 coverage floor, which also refused all 12
+        golden-set questions. The gate that answers 12/12 refuses 2/3 -- see
+        TestGeneration.test_u2_is_the_known_gap_in_the_grounding_gate."""
         answered = [
             spec["id"] for spec in questions["generation_unanswerable"]
             if generation.answer_auto(
                 structure_index, spec["question"], k=self.K)["answered"]
         ]
-        assert not answered, f"{answered} were answered instead of refused"
+        assert answered == ["U2"], f"expected only U2 to answer, got {answered}"
 
     @pytest.mark.parametrize("qid,expected", [
         ("U1", 0.47), ("U2", 0.59), ("U3", 0.15)])
@@ -781,3 +813,529 @@ class TestApi:
     def test_cors_is_open_for_the_frontend(self, client):
         r = client.get("/api/health", headers={"Origin": "http://localhost:5173"})
         assert r.headers["access-control-allow-origin"] == "*"
+
+
+# ==========================================================================
+# The streaming chat surface, and the per-request week3/week4 arm switch that
+# replaces "restart the server with a different HELP_CENTRE_RERANK".
+# ==========================================================================
+
+
+def parse_sse(body: str) -> list[tuple[str, dict]]:
+    """Split a text/event-stream body into (event_name, payload) pairs."""
+    out = []
+    for frame in body.split("\n\n"):
+        name, data = None, []
+        for line in frame.split("\n"):
+            if line.startswith("event:"):
+                name = line[6:].strip()
+            elif line.startswith("data:"):
+                data.append(line[5:].strip())
+        if name:
+            out.append((name, json.loads("\n".join(data))))
+    return out
+
+
+CHAT_QUESTION = "What does ERR-4032 mean and what is the fix?"
+
+
+@pytest.fixture(scope="module")
+def stream(client):
+    """One week-3 chat stream, parsed once and asserted on from several angles."""
+    res = client.post("/api/chat",
+                      json={"question": CHAT_QUESTION, "k": 3, "mode": "week3"})
+    assert res.status_code == 200
+    assert res.headers["content-type"].startswith("text/event-stream")
+    return parse_sse(res.text)
+
+
+class TestChatStream:
+    QUESTION = CHAT_QUESTION
+
+    def test_the_stream_opens_with_meta_and_closes_with_done(self, stream):
+        names = [n for n, _ in stream]
+        assert names[0] == "meta"
+        assert names[-1] == "done"
+        assert "error" not in names
+
+    def test_retrieval_is_emitted_before_any_answer_text(self, stream):
+        """The evidence has to be on screen before the claim it supports."""
+        names = [n for n, _ in stream]
+        assert "retrieval" in names
+        first_text = next((i for i, n in enumerate(names)
+                           if n in ("delta", "claim_start")), len(names))
+        assert names.index("retrieval") < first_text
+
+    def test_every_streamed_delta_reassembles_into_the_verified_answer(self, stream):
+        """Nothing is streamed that verify() did not keep -- concatenating the
+        deltas must reproduce the final payload exactly, with no extra text."""
+        events = dict()
+        claims, current, refusal = [], None, ""
+        stage = None
+        for name, data in stream:
+            if name == "status":
+                stage = data["stage"]
+            elif name == "claim_start":
+                current = ""
+            elif name == "delta":
+                if stage == "refusing":
+                    refusal += data["text"]
+                else:
+                    current += data["text"]
+            elif name == "claim_end":
+                claims.append(current)
+                current = None
+            elif name == "done":
+                events["done"] = data
+
+        done = events["done"]
+        if done["answered"]:
+            assert [c.strip() for c in claims] == [c["claim"].strip()
+                                                   for c in done["claims"]]
+        else:
+            assert refusal.strip() == done["refusal"].strip()
+
+    def test_meta_names_the_arm_the_request_asked_for(self, client):
+        for mode, reranking in (("week3", False), ("week4", True)):
+            res = client.post("/api/chat",
+                              json={"question": self.QUESTION, "mode": mode})
+            meta = parse_sse(res.text)[0][1]
+            assert meta["mode"] == mode
+            assert meta["reranking"] is reranking
+
+    def test_an_unknown_mode_is_rejected_before_the_stream_opens(self, client):
+        res = client.post("/api/chat",
+                          json={"question": self.QUESTION, "mode": "week9"})
+        assert res.status_code == 400
+        assert "week9" in res.json()["detail"]
+
+    def test_done_carries_the_same_shape_as_the_non_streaming_ask(self, client):
+        pairs = parse_sse(client.post(
+            "/api/chat", json={"question": self.QUESTION, "k": 3, "mode": "week3"}).text)
+        done = next(d for n, d in pairs if n == "done")
+        asked = client.post(
+            "/api/ask", json={"question": self.QUESTION, "k": 3, "mode": "week3"}).json()
+        assert done["answered"] == asked["answered"]
+        assert done["retrieved"] == asked["retrieved"]
+        assert [c["chunk_id"] for c in done["claims"]] == \
+               [c["chunk_id"] for c in asked["claims"]]
+
+    def test_a_filter_that_matches_nothing_streams_a_refusal_not_a_crash(self, client):
+        res = client.post("/api/chat", json={"question": self.QUESTION,
+                                             "product_area": "no-such-area"})
+        pairs = parse_sse(res.text)
+        done = next(d for n, d in pairs if n == "done")
+        assert done["answered"] is False
+        assert done["retrieved"] == []
+
+    def test_top_k_controls_how_many_chunks_are_retrieved(self, client):
+        for k in (1, 5):
+            pairs = parse_sse(client.post(
+                "/api/chat", json={"question": self.QUESTION, "k": k,
+                                   "mode": "week3"}).text)
+            retrieval = next(d for n, d in pairs if n == "retrieval")
+            assert len(retrieval["hits"]) == k
+            assert [h["rank"] for h in retrieval["hits"]] == list(range(1, k + 1))
+
+    @pytest.mark.parametrize("k", [0, 11])
+    def test_chat_rejects_an_out_of_range_k(self, client, k):
+        assert client.post("/api/chat",
+                           json={"question": self.QUESTION, "k": k}).status_code == 422
+
+    def test_examples_serve_the_scored_golden_set(self, client):
+        served = client.get("/api/examples").json()["examples"]
+        with open(os.path.join(EVAL_DIR, "golden_set.jsonl")) as fh:
+            gold = [json.loads(line) for line in fh if line.strip()]
+        assert [e["id"] for e in served] == [g["id"] for g in gold]
+        assert [e["question"] for e in served] == [g["question"] for g in gold]
+
+    def test_week3_and_week4_are_selectable_without_restarting_the_server(
+            self, structure_index, monkeypatch):
+        """The arm is a per-call argument now, not process state.
+
+        The env default is pinned to 0 for this suite, so the point being
+        checked is that `use_rerank=True` still reaches the cross-encoder and
+        `use_rerank=False` still skips it. The encoder itself is spied on
+        rather than run, so no 150MB model is downloaded.
+        """
+        q = "What does ERR-4032 mean and what is the fix?"
+        calls = []
+
+        def spy(query, hits):
+            calls.append(query)
+            return hits
+
+        monkeypatch.setattr(store, "rerank", spy)
+
+        week3 = structure_index.search(q, k=3, use_rerank=False)
+        assert calls == []
+        assert all(h.get("rerank_score") is None for h in week3)
+
+        week4 = structure_index.search(q, k=3, use_rerank=True)
+        assert calls == [q]
+        # Stage 1 hands the reranker a deeper candidate list than k.
+        assert len(week4) == 3
+
+    def test_omitting_the_mode_keeps_the_process_default(self, structure_index,
+                                                         monkeypatch):
+        calls = []
+        monkeypatch.setattr(store, "rerank",
+                            lambda query, hits: calls.append(query) or hits)
+        # conftest pins HELP_CENTRE_RERANK=0, so no mode means no reranking.
+        structure_index.search("ERR-4032", k=3)
+        assert calls == []
+
+    def test_the_stream_and_the_plain_endpoint_give_the_same_claims(self, client):
+        """Regression: chat_stream called extractive_engine directly and did
+        not forward the cross-encoder flag, so /api/chat quietly answered with
+        the weaker ranker while /api/ask used the better one."""
+        for mode in ("week3", "week4"):
+            body = {"question": CHAT_QUESTION, "k": 3, "mode": mode}
+            done = next(d for n, d in parse_sse(
+                client.post("/api/chat", json=body).text) if n == "done")
+            asked = client.post("/api/ask", json=body).json()
+            assert [c["claim"] for c in done["claims"]] == \
+                   [c["claim"] for c in asked["claims"]], mode
+
+    def test_health_advertises_both_selectable_modes(self, client):
+        modes = client.get("/api/health").json()["modes"]
+        assert set(modes) == {"week3", "week4"}
+
+
+# ==========================================================================
+# Drag-and-drop document ingest.
+# ==========================================================================
+
+
+class TestDocuments:
+    def upload(self, client, name, content):
+        blob = content if isinstance(content, bytes) else content.encode()
+        return client.post("/api/documents",
+                           files=[("files", (name, blob, "application/octet-stream"))])
+
+    def test_a_csv_becomes_a_markdown_table_so_rows_keep_their_header(self):
+        out, engine = uploads.extract_text("codes.csv", b"code,cause,fix\n"
+                                                        b"ERR-9001,disk full,free space\n")
+        assert engine == "", "a text format needs no extraction engine"
+        assert out.splitlines()[0] == "| code | cause | fix |"
+        assert out.splitlines()[1] == "| --- | --- | --- |"
+        assert "| ERR-9001 | disk full | free space |" in out
+
+    def test_json_is_flattened_to_one_leaf_per_line(self):
+        out, _ = uploads.extract_text(
+            "e.json", b'{"errors":[{"code":"ERR-9001","fix":"free space now"}]}')
+        assert "errors[0].code: ERR-9001" in out
+        assert "errors[0].fix: free space now" in out
+
+    def test_markup_is_stripped_to_its_text(self):
+        out, _ = uploads.extract_text(
+            "p.html", b"<html><body><h1>Refund policy</h1>"
+                      b"<p>Refunds are paid within ten working days.</p></body></html>")
+        assert "<" not in out
+        assert "Refunds are paid within ten working days." in out
+
+    @pytest.mark.parametrize("name,blob,fragment", [
+        ("archive.bin", b"\x00\x00\x00binary payload", "binary"),
+        ("empty.txt", b"", "empty"),
+        ("tiny.txt", b"hello", "characters"),
+    ])
+    def test_unusable_files_are_rejected_with_a_reason(self, name, blob, fragment):
+        with pytest.raises(uploads.Rejected) as exc:
+            uploads.extract_text(name, blob)
+        assert fragment in str(exc.value)
+
+    def test_a_corrupt_image_is_rejected_not_stored(self):
+        """It is detected as an image by its magic bytes, so it reaches OCR --
+        and OCR failing must still be a clean rejection."""
+        with pytest.raises(uploads.Rejected) as exc:
+            uploads.extract_text("x.png", b"\x89PNG\r\n\x1a\n\x00\x00garbage")
+        assert "image" in str(exc.value).lower()
+
+    def test_an_upload_is_indexed_and_immediately_answerable(self, client):
+        body = self.upload(client, "seats.csv",
+                           "code,cause,fix\n"
+                           "ERR-7001,Seat count exceeds the plan allowance,"
+                           "Upgrade the plan or remove seats then retry\n").json()
+        assert [a["filename"] for a in body["accepted"]] == ["seats.csv"]
+        assert body["accepted"][0]["stored_as"] == "seats.md"
+        assert body["accepted"][0]["chunks"] >= 1
+
+        hits = client.post("/api/search", json={
+            "query": "ERR-7001 seat count exceeds plan allowance", "k": 3,
+            "mode": "week3"}).json()["results"]
+        assert any(h["chunk_id"].endswith("seats.md::000") for h in hits)
+
+    def test_a_rejected_file_does_not_stop_the_others(self, client):
+        res = client.post("/api/documents", files=[
+            ("files", ("ok.txt", b"Escalation policy: page the on-call engineer "
+                                 b"after fifteen minutes without an ack.",
+                       "text/plain")),
+            ("files", ("bad.bin", b"\x00\x00\x00binary", "application/octet-stream")),
+        ])
+        body = res.json()
+        assert [a["filename"] for a in body["accepted"]] == ["ok.txt"]
+        assert [r["filename"] for r in body["rejected"]] == ["bad.bin"]
+
+    def test_a_request_where_everything_is_rejected_is_a_422(self, client):
+        res = self.upload(client, "bad.bin", b"\x00\x00binary only")
+        assert res.status_code == 422
+
+    def test_re_uploading_the_same_name_replaces_rather_than_duplicates(self, client):
+        first = self.upload(client, "dup.txt",
+                            "The first version of this policy document text.").json()
+        after_first = first["total_chunks"]
+        second = self.upload(client, "dup.txt",
+                             "The second version of this policy document text.").json()
+        assert second["total_chunks"] == after_first
+        listed = client.get("/api/documents").json()["documents"]
+        assert sum(1 for d in listed if d["source_file"] == "dup.md") == 1
+
+    def test_uploads_are_listed_and_flagged_apart_from_the_shipped_corpus(self, client):
+        self.upload(client, "notes.txt",
+                    "Escalation notes for the billing migration rollout window.")
+        docs = client.get("/api/documents").json()["documents"]
+        shipped = [d for d in docs if not d["uploaded"]]
+        dropped = [d for d in docs if d["uploaded"]]
+        assert len(shipped) == 6
+        assert "notes.md" in {d["source_file"] for d in dropped}
+        assert all(d["chunks"] >= 1 for d in docs)
+
+    def test_deleting_an_upload_removes_its_chunks(self, client):
+        self.upload(client, "gone.txt",
+                    "This document exists only to be deleted again shortly.")
+        before = client.get("/api/health").json()["indexed_chunks"]
+        body = client.delete("/api/documents/gone.md").json()
+        assert body["chunks_removed"] >= 1
+        assert body["total_chunks"] == before - body["chunks_removed"]
+        assert "gone.md" not in {d["source_file"]
+                                 for d in client.get("/api/documents").json()["documents"]}
+
+    def test_a_shipped_article_cannot_be_deleted(self, client):
+        res = client.delete("/api/documents/BM-001-billing-migration-overview.md")
+        assert res.status_code == 404
+
+    def test_an_upload_survives_a_restart(self, client, tmp_path):
+        """The normalised markdown on disk is the durable record: re-ingesting
+        it from scratch reproduces the same chunks."""
+        self.upload(client, "durable.txt",
+                    "Dual-write phase lasts a minimum of seven days for every "
+                    "workspace in the pilot cohort.")
+        from backend.app.ingest import load_uploads, records_for
+        articles = [a for a in load_uploads() if a[0] == "durable.md"]
+        assert articles, "the upload was not written to disk"
+        rebuilt = records_for("structure_aware", articles)
+        assert rebuilt and all(r.meta["article_id"] for r in rebuilt)
+
+
+# ==========================================================================
+# The week3/week4 answer split. Needs the real scorer AND the cross-encoder,
+# so it is opt-in:
+#
+#   HELP_CENTRE_TEST_REAL_EMBED=1 HELP_CENTRE_RERANK=1 python -m pytest -k ArmSplit
+# ==========================================================================
+
+ARM_SPLIT_ENABLED = REAL_EMBED and os.environ.get("HELP_CENTRE_RERANK") == "1"
+
+
+@pytest.fixture(scope="module")
+def golden():
+    with open(os.path.join(EVAL_DIR, "golden_set.jsonl")) as fh:
+        return [json.loads(line) for line in fh if line.strip()]
+
+
+@pytest.mark.skipif(not ARM_SPLIT_ENABLED,
+                    reason="needs HELP_CENTRE_TEST_REAL_EMBED=1 and "
+                           "HELP_CENTRE_RERANK=1")
+class TestArmSplit:
+    """What the two arms answer, and what neither can.
+
+    These numbers are the demo the UI shows, so they are pinned. They fall out
+    of retrieval quality alone: on the baseline arm the term-overlap ranker
+    finds no quotable sentence at all for some questions, while the reranked
+    arm surfaces one. No threshold is involved.
+    """
+
+    K = 3
+
+    def answers(self, index, question, on):
+        return generation.answer_extractive(
+            index, question, k=self.K, use_rerank=on)["answered"]
+
+    def test_the_reranked_arm_answers_every_golden_question(self, structure_index,
+                                                            golden):
+        refused = [g["id"] for g in golden
+                   if not self.answers(structure_index, g["question"], True)]
+        assert refused == [], refused
+
+    def test_the_baseline_arm_answers_eleven_of_twelve(self, structure_index,
+                                                       golden):
+        answered = [g["id"] for g in golden
+                    if self.answers(structure_index, g["question"], False)]
+        assert len(answered) == 11, answered
+
+    def test_g11_answers_only_on_the_reranked_arm(self, structure_index, golden):
+        """The visible payoff of reranking, and it needs no threshold to show.
+
+        On the baseline arm the term-overlap ranker finds no sentence in the
+        retrieved chunks that contains any of the question's terms, so there is
+        nothing to quote and it declines. Reranking retrieves the trial chunk,
+        and the answer is a sentence in it.
+        """
+        q = next(g["question"] for g in golden if g["id"] == "G11")
+        assert self.answers(structure_index, q, False) is False, "G11 week3"
+        assert self.answers(structure_index, q, True) is True, "G11 week4"
+
+    def test_g12_answers_from_the_wrong_chunk_on_both_arms(self, structure_index,
+                                                           golden):
+        """G12 is the known bad case, pinned so it cannot drift unnoticed.
+
+        Its gold chunk is outside the top 3 on BOTH arms -- min-max fusion
+        buries it at rank 9 and reranking cannot reach what retrieval never
+        hands it (results_week4.md section 8). Both arms therefore quote a
+        related-but-wrong sentence and present it as an answer.
+
+        Making it decline was tried and reverted: every threshold that rejects
+        G12's week-3 sentence also rejects the CORRECT answer to Q1, which
+        results.md guarantees is answerable. Fixing this needs the retrieval
+        change in results_week4.md section 9 item 2 (RRF), not a generation
+        threshold.
+        """
+        q = next(g["question"] for g in golden if g["id"] == "G12")
+        assert self.answers(structure_index, q, False) is True
+        assert self.answers(structure_index, q, True) is True
+
+    def test_the_published_week3_answerable_set_still_answers(
+            self, structure_index, questions):
+        """results.md guarantees Q1, Q3 and Q5 are answered. Any change to the
+        gating has to keep that true on both arms."""
+        for qid in questions["generation_answerable"]:
+            q = next(x for x in questions["questions"]
+                     if x["id"] == qid)["question"]
+            for on in (False, True):
+                assert self.answers(structure_index, q, on), f"{qid} arm={on}"
+
+    def test_a_refusal_always_explains_itself(self, structure_index, golden):
+        """Whatever declines, it must say why in words the reader can act on."""
+        for g in golden:
+            for on in (False, True):
+                out = generation.answer_extractive(structure_index, g["question"],
+                                                   k=self.K, use_rerank=on)
+                if not out["answered"]:
+                    assert len(out["refusal"].split()) >= 6, g["id"]
+                    assert out["claims"] == []
+
+
+# ==========================================================================
+# Image uploads. OCR needs an engine, so these skip where none is available
+# (a Linux box with no ANTHROPIC_API_KEY, for instance).
+# ==========================================================================
+
+def render_text_png(lines: list[str]) -> bytes:
+    """A screenshot-like PNG, rendered at a size OCR can actually read."""
+    from io import BytesIO
+
+    from PIL import Image, ImageDraw, ImageFont
+
+    font = ImageFont.truetype("/System/Library/Fonts/Supplemental/Arial.ttf", 26)
+    img = Image.new("RGB", (1000, 60 + 42 * len(lines)), "white")
+    draw = ImageDraw.Draw(img)
+    y = 25
+    for line in lines:
+        draw.text((28, y), line, font=font, fill="black")
+        y += 42
+    buf = BytesIO()
+    img.save(buf, format="PNG")
+    return buf.getvalue()
+
+
+HAS_OCR = bool(ocr.available_engines())
+HAS_ARIAL = os.path.exists("/System/Library/Fonts/Supplemental/Arial.ttf")
+
+
+class TestImageUploads:
+    def test_images_are_recognised_by_magic_bytes_not_just_extension(self):
+        png = b"\x89PNG\r\n\x1a\n" + b"\x00" * 32
+        assert ocr.is_image("screenshot.png", png) is True
+        assert ocr.is_image("mystery.dat", png) is True, "a PNG is a PNG"
+        assert ocr.is_image("notes.txt", b"plain text here") is False
+
+    @pytest.mark.parametrize("name,blob,mime", [
+        ("a.png", b"\x89PNG\r\n\x1a\n", "image/png"),
+        ("a.jpg", b"\xff\xd8\xff\xe0", "image/jpeg"),
+        ("a.gif", b"GIF89a", "image/gif"),
+        ("a.webp", b"RIFF\x00\x00\x00\x00WEBP", "image/webp"),
+        ("a.heic", b"\x00\x00\x00\x18ftypheic", "image/heic"),
+    ])
+    def test_common_image_formats_are_sniffed(self, name, blob, mime):
+        assert ocr.sniff_mime(name, blob) == mime
+
+    @pytest.mark.skipif(not (HAS_OCR and HAS_ARIAL),
+                        reason="needs an OCR engine and a TrueType font")
+    def test_text_inside_an_image_becomes_searchable(self, client):
+        png = render_text_png([
+            "Billing Migration Error Codes",
+            "ERR-7700 Seat count exceeds the plan allowance",
+            "ERR-7701 SSO domain is not verified",
+        ])
+        body = client.post("/api/documents", files=[
+            ("files", ("shot.png", png, "image/png"))]).json()
+        assert body["accepted"], body
+        accepted = body["accepted"][0]
+        assert accepted["stored_as"] == "shot.md"
+        assert accepted["extracted_by"], "the OCR engine must be recorded"
+
+        # The error code exists ONLY inside the pixels of the uploaded image.
+        hits = client.post("/api/search", json={
+            "query": "ERR-7700 seat count exceeds plan allowance",
+            "k": 3, "mode": "week3"}).json()["results"]
+        assert any(h["chunk_id"].endswith("shot.md::000") for h in hits)
+
+    @pytest.mark.skipif(not (HAS_OCR and HAS_ARIAL),
+                        reason="needs an OCR engine and a TrueType font")
+    def test_the_original_image_is_kept_beside_its_transcript(self, client):
+        png = render_text_png(["Escalation policy for the billing rollout",
+                               "Page the on-call engineer after fifteen minutes"])
+        client.post("/api/documents",
+                    files=[("files", ("keep.png", png, "image/png"))])
+
+        stored = os.listdir(uploads.UPLOAD_DIR)
+        assert "keep.md" in stored
+        assert "keep.png" in stored, "the original must stay checkable"
+
+        docs = client.get("/api/documents").json()["documents"]
+        row = next(d for d in docs if d["source_file"] == "keep.md")
+        assert row["extracted_by"]
+        assert row["original_file"] == "keep.png"
+
+    @pytest.mark.skipif(not (HAS_OCR and HAS_ARIAL),
+                        reason="needs an OCR engine and a TrueType font")
+    def test_deleting_an_image_upload_removes_the_original_too(self, client):
+        png = render_text_png(["Temporary notes about the migration window",
+                               "This document exists only to be deleted"])
+        client.post("/api/documents",
+                    files=[("files", ("bye.png", png, "image/png"))])
+        assert "bye.png" in os.listdir(uploads.UPLOAD_DIR)
+
+        client.delete("/api/documents/bye.md")
+        left = os.listdir(uploads.UPLOAD_DIR)
+        assert "bye.md" not in left
+        assert "bye.png" not in left, "the original was orphaned"
+
+    @pytest.mark.skipif(not (HAS_OCR and HAS_ARIAL),
+                        reason="needs an OCR engine and a TrueType font")
+    def test_an_image_with_no_text_is_refused(self, client):
+        from io import BytesIO
+
+        from PIL import Image
+
+        buf = BytesIO()
+        Image.new("RGB", (400, 300), "white").save(buf, format="PNG")
+        res = client.post("/api/documents", files=[
+            ("files", ("blank.png", buf.getvalue(), "image/png"))])
+        assert res.status_code == 422
+        assert "blank.md" not in os.listdir(uploads.UPLOAD_DIR)
+
+    def test_health_reports_which_ocr_engines_exist(self, client):
+        body = client.get("/api/health").json()
+        assert isinstance(body["ocr_engines"], list)
+        assert body["ocr_engines"] == ocr.available_engines()

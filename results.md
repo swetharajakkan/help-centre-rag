@@ -1,5 +1,10 @@
 # Billing-migration article drop — chunking measurement
 
+> **Week 4 follow-up:** [results_week4.md](results_week4.md) takes this system,
+> builds a 12-question golden set, measures baseline hit-rate@3, classifies
+> every failure R / G / Not-In-Corpus, and tests exactly one retrieval change.
+> This document is the Week 3 deliverable and is unchanged.
+
 ## 0. Scope, and what was deliberately not done
 
 **Only the 6 new articles were indexed.** The historical corpus was not

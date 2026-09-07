@@ -2,6 +2,10 @@
 from __future__ import annotations
 import json, os, re, sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
+
+# Week 3 measured the CHUNKER. Pin Week 4's reranker off so this harness
+# keeps reproducing the numbers published in results.md.
+os.environ.setdefault("HELP_CENTRE_RERANK", "0")
 from backend.app.ingest import build_index  # noqa: E402
 
 HERE = os.path.dirname(__file__)

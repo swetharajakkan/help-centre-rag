@@ -1,0 +1,883 @@
+{
+ "k": 3,
+ "n_questions": 12,
+ "latency_repeats": 5,
+ "before": {
+  "arm": "before",
+  "engine": "extractive-deterministic",
+  "chunks_indexed": 35,
+  "hits": 10,
+  "n": 12,
+  "hit_rate_at_3": 83.3,
+  "p50_latency_ms": 22.19,
+  "p95_latency_ms": 28.95,
+  "mean_latency_ms": 22.71,
+  "per_question": {
+   "G01": {
+    "question": "Provider dashboard is showing two tokens for the same card and our log has ERR-4033. Do I remove the one that was created first or the one created last?",
+    "expected_chunk_id": "structure_aware::BM-002-payment-method-migration-errors.md::004",
+    "hit_at_3": true,
+    "gold_rank": 1,
+    "top3": [
+     {
+      "rank": 1,
+      "chunk_id": "structure_aware::BM-002-payment-method-migration-errors.md::004",
+      "fused_score": 1.0,
+      "rerank_score": null
+     },
+     {
+      "rank": 2,
+      "chunk_id": "structure_aware::BM-002-payment-method-migration-errors.md::000",
+      "fused_score": 0.5145,
+      "rerank_score": null
+     },
+     {
+      "rank": 3,
+      "chunk_id": "structure_aware::BM-001-billing-migration-overview.md::005",
+      "fused_score": 0.4755,
+      "rerank_score": null
+     }
+    ],
+    "median_latency_ms": 24.5,
+    "answered": false,
+    "refusal": "The indexed articles do not cover this (grounding coverage 0.49 < floor 0.65). No retrieved chunk contains: remov, show, log, first. The retrieved chunks are on the same topic but do not state the thing asked for.",
+    "answer_spans_recovered": "0/2",
+    "answer_correct": false
+   },
+   "G02": {
+    "question": "Migration keeps rejecting one subscription with ERR-4306. The customer has a downgrade queued for their renewal date. How do I get it through?",
+    "expected_chunk_id": "structure_aware::BM-004-subscription-proration-migration.md::004",
+    "hit_at_3": true,
+    "gold_rank": 1,
+    "top3": [
+     {
+      "rank": 1,
+      "chunk_id": "structure_aware::BM-004-subscription-proration-migration.md::004",
+      "fused_score": 0.9704,
+      "rerank_score": null
+     },
+     {
+      "rank": 2,
+      "chunk_id": "structure_aware::BM-004-subscription-proration-migration.md::000",
+      "fused_score": 0.7548,
+      "rerank_score": null
+     },
+     {
+      "rank": 3,
+      "chunk_id": "structure_aware::BM-006-api-webhook-migration.md::004",
+      "fused_score": 0.6751,
+      "rerank_score": null
+     }
+    ],
+    "median_latency_ms": 22.21,
+    "answered": false,
+    "refusal": "The indexed articles do not cover this (grounding coverage 0.54 < floor 0.65). No retrieved chunk contains: through, reject, keep, dat. The retrieved chunks are on the same topic but do not state the thing asked for.",
+    "answer_spans_recovered": "0/1",
+    "answer_correct": false
+   },
+   "G03": {
+    "question": "ERR-4505 came back on the tax sweep. Looks like the same VAT number is sitting on two accounts in that workspace. What is the cleanup here?",
+    "expected_chunk_id": "structure_aware::BM-005-tax-id-validation-migration.md::004",
+    "hit_at_3": true,
+    "gold_rank": 1,
+    "top3": [
+     {
+      "rank": 1,
+      "chunk_id": "structure_aware::BM-005-tax-id-validation-migration.md::004",
+      "fused_score": 1.0,
+      "rerank_score": null
+     },
+     {
+      "rank": 2,
+      "chunk_id": "structure_aware::BM-005-tax-id-validation-migration.md::001",
+      "fused_score": 0.8447,
+      "rerank_score": null
+     },
+     {
+      "rank": 3,
+      "chunk_id": "structure_aware::BM-005-tax-id-validation-migration.md::003",
+      "fused_score": 0.7983,
+      "rerank_score": null
+     }
+    ],
+    "median_latency_ms": 22.9,
+    "answered": false,
+    "refusal": "The indexed articles do not cover this (grounding coverage 0.34 < floor 0.65). No retrieved chunk contains: number, cam, cleanup, sitt. The retrieved chunks are on the same topic but do not state the thing asked for.",
+    "answer_spans_recovered": "0/2",
+    "answer_correct": false
+   },
+   "G04": {
+    "question": "One invoice will not copy across and throws ERR-4215. It has a manual discount line on it from last year. How do we get that invoice over?",
+    "expected_chunk_id": "structure_aware::BM-003-invoice-sync-troubleshooting.md::004",
+    "hit_at_3": true,
+    "gold_rank": 3,
+    "top3": [
+     {
+      "rank": 1,
+      "chunk_id": "structure_aware::BM-003-invoice-sync-troubleshooting.md::003",
+      "fused_score": 0.9796,
+      "rerank_score": null
+     },
+     {
+      "rank": 2,
+      "chunk_id": "structure_aware::BM-003-invoice-sync-troubleshooting.md::005",
+      "fused_score": 0.8488,
+      "rerank_score": null
+     },
+     {
+      "rank": 3,
+      "chunk_id": "structure_aware::BM-003-invoice-sync-troubleshooting.md::004",
+      "fused_score": 0.8014,
+      "rerank_score": null
+     }
+    ],
+    "median_latency_ms": 22.22,
+    "answered": false,
+    "refusal": "The indexed articles do not cover this (grounding coverage 0.40 < floor 0.65). No retrieved chunk contains: throw, discount, year, acros. The retrieved chunks are on the same topic but do not state the thing asked for.",
+    "answer_spans_recovered": "0/1",
+    "answer_correct": false
+   },
+   "G05": {
+    "question": "I fixed the customer's VAT number and re-ran the job straight away, but it came back with exactly the same failure and no warning. Is something being cached, and what should I look at before I try again?",
+    "expected_chunk_id": "structure_aware::BM-005-tax-id-validation-migration.md::001",
+    "hit_at_3": true,
+    "gold_rank": 1,
+    "top3": [
+     {
+      "rank": 1,
+      "chunk_id": "structure_aware::BM-005-tax-id-validation-migration.md::001",
+      "fused_score": 1.0,
+      "rerank_score": null
+     },
+     {
+      "rank": 2,
+      "chunk_id": "structure_aware::BM-005-tax-id-validation-migration.md::004",
+      "fused_score": 0.6138,
+      "rerank_score": null
+     },
+     {
+      "rank": 3,
+      "chunk_id": "structure_aware::BM-005-tax-id-validation-migration.md::003",
+      "fused_score": 0.5999,
+      "rerank_score": null
+     }
+    ],
+    "median_latency_ms": 29.03,
+    "answered": false,
+    "refusal": "The indexed articles do not cover this (grounding coverage 0.33 < floor 0.65). No retrieved chunk contains: number, re-ran, cam, away. The retrieved chunks are on the same topic but do not state the thing asked for.",
+    "answer_spans_recovered": "0/2",
+    "answer_correct": false
+   },
+   "G06": {
+    "question": "Our dunning job stopped retrying failed payments after this workspace moved. next_payment_attempt is coming back empty in the API response now. What changed?",
+    "expected_chunk_id": "structure_aware::BM-006-api-webhook-migration.md::000",
+    "hit_at_3": true,
+    "gold_rank": 1,
+    "top3": [
+     {
+      "rank": 1,
+      "chunk_id": "structure_aware::BM-006-api-webhook-migration.md::000",
+      "fused_score": 1.0,
+      "rerank_score": null
+     },
+     {
+      "rank": 2,
+      "chunk_id": "structure_aware::BM-006-api-webhook-migration.md::003",
+      "fused_score": 0.7267,
+      "rerank_score": null
+     },
+     {
+      "rank": 3,
+      "chunk_id": "structure_aware::BM-002-payment-method-migration-errors.md::006",
+      "fused_score": 0.6497,
+      "rerank_score": null
+     }
+    ],
+    "median_latency_ms": 20.64,
+    "answered": false,
+    "refusal": "The indexed articles do not cover this (grounding coverage 0.47 < floor 0.65). No retrieved chunk contains: empty, stopp, com, dunn. The retrieved chunks are on the same topic but do not state the thing asked for.",
+    "answer_spans_recovered": "0/2",
+    "answer_correct": false
+   },
+   "G07": {
+    "question": "The status endpoint says halted for this workspace and nothing has moved in over a day. What does that mean and who unblocks it?",
+    "expected_chunk_id": "structure_aware::BM-001-billing-migration-overview.md::004",
+    "hit_at_3": false,
+    "gold_rank": null,
+    "top3": [
+     {
+      "rank": 1,
+      "chunk_id": "structure_aware::BM-001-billing-migration-overview.md::003",
+      "fused_score": 0.888,
+      "rerank_score": null
+     },
+     {
+      "rank": 2,
+      "chunk_id": "structure_aware::BM-005-tax-id-validation-migration.md::001",
+      "fused_score": 0.7719,
+      "rerank_score": null
+     },
+     {
+      "rank": 3,
+      "chunk_id": "structure_aware::BM-001-billing-migration-overview.md::006",
+      "fused_score": 0.7323,
+      "rerank_score": null
+     }
+    ],
+    "median_latency_ms": 18.39,
+    "answered": false,
+    "refusal": "The indexed articles do not cover this (grounding coverage 0.53 < floor 0.65). No retrieved chunk contains: say, unblock, mov, day. The retrieved chunks are on the same topic but do not state the thing asked for.",
+    "answer_spans_recovered": "0/2",
+    "answer_correct": false
+   },
+   "G08": {
+    "question": "This org has some workspaces already moved and some not. How do I confirm which engine a given workspace is running on without asking engineering?",
+    "expected_chunk_id": "structure_aware::BM-001-billing-migration-overview.md::002",
+    "hit_at_3": true,
+    "gold_rank": 1,
+    "top3": [
+     {
+      "rank": 1,
+      "chunk_id": "structure_aware::BM-001-billing-migration-overview.md::002",
+      "fused_score": 0.9299,
+      "rerank_score": null
+     },
+     {
+      "rank": 2,
+      "chunk_id": "structure_aware::BM-001-billing-migration-overview.md::000",
+      "fused_score": 0.8422,
+      "rerank_score": null
+     },
+     {
+      "rank": 3,
+      "chunk_id": "structure_aware::BM-001-billing-migration-overview.md::005",
+      "fused_score": 0.6164,
+      "rerank_score": null
+     }
+    ],
+    "median_latency_ms": 18.4,
+    "answered": false,
+    "refusal": "The indexed articles do not cover this (grounding coverage 0.38 < floor 0.65). No retrieved chunk contains: given, org, confirm, runn. The retrieved chunks are on the same topic but do not state the thing asked for.",
+    "answer_spans_recovered": "0/2",
+    "answer_correct": false
+   },
+   "G09": {
+    "question": "Customer is furious - they saw a pending charge on their card the same day we moved their saved payment methods over. Did we take money off them for that?",
+    "expected_chunk_id": "structure_aware::BM-002-payment-method-migration-errors.md::000",
+    "hit_at_3": true,
+    "gold_rank": 1,
+    "top3": [
+     {
+      "rank": 1,
+      "chunk_id": "structure_aware::BM-002-payment-method-migration-errors.md::000",
+      "fused_score": 0.909,
+      "rerank_score": null
+     },
+     {
+      "rank": 2,
+      "chunk_id": "structure_aware::BM-002-payment-method-migration-errors.md::005",
+      "fused_score": 0.7266,
+      "rerank_score": null
+     },
+     {
+      "rank": 3,
+      "chunk_id": "structure_aware::BM-002-payment-method-migration-errors.md::003",
+      "fused_score": 0.7007,
+      "rerank_score": null
+     }
+    ],
+    "median_latency_ms": 21.78,
+    "answered": false,
+    "refusal": "The indexed articles do not cover this (grounding coverage 0.45 < floor 0.65). No retrieved chunk contains: them, furiou, sav, tak. The retrieved chunks are on the same topic but do not state the thing asked for.",
+    "answer_spans_recovered": "0/2",
+    "answer_correct": false
+   },
+   "G10": {
+    "question": "There is an invoice in the customer's list with an orange badge and only half its line items showing. Finance want to know if it counts in this month's numbers and what happens if it stays stuck like that.",
+    "expected_chunk_id": "structure_aware::BM-003-invoice-sync-troubleshooting.md::001",
+    "hit_at_3": true,
+    "gold_rank": 1,
+    "top3": [
+     {
+      "rank": 1,
+      "chunk_id": "structure_aware::BM-003-invoice-sync-troubleshooting.md::001",
+      "fused_score": 0.8791,
+      "rerank_score": null
+     },
+     {
+      "rank": 2,
+      "chunk_id": "structure_aware::BM-003-invoice-sync-troubleshooting.md::003",
+      "fused_score": 0.649,
+      "rerank_score": null
+     },
+     {
+      "rank": 3,
+      "chunk_id": "structure_aware::BM-003-invoice-sync-troubleshooting.md::000",
+      "fused_score": 0.6461,
+      "rerank_score": null
+     }
+    ],
+    "median_latency_ms": 27.51,
+    "answered": false,
+    "refusal": "The indexed articles do not cover this (grounding coverage 0.21 < floor 0.65). No retrieved chunk contains: show, know, want, orang. The retrieved chunks are on the same topic but do not state the thing asked for.",
+    "answer_spans_recovered": "0/2",
+    "answer_correct": false
+   },
+   "G11": {
+    "question": "Customer is five days into a fourteen day trial and their workspace is being moved this week. Will they lose the remaining days or does the clock get reset?",
+    "expected_chunk_id": "structure_aware::BM-004-subscription-proration-migration.md::002",
+    "hit_at_3": true,
+    "gold_rank": 1,
+    "top3": [
+     {
+      "rank": 1,
+      "chunk_id": "structure_aware::BM-004-subscription-proration-migration.md::002",
+      "fused_score": 0.839,
+      "rerank_score": null
+     },
+     {
+      "rank": 2,
+      "chunk_id": "structure_aware::BM-004-subscription-proration-migration.md::000",
+      "fused_score": 0.7513,
+      "rerank_score": null
+     },
+     {
+      "rank": 3,
+      "chunk_id": "structure_aware::BM-004-subscription-proration-migration.md::004",
+      "fused_score": 0.6606,
+      "rerank_score": null
+     }
+    ],
+    "median_latency_ms": 22.41,
+    "answered": false,
+    "refusal": "The indexed articles do not cover this (grounding coverage 0.30 < floor 0.65). No retrieved chunk contains: fourteen, clock, reset, week. The retrieved chunks are on the same topic but do not state the thing asked for.",
+    "answer_spans_recovered": "0/2",
+    "answer_correct": false
+   },
+   "G12": {
+    "question": "Customer says their callbacks went completely quiet for about forty minutes during the switchover. Did they lose whatever happened in that window or will it still come through?",
+    "expected_chunk_id": "structure_aware::BM-006-api-webhook-migration.md::002",
+    "hit_at_3": false,
+    "gold_rank": null,
+    "top3": [
+     {
+      "rank": 1,
+      "chunk_id": "structure_aware::BM-006-api-webhook-migration.md::004",
+      "fused_score": 0.9127,
+      "rerank_score": null
+     },
+     {
+      "rank": 2,
+      "chunk_id": "structure_aware::BM-001-billing-migration-overview.md::000",
+      "fused_score": 0.7262,
+      "rerank_score": null
+     },
+     {
+      "rank": 3,
+      "chunk_id": "structure_aware::BM-003-invoice-sync-troubleshooting.md::003",
+      "fused_score": 0.6931,
+      "rerank_score": null
+     }
+    ],
+    "median_latency_ms": 21.68,
+    "answered": false,
+    "refusal": "The indexed articles do not cover this (grounding coverage 0.13 < floor 0.65). No retrieved chunk contains: switchover, through, say, whatever. The retrieved chunks are on the same topic but do not state the thing asked for.",
+    "answer_spans_recovered": "0/2",
+    "answer_correct": false
+   }
+  },
+  "out_of_corpus_control": {
+   "U1": {
+    "question": "What is the refund SLA for a disputed invoice during the billing migration?",
+    "why_absent": "No article states any refund SLA or refund turnaround time.",
+    "refused": true
+   },
+   "U2": {
+    "question": "How do I roll a workspace back from Ledger v2 to Ledger v1 after cutover completes?",
+    "why_absent": "No rollback procedure exists anywhere in the corpus; 'complete' is documented as terminal.",
+    "refused": true
+   },
+   "U3": {
+    "question": "What does error ERR-4099 mean and how do I fix it?",
+    "why_absent": "ERR-4099 is not a real code in this corpus.",
+    "refused": true
+   }
+  }
+ },
+ "after": {
+  "arm": "after",
+  "engine": "extractive-deterministic",
+  "chunks_indexed": 35,
+  "hits": 11,
+  "n": 12,
+  "hit_rate_at_3": 91.7,
+  "p50_latency_ms": 474.84,
+  "p95_latency_ms": 962.88,
+  "mean_latency_ms": 525.18,
+  "per_question": {
+   "G01": {
+    "question": "Provider dashboard is showing two tokens for the same card and our log has ERR-4033. Do I remove the one that was created first or the one created last?",
+    "expected_chunk_id": "structure_aware::BM-002-payment-method-migration-errors.md::004",
+    "hit_at_3": true,
+    "gold_rank": 1,
+    "top3": [
+     {
+      "rank": 1,
+      "chunk_id": "structure_aware::BM-002-payment-method-migration-errors.md::004",
+      "fused_score": 1.0,
+      "rerank_score": 1.158
+     },
+     {
+      "rank": 2,
+      "chunk_id": "structure_aware::BM-002-payment-method-migration-errors.md::001",
+      "fused_score": 0.4524,
+      "rerank_score": -0.7492
+     },
+     {
+      "rank": 3,
+      "chunk_id": "structure_aware::BM-002-payment-method-migration-errors.md::006",
+      "fused_score": 0.4494,
+      "rerank_score": -1.0577
+     }
+    ],
+    "median_latency_ms": 398.63,
+    "answered": false,
+    "refusal": "The indexed articles do not cover this (grounding coverage 0.48 < floor 0.65). No retrieved chunk contains: remov, show, log, first. The retrieved chunks are on the same topic but do not state the thing asked for.",
+    "answer_spans_recovered": "0/2",
+    "answer_correct": false
+   },
+   "G02": {
+    "question": "Migration keeps rejecting one subscription with ERR-4306. The customer has a downgrade queued for their renewal date. How do I get it through?",
+    "expected_chunk_id": "structure_aware::BM-004-subscription-proration-migration.md::004",
+    "hit_at_3": true,
+    "gold_rank": 1,
+    "top3": [
+     {
+      "rank": 1,
+      "chunk_id": "structure_aware::BM-004-subscription-proration-migration.md::004",
+      "fused_score": 0.9704,
+      "rerank_score": 0.6475
+     },
+     {
+      "rank": 2,
+      "chunk_id": "structure_aware::BM-004-subscription-proration-migration.md::000",
+      "fused_score": 0.7548,
+      "rerank_score": 0.0382
+     },
+     {
+      "rank": 3,
+      "chunk_id": "structure_aware::BM-004-subscription-proration-migration.md::003",
+      "fused_score": 0.6288,
+      "rerank_score": 0.0206
+     }
+    ],
+    "median_latency_ms": 479.26,
+    "answered": false,
+    "refusal": "The indexed articles do not cover this (grounding coverage 0.47 < floor 0.65). No retrieved chunk contains: through, reject, keep, dat. The retrieved chunks are on the same topic but do not state the thing asked for.",
+    "answer_spans_recovered": "0/1",
+    "answer_correct": false
+   },
+   "G03": {
+    "question": "ERR-4505 came back on the tax sweep. Looks like the same VAT number is sitting on two accounts in that workspace. What is the cleanup here?",
+    "expected_chunk_id": "structure_aware::BM-005-tax-id-validation-migration.md::004",
+    "hit_at_3": true,
+    "gold_rank": 1,
+    "top3": [
+     {
+      "rank": 1,
+      "chunk_id": "structure_aware::BM-005-tax-id-validation-migration.md::004",
+      "fused_score": 1.0,
+      "rerank_score": 0.3292
+     },
+     {
+      "rank": 2,
+      "chunk_id": "structure_aware::BM-005-tax-id-validation-migration.md::003",
+      "fused_score": 0.7983,
+      "rerank_score": -0.087
+     },
+     {
+      "rank": 3,
+      "chunk_id": "structure_aware::BM-005-tax-id-validation-migration.md::001",
+      "fused_score": 0.8447,
+      "rerank_score": -1.1503
+     }
+    ],
+    "median_latency_ms": 659.96,
+    "answered": false,
+    "refusal": "The indexed articles do not cover this (grounding coverage 0.34 < floor 0.65). No retrieved chunk contains: number, cam, cleanup, sitt. The retrieved chunks are on the same topic but do not state the thing asked for.",
+    "answer_spans_recovered": "0/2",
+    "answer_correct": false
+   },
+   "G04": {
+    "question": "One invoice will not copy across and throws ERR-4215. It has a manual discount line on it from last year. How do we get that invoice over?",
+    "expected_chunk_id": "structure_aware::BM-003-invoice-sync-troubleshooting.md::004",
+    "hit_at_3": true,
+    "gold_rank": 1,
+    "top3": [
+     {
+      "rank": 1,
+      "chunk_id": "structure_aware::BM-003-invoice-sync-troubleshooting.md::004",
+      "fused_score": 0.8014,
+      "rerank_score": 0.5007
+     },
+     {
+      "rank": 2,
+      "chunk_id": "structure_aware::BM-003-invoice-sync-troubleshooting.md::003",
+      "fused_score": 0.9796,
+      "rerank_score": 0.083
+     },
+     {
+      "rank": 3,
+      "chunk_id": "structure_aware::BM-003-invoice-sync-troubleshooting.md::005",
+      "fused_score": 0.8488,
+      "rerank_score": -0.2547
+     }
+    ],
+    "median_latency_ms": 523.43,
+    "answered": false,
+    "refusal": "The indexed articles do not cover this (grounding coverage 0.40 < floor 0.65). No retrieved chunk contains: throw, discount, year, acros. The retrieved chunks are on the same topic but do not state the thing asked for.",
+    "answer_spans_recovered": "0/1",
+    "answer_correct": false
+   },
+   "G05": {
+    "question": "I fixed the customer's VAT number and re-ran the job straight away, but it came back with exactly the same failure and no warning. Is something being cached, and what should I look at before I try again?",
+    "expected_chunk_id": "structure_aware::BM-005-tax-id-validation-migration.md::001",
+    "hit_at_3": true,
+    "gold_rank": 1,
+    "top3": [
+     {
+      "rank": 1,
+      "chunk_id": "structure_aware::BM-005-tax-id-validation-migration.md::001",
+      "fused_score": 1.0,
+      "rerank_score": 0.8559
+     },
+     {
+      "rank": 2,
+      "chunk_id": "structure_aware::BM-005-tax-id-validation-migration.md::004",
+      "fused_score": 0.6138,
+      "rerank_score": -0.8552
+     },
+     {
+      "rank": 3,
+      "chunk_id": "structure_aware::BM-005-tax-id-validation-migration.md::003",
+      "fused_score": 0.5999,
+      "rerank_score": -0.8703
+     }
+    ],
+    "median_latency_ms": 919.96,
+    "answered": false,
+    "refusal": "The indexed articles do not cover this (grounding coverage 0.33 < floor 0.65). No retrieved chunk contains: number, re-ran, cam, away. The retrieved chunks are on the same topic but do not state the thing asked for.",
+    "answer_spans_recovered": "0/2",
+    "answer_correct": false
+   },
+   "G06": {
+    "question": "Our dunning job stopped retrying failed payments after this workspace moved. next_payment_attempt is coming back empty in the API response now. What changed?",
+    "expected_chunk_id": "structure_aware::BM-006-api-webhook-migration.md::000",
+    "hit_at_3": true,
+    "gold_rank": 1,
+    "top3": [
+     {
+      "rank": 1,
+      "chunk_id": "structure_aware::BM-006-api-webhook-migration.md::000",
+      "fused_score": 1.0,
+      "rerank_score": 0.8515
+     },
+     {
+      "rank": 2,
+      "chunk_id": "structure_aware::BM-006-api-webhook-migration.md::003",
+      "fused_score": 0.7267,
+      "rerank_score": 0.6094
+     },
+     {
+      "rank": 3,
+      "chunk_id": "structure_aware::BM-002-payment-method-migration-errors.md::004",
+      "fused_score": 0.5982,
+      "rerank_score": -0.3932
+     }
+    ],
+    "median_latency_ms": 417.84,
+    "answered": false,
+    "refusal": "The indexed articles do not cover this (grounding coverage 0.42 < floor 0.65). No retrieved chunk contains: empty, stopp, com, dunn. The retrieved chunks are on the same topic but do not state the thing asked for.",
+    "answer_spans_recovered": "0/2",
+    "answer_correct": false
+   },
+   "G07": {
+    "question": "The status endpoint says halted for this workspace and nothing has moved in over a day. What does that mean and who unblocks it?",
+    "expected_chunk_id": "structure_aware::BM-001-billing-migration-overview.md::004",
+    "hit_at_3": true,
+    "gold_rank": 2,
+    "top3": [
+     {
+      "rank": 1,
+      "chunk_id": "structure_aware::BM-001-billing-migration-overview.md::003",
+      "fused_score": 0.888,
+      "rerank_score": -0.3613
+     },
+     {
+      "rank": 2,
+      "chunk_id": "structure_aware::BM-001-billing-migration-overview.md::004",
+      "fused_score": 0.7223,
+      "rerank_score": -1.5399
+     },
+     {
+      "rank": 3,
+      "chunk_id": "structure_aware::BM-001-billing-migration-overview.md::006",
+      "fused_score": 0.7323,
+      "rerank_score": -1.5543
+     }
+    ],
+    "median_latency_ms": 392.68,
+    "answered": false,
+    "refusal": "The indexed articles do not cover this (grounding coverage 0.37 < floor 0.65). No retrieved chunk contains: say, unblock, noth, mov. The retrieved chunks are on the same topic but do not state the thing asked for.",
+    "answer_spans_recovered": "0/2",
+    "answer_correct": false
+   },
+   "G08": {
+    "question": "This org has some workspaces already moved and some not. How do I confirm which engine a given workspace is running on without asking engineering?",
+    "expected_chunk_id": "structure_aware::BM-001-billing-migration-overview.md::002",
+    "hit_at_3": true,
+    "gold_rank": 1,
+    "top3": [
+     {
+      "rank": 1,
+      "chunk_id": "structure_aware::BM-001-billing-migration-overview.md::002",
+      "fused_score": 0.9299,
+      "rerank_score": -0.236
+     },
+     {
+      "rank": 2,
+      "chunk_id": "structure_aware::BM-001-billing-migration-overview.md::000",
+      "fused_score": 0.8422,
+      "rerank_score": -0.3856
+     },
+     {
+      "rank": 3,
+      "chunk_id": "structure_aware::BM-001-billing-migration-overview.md::005",
+      "fused_score": 0.6164,
+      "rerank_score": -0.7499
+     }
+    ],
+    "median_latency_ms": 336.6,
+    "answered": false,
+    "refusal": "The indexed articles do not cover this (grounding coverage 0.38 < floor 0.65). No retrieved chunk contains: given, org, confirm, runn. The retrieved chunks are on the same topic but do not state the thing asked for.",
+    "answer_spans_recovered": "0/2",
+    "answer_correct": false
+   },
+   "G09": {
+    "question": "Customer is furious - they saw a pending charge on their card the same day we moved their saved payment methods over. Did we take money off them for that?",
+    "expected_chunk_id": "structure_aware::BM-002-payment-method-migration-errors.md::000",
+    "hit_at_3": true,
+    "gold_rank": 1,
+    "top3": [
+     {
+      "rank": 1,
+      "chunk_id": "structure_aware::BM-002-payment-method-migration-errors.md::000",
+      "fused_score": 0.909,
+      "rerank_score": -0.0634
+     },
+     {
+      "rank": 2,
+      "chunk_id": "structure_aware::BM-002-payment-method-migration-errors.md::003",
+      "fused_score": 0.7007,
+      "rerank_score": -1.3576
+     },
+     {
+      "rank": 3,
+      "chunk_id": "structure_aware::BM-005-tax-id-validation-migration.md::004",
+      "fused_score": 0.4566,
+      "rerank_score": -1.6203
+     }
+    ],
+    "median_latency_ms": 317.72,
+    "answered": false,
+    "refusal": "The indexed articles do not cover this (grounding coverage 0.42 < floor 0.65). No retrieved chunk contains: them, furiou, sav, tak. The retrieved chunks are on the same topic but do not state the thing asked for.",
+    "answer_spans_recovered": "0/2",
+    "answer_correct": false
+   },
+   "G10": {
+    "question": "There is an invoice in the customer's list with an orange badge and only half its line items showing. Finance want to know if it counts in this month's numbers and what happens if it stays stuck like that.",
+    "expected_chunk_id": "structure_aware::BM-003-invoice-sync-troubleshooting.md::001",
+    "hit_at_3": true,
+    "gold_rank": 1,
+    "top3": [
+     {
+      "rank": 1,
+      "chunk_id": "structure_aware::BM-003-invoice-sync-troubleshooting.md::001",
+      "fused_score": 0.8791,
+      "rerank_score": -0.8837
+     },
+     {
+      "rank": 2,
+      "chunk_id": "structure_aware::BM-003-invoice-sync-troubleshooting.md::000",
+      "fused_score": 0.6461,
+      "rerank_score": -0.8989
+     },
+     {
+      "rank": 3,
+      "chunk_id": "structure_aware::BM-003-invoice-sync-troubleshooting.md::002",
+      "fused_score": 0.6104,
+      "rerank_score": -1.4631
+     }
+    ],
+    "median_latency_ms": 499.23,
+    "answered": false,
+    "refusal": "The indexed articles do not cover this (grounding coverage 0.20 < floor 0.65). No retrieved chunk contains: show, know, want, orang. The retrieved chunks are on the same topic but do not state the thing asked for.",
+    "answer_spans_recovered": "0/2",
+    "answer_correct": false
+   },
+   "G11": {
+    "question": "Customer is five days into a fourteen day trial and their workspace is being moved this week. Will they lose the remaining days or does the clock get reset?",
+    "expected_chunk_id": "structure_aware::BM-004-subscription-proration-migration.md::002",
+    "hit_at_3": true,
+    "gold_rank": 1,
+    "top3": [
+     {
+      "rank": 1,
+      "chunk_id": "structure_aware::BM-004-subscription-proration-migration.md::002",
+      "fused_score": 0.839,
+      "rerank_score": -1.3744
+     },
+     {
+      "rank": 2,
+      "chunk_id": "structure_aware::BM-002-payment-method-migration-errors.md::000",
+      "fused_score": 0.5296,
+      "rerank_score": -1.9234
+     },
+     {
+      "rank": 3,
+      "chunk_id": "structure_aware::BM-001-billing-migration-overview.md::001",
+      "fused_score": 0.5007,
+      "rerank_score": -2.2617
+     }
+    ],
+    "median_latency_ms": 701.68,
+    "answered": false,
+    "refusal": "The indexed articles do not cover this (grounding coverage 0.39 < floor 0.65). No retrieved chunk contains: fourteen, clock, reset, remain. The retrieved chunks are on the same topic but do not state the thing asked for.",
+    "answer_spans_recovered": "0/2",
+    "answer_correct": false
+   },
+   "G12": {
+    "question": "Customer says their callbacks went completely quiet for about forty minutes during the switchover. Did they lose whatever happened in that window or will it still come through?",
+    "expected_chunk_id": "structure_aware::BM-006-api-webhook-migration.md::002",
+    "hit_at_3": false,
+    "gold_rank": null,
+    "top3": [
+     {
+      "rank": 1,
+      "chunk_id": "structure_aware::BM-006-api-webhook-migration.md::004",
+      "fused_score": 0.9127,
+      "rerank_score": -1.8748
+     },
+     {
+      "rank": 2,
+      "chunk_id": "structure_aware::BM-005-tax-id-validation-migration.md::003",
+      "fused_score": 0.6128,
+      "rerank_score": -2.1285
+     },
+     {
+      "rank": 3,
+      "chunk_id": "structure_aware::BM-003-invoice-sync-troubleshooting.md::002",
+      "fused_score": 0.6513,
+      "rerank_score": -2.151
+     }
+    ],
+    "median_latency_ms": 493.35,
+    "answered": false,
+    "refusal": "The indexed articles do not cover this (grounding coverage 0.12 < floor 0.65). No retrieved chunk contains: switchover, through, say, whatever. The retrieved chunks are on the same topic but do not state the thing asked for.",
+    "answer_spans_recovered": "0/2",
+    "answer_correct": false
+   }
+  },
+  "out_of_corpus_control": {
+   "U1": {
+    "question": "What is the refund SLA for a disputed invoice during the billing migration?",
+    "why_absent": "No article states any refund SLA or refund turnaround time.",
+    "refused": true
+   },
+   "U2": {
+    "question": "How do I roll a workspace back from Ledger v2 to Ledger v1 after cutover completes?",
+    "why_absent": "No rollback procedure exists anywhere in the corpus; 'complete' is documented as terminal.",
+    "refused": true
+   },
+   "U3": {
+    "question": "What does error ERR-4099 mean and how do I fix it?",
+    "why_absent": "ERR-4099 is not a real code in this corpus.",
+    "refused": true
+   }
+  }
+ },
+ "ledger": {
+  "G01": {
+   "verdict": "still hit",
+   "rank_before": 1,
+   "rank_after": 1
+  },
+  "G02": {
+   "verdict": "still hit",
+   "rank_before": 1,
+   "rank_after": 1
+  },
+  "G03": {
+   "verdict": "still hit",
+   "rank_before": 1,
+   "rank_after": 1
+  },
+  "G04": {
+   "verdict": "still hit",
+   "rank_before": 3,
+   "rank_after": 1
+  },
+  "G05": {
+   "verdict": "still hit",
+   "rank_before": 1,
+   "rank_after": 1
+  },
+  "G06": {
+   "verdict": "still hit",
+   "rank_before": 1,
+   "rank_after": 1
+  },
+  "G07": {
+   "verdict": "FIXED",
+   "rank_before": null,
+   "rank_after": 2
+  },
+  "G08": {
+   "verdict": "still hit",
+   "rank_before": 1,
+   "rank_after": 1
+  },
+  "G09": {
+   "verdict": "still hit",
+   "rank_before": 1,
+   "rank_after": 1
+  },
+  "G10": {
+   "verdict": "still hit",
+   "rank_before": 1,
+   "rank_after": 1
+  },
+  "G11": {
+   "verdict": "still hit",
+   "rank_before": 1,
+   "rank_after": 1
+  },
+  "G12": {
+   "verdict": "NOT FIXED",
+   "rank_before": null,
+   "rank_after": null
+  }
+ },
+ "delta": {
+  "hit_rate_at_3": "83.3% -> 91.7%",
+  "p50_latency_ms": "22.19 -> 474.84",
+  "p50_overhead_ms": 452.65,
+  "fixed": [
+   "G07"
+  ],
+  "not_fixed": [
+   "G12"
+  ],
+  "regressed": []
+ }
+}

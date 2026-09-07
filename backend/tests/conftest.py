@@ -10,6 +10,14 @@ Two things are stubbed so the suite runs offline, fast and deterministically:
   the same suite against the real model.
 * `ANTHROPIC_API_KEY` is removed, which pins generation to the bundled
   deterministic extractive engine. No network call is made by any test.
+* `HELP_CENTRE_RERANK` is forced to `0`. Week 4's cross-encoder ships enabled
+  by default in the app, but it would download ~150MB and add ~0.8s per query,
+  and every assertion here is about the first-stage retriever, `verify()` and
+  the HTTP surface. Set `HELP_CENTRE_RERANK=1` to exercise the reranked path.
+  The flag also turns off `generation.answerability()`, which is part of the
+  same cross-encoder feature -- so with it at `0` the extractive engine answers
+  from whatever was retrieved, and the week3/week4 answer split documented in
+  frontend/UI.md needs `HELP_CENTRE_RERANK=1` to reproduce (TestArmSplit).
 
 `store.DATA_DIR` is redirected at a tmp dir so `Index.save()` (called from the
 app's lifespan) never writes into `backend/data/`.
@@ -26,13 +34,16 @@ import pytest
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 
-from backend.app import store  # noqa: E402
+from backend.app import store, uploads  # noqa: E402
 from backend.app.embeddings import tokenize  # noqa: E402
 from backend.app.ingest import CORPUS_DIR, build_index, load_articles  # noqa: E402
 
 EVAL_DIR = os.path.join(os.path.dirname(__file__), "..", "eval")
 FAKE_DIM = 256
 REAL_EMBED = os.environ.get("HELP_CENTRE_TEST_REAL_EMBED") == "1"
+
+# Keep the suite offline and sub-second: opt into reranking explicitly.
+os.environ.setdefault("HELP_CENTRE_RERANK", "0")
 
 
 def fake_embed(texts: list[str]) -> np.ndarray:
@@ -52,6 +63,10 @@ def _isolated_backend(tmp_path_factory):
     mp = pytest.MonkeyPatch()
     mp.delenv("ANTHROPIC_API_KEY", raising=False)
     mp.setattr(store, "DATA_DIR", str(tmp_path_factory.mktemp("data")))
+    # Uploads go to a tmp dir so the suite never reads or writes the real
+    # backend/uploads/, and one developer's dropped file cannot change what
+    # another developer's test run indexes.
+    mp.setattr(uploads, "UPLOAD_DIR", str(tmp_path_factory.mktemp("uploads")))
     if not REAL_EMBED:
         # store.py did `from .embeddings import embed`, so patch the name it
         # actually calls, not the one in embeddings.
@@ -112,6 +127,10 @@ AREAS = {
     "TestGeneration": "Generation (extractive engine + refusals)",
     "TestShippedCalibration": "Shipped calibration (results.md numbers)",
     "TestApi": "API endpoints (HTTP)",
+    "TestChatStream": "Chat (SSE stream + week3/week4 modes)",
+    "TestDocuments": "Document upload (any type -> indexed + durable)",
+    "TestArmSplit": "Week3/Week4 answer split (needs the cross-encoder)",
+    "TestImageUploads": "Image upload (OCR -> indexed + checkable)",
 }
 
 

@@ -55,7 +55,7 @@
 **REFUSED.**
 
 ```
-The indexed articles do not cover this (grounding coverage 0.47 < floor 0.65). No retrieved chunk contains: sla, refund. The retrieved chunks are on the same topic but do not state the thing asked for.
+The indexed articles do not cover this (grounding coverage 0.47 < floor 0.65). No retrieved chunk contains: refund, sla. The retrieved chunks are on the same topic but do not state the thing asked for.
 ```
 
 ### U2 — How do I roll a workspace back from Ledger v2 to Ledger v1 after cutover completes?

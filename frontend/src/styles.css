@@ -467,6 +467,30 @@ td.num { text-align: right; font: 12px ui-monospace, monospace; }
 .sev-bad  { --sev: #e0644f; }
 .sev-warn { --sev: #e0a83c; }
 .sev-ok   { --sev: #3f7d5c; }
+
+/* Failure class: which stage of the pipeline broke. Coloured on its own
+   scale, not the severity scale, so a reader is not tempted to read
+   "retrieval" as milder than "hallucination" - they are different axes. */
+.cls-retrieval    { --cls: #5b8ff9; }
+.cls-generation   { --cls: #b06ff2; }
+.cls-guardrail    { --cls: #4bb3a3; }
+.cls-hallucination{ --cls: #e07b9c; }
+.cls-clean        { --cls: #6f7687; }
+.ea-class { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; min-width: 0; }
+.ea-class b {
+  font: 10.5px ui-monospace, monospace; letter-spacing: .08em;
+  text-transform: uppercase; font-weight: 700;
+  padding: 2px 8px; border-radius: 4px;
+  color: var(--cls); background: color-mix(in srgb, var(--cls) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--cls) 40%, transparent);
+}
+.ea-class i { font-style: normal; font-size: 11.5px; color: var(--mut); }
+.ea-tag-cls {
+  font: 10px ui-monospace, monospace; letter-spacing: .06em; text-transform: uppercase;
+  padding: 2px 7px; border-radius: 4px; white-space: nowrap;
+  color: var(--cls); background: color-mix(in srgb, var(--cls) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--cls) 40%, transparent);
+}
 .ea-rank {
   font-size: 19px; font-weight: 700; color: var(--mut);
   font-variant-numeric: tabular-nums; line-height: 1.25;

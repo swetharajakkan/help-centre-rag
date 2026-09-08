@@ -3,14 +3,24 @@
 20 traces, drawn at random (seed `20260907`) from 182 logged traces. Every
 percentage below is out of those 20. Nothing was fixed while coding them.
 
-| # | Failure mode | Count | % of 20 | Severity | Example |
-| - | --- | ---: | ---: | --- | --- |
-| 1 | **Says the answer isn't documented, when the product-area filter is what hid it** — refuses with "The indexed articles do not cover this" for an error code that is written in another article | 7 | 35% | Annoys the user | `T-0090` |
-| 2 | **Prints fixes for error codes the customer never reported** — quotes the right row, then two more rows for unrelated codes with no marker that they are different errors | 5 | 25% | Embarrasses the client | `T-0049` |
-| 3 | **Refuses because the ticket said "please advise" or "explain"** — the correct chunk is at rank 1, and the answer is withheld over ordinary support-desk words absent from the corpus | 3 | 15% | Annoys the user | `T-0146` |
-| 4 | **Answers confidently with quotes that don't address the question** — no refusal, no hedge, three real sentences from the corpus, none of them about what was asked | 2 | 10% | Embarrasses the client | `T-0004` |
-| 5 | **Ends the answer with an instruction from an unrelated article** — a correct answer closes on an actionable step from a different product area | 1 | 5% | Embarrasses the client | `T-0182` |
-|   | *(no failure observed)* | 2 | 10% | — | `T-0113` |
+| # | Class | Failure mode | Count | % of 20 | Severity | Example |
+| - | --- | --- | ---: | ---: | --- | --- |
+| 1 | Retrieval failure | **Says the answer isn't documented, when the product-area filter is what hid it** — refuses with "The indexed articles do not cover this" for an error code that is written in another article | 7 | 35% | Annoys the user | `T-0090` |
+| 2 | Generation failure | **Prints fixes for error codes the customer never reported** — quotes the right row, then two more rows for unrelated codes with no marker that they are different errors | 5 | 25% | Embarrasses the client | `T-0049` |
+| 3 | Guardrail failure | **Refuses because the ticket said "please advise" or "explain"** — the correct chunk is at rank 1, and the answer is withheld over ordinary support-desk words absent from the corpus | 3 | 15% | Annoys the user | `T-0146` |
+| 4 | Hallucination | **Answers confidently with quotes that don't address the question** — no refusal, no hedge, three real sentences from the corpus, none of them about what was asked | 2 | 10% | Embarrasses the client | `T-0004` |
+| 5 | Generation failure | **Ends the answer with an instruction from an unrelated article** — a correct answer closes on an actionable step from a different product area | 1 | 5% | Embarrasses the client | `T-0182` |
+|   | No failure | *(no failure observed)* | 2 | 10% | — | `T-0113` |
+
+**Class key.** The class names the pipeline stage that broke, and scopes
+where a fix goes. *Retrieval failure*: the answer never reached the model —
+the metadata filter excluded the article that holds it. *Guardrail failure*:
+retrieval was correct and the grounding gate refused anyway. *Generation
+failure*: the model had the right chunks and wrote claims nobody asked for, or
+pulled one in from a neighbouring article. *Hallucination*: it answered a
+question the corpus does not cover, confidently, using real sentences about
+something else. Class and severity are different axes — a retrieval failure is
+not milder than a hallucination, it just breaks somewhere else.
 
 **Severity key.** *Embarrasses the client*: something false or unrelated to
 their case can be pasted to a customer. *Annoys the user*: the support agent

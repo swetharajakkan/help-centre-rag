@@ -183,6 +183,14 @@ function ErrorAnalysisView({ analysis, onAsk }) {
                     onClick={() => setPicked(picked === m.id ? null : m.id)}>
               <span className="ea-rank">{m.id === 0 ? '—' : m.id}</span>
               <span className="ea-mode-body">
+                {/* The class is the engineering name for the fault (which stage
+                    of the pipeline broke); the line under it is what a reader
+                    of the transcript actually sees. Both are kept, because a
+                    fix is scoped by the first and recognised by the second. */}
+                <span className={`ea-class cls-${m.class_slug}`}>
+                  <b>{m.failure_class}</b>
+                  <i>{m.failure_subtype}</i>
+                </span>
                 <span className="ea-mode-name">{m.name}</span>
                 <span className="ea-mode-desc">{m.desc}</span>
                 <span className="ea-sev">{m.sev_label}</span>
@@ -214,7 +222,9 @@ function ErrorAnalysisView({ analysis, onAsk }) {
 
       <div className="ea-listhead">
         <span>
-          {onlyTrace || (picked === null ? `All ${size} traces` : byId[picked].name)}
+          {onlyTrace || (picked === null
+            ? `All ${size} traces`
+            : `${byId[picked].failure_class} — ${byId[picked].name}`)}
         </span>
         {(picked !== null || onlyTrace) && (
           <button type="button" className="ea-clear"
@@ -231,6 +241,7 @@ function ErrorAnalysisView({ analysis, onAsk }) {
             <li key={t.trace_id} className={SEV_CLASS[m.severity]}>
               <div className="ea-tr-top">
                 <span className="ea-tid">{t.trace_id}</span>
+                <span className={`ea-tag-cls cls-${m.class_slug}`}>{m.failure_class}</span>
                 <span className="ea-tag">{m.short}</span>
                 <span className="ea-meta">
                   {t.answered ? 'answered' : 'refused'} · area {t.product_area || 'all'} ·

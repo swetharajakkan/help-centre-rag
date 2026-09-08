@@ -1,0 +1,29 @@
+{
+ "seed": 20260907,
+ "population_size": 182,
+ "sample_size": 20,
+ "sample": [
+  "T-0004",
+  "T-0032",
+  "T-0043",
+  "T-0049",
+  "T-0054",
+  "T-0057",
+  "T-0060",
+  "T-0062",
+  "T-0064",
+  "T-0066",
+  "T-0074",
+  "T-0090",
+  "T-0096",
+  "T-0106",
+  "T-0113",
+  "T-0130",
+  "T-0134",
+  "T-0146",
+  "T-0157",
+  "T-0182"
+ ],
+ "replay_trace_id": "T-0015",
+ "procedure": "ids=sorted(trace_ids); rng=random.Random(20260907); sample=sorted(rng.sample(ids,20)); replay=rng.choice(ids)"
+}

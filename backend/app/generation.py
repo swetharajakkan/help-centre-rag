@@ -89,17 +89,37 @@ def build_prompt(question: str, hits: list[dict]) -> str:
 def call_model(question: str, hits: list[dict]) -> dict:
     import anthropic
 
-    client = anthropic.Anthropic()
-    resp = client.messages.create(
-        model=MODEL,
-        max_tokens=16000,
-        system=SYSTEM,
-        thinking={"type": "adaptive"},
-        output_config={"format": {"type": "json_schema", "schema": SCHEMA}},
-        messages=[{"role": "user", "content": build_prompt(question, hits)}],
-    )
-    text = next(b.text for b in resp.content if b.type == "text")
-    return json.loads(text)
+    from . import tracing
+
+    prompt = build_prompt(question, hits)
+    # Typed `generation` so Langfuse can attribute model, cost and tokens.
+    # A `span` here would hide all three.
+    with tracing.observe("generate-claims", as_type="generation") as gen:
+        gen.update(model=MODEL, input=[{"role": "system", "content": SYSTEM},
+                                       {"role": "user", "content": prompt}],
+                   metadata={"prompt_version": tracing.PROMPT_VERSION,
+                             "n_chunks": len(hits)},
+                   model_parameters={"max_tokens": 16000,
+                                     "thinking": "adaptive",
+                                     "output_format": "json_schema"})
+        client = anthropic.Anthropic()
+        resp = client.messages.create(
+            model=MODEL,
+            max_tokens=16000,
+            system=SYSTEM,
+            thinking={"type": "adaptive"},
+            output_config={"format": {"type": "json_schema", "schema": SCHEMA}},
+            messages=[{"role": "user", "content": prompt}],
+        )
+        text = next(b.text for b in resp.content if b.type == "text")
+        usage = getattr(resp, "usage", None)
+        if usage is not None:
+            # Drives Langfuse's automatic cost calculation.
+            gen.update(usage_details={
+                "input": getattr(usage, "input_tokens", None),
+                "output": getattr(usage, "output_tokens", None)})
+        gen.update(output=text)
+        return json.loads(text)
 
 
 def verify(raw: dict, hits: list[dict]) -> dict:
@@ -145,12 +165,30 @@ def verify(raw: dict, hits: list[dict]) -> dict:
 
 
 def answer(index, question: str, k: int = 3, where: dict | None = None,
-           use_rerank: bool | None = None) -> dict:
-    hits = index.search(question, k=k, where=where, use_rerank=use_rerank)
-    if not hits:
-        return {"answered": False, "refusal": "No chunks matched the filter.",
-                "claims": [], "rejected_claims": [], "retrieved": []}
-    return verify(call_model(question, hits), hits)
+           use_rerank: bool | None = None, session_id: str | None = None,
+           user_id: str | None = None) -> dict:
+    from . import tracing
+
+    area = (where or {}).get("product_area")
+    tags = ["engine:claude-opus-5", "arm:llm"] + ([f"area:{area}"] if area else [])
+    with tracing.observe("answer-question", as_type="chain") as root, \
+            tracing.trace_attributes(session_id=session_id, user_id=user_id,
+                                     tags=tags):
+        with tracing.observe("retrieve-chunks", as_type="retriever",
+                             input={"query": question, "k": k,
+                                    "product_area": area}) as span:
+            hits = index.search(question, k=k, where=where,
+                                use_rerank=use_rerank)
+            span.update(output={"n_hits": len(hits),
+                                "hits": tracing.hit_summary(hits)})
+        if not hits:
+            result = {"answered": False,
+                      "refusal": "No chunks matched the filter.",
+                      "claims": [], "rejected_claims": [], "retrieved": []}
+        else:
+            result = _verify_observed(call_model(question, hits), hits)
+        _record(root, question, k, area, use_rerank, False, result)
+        return result
 
 
 def api_key_present() -> bool:
@@ -574,24 +612,187 @@ def extractive_engine(question: str, hits: list[dict], index,
     return {"answerable": True, "refusal_reason": "", "claims": claims}
 
 
-def answer_extractive(index, question: str, k: int = 3,
-                      where: dict | None = None,
-                      use_rerank: bool | None = None) -> dict:
+def _verify_observed(raw: dict, hits: list[dict]) -> dict:
+    """verify(), traced as an `evaluator`.
+
+    It is exactly that: it assesses each proposed claim against the chunk it
+    cites and drops the ones that fail. A dropped claim leaves no mark on the
+    final answer, so without this observation the fact that a claim was
+    proposed and rejected is unrecoverable.
+    """
+    from . import tracing
+
+    with tracing.observe("verify-claims", as_type="evaluator",
+                         input={"proposed_claims": len(raw.get("claims") or [])}
+                         ) as span:
+        result = verify(raw, hits)
+        span.update(output={"kept": len(result.get("claims", [])),
+                            "rejected": result.get("rejected_claims", [])})
+    return result
+
+
+def _answer_once(index, question: str, k: int, where: dict | None,
+                 use_rerank: bool | None) -> dict:
+    from . import tracing
     from .rerank import rerank_enabled
 
-    hits = index.search(question, k=k, where=where, use_rerank=use_rerank)
+    area = (where or {}).get("product_area")
+    # `retriever`, not `span`: this is a pure lookup and Langfuse's retrieval
+    # analytics key off the type.
+    with tracing.observe("retrieve-chunks", as_type="retriever",
+                         input={"query": question, "k": k,
+                                "product_area": area}) as span:
+        hits = index.search(question, k=k, where=where, use_rerank=use_rerank)
+        span.update(output={"n_hits": len(hits),
+                            "hits": tracing.hit_summary(hits)})
+
     if not hits:
         return {"answered": False, "refusal": "No chunks matched the filter.",
                 "claims": [], "rejected_claims": [], "retrieved": []}
+
     on = rerank_enabled() if use_rerank is None else bool(use_rerank)
-    return verify(extractive_engine(question, hits, index,
-                                    use_cross_encoder=on), hits)
+
+    # `guardrail`: this gate is what blocks an ungrounded answer from being
+    # emitted. It decides refusals, and Week 5 found refusals were the larger
+    # problem, so its score and reason must survive the request.
+    with tracing.observe("check-grounding", as_type="guardrail") as span:
+        cov, uncovered, gate_refusal = grounding(question, hits, index)
+        span.update(output={"in_corpus_coverage": round(cov, 4),
+                            "uncovered_anchors": uncovered[:8],
+                            "gate_refusal": gate_refusal,
+                            "passed": not gate_refusal},
+                    metadata={"floor": GROUNDING_FLOOR})
+
+    with tracing.observe("compose-answer", as_type="generation") as span:
+        # Not an LLM call on this arm, so there is no model or token usage to
+        # report. Typed `generation` anyway because it is the step that
+        # produces the answer, and it becomes a real generation the moment
+        # ANTHROPIC_API_KEY is set.
+        span.update(model="extractive-deterministic",
+                    metadata={"cross_encoder": on,
+                              "prompt_version": tracing.PROMPT_VERSION})
+        raw = extractive_engine(question, hits, index, use_cross_encoder=on)
+        span.update(output={"raw_engine_output": raw})
+
+    return _verify_observed(raw, hits)
+
+
+def _filtered_refusal(refusal: str, area: str) -> str:
+    """Rewrite a refusal that blames the corpus for what the filter did.
+
+    The gate's own wording -- "The indexed articles do not cover this" -- is
+    a false statement when a product-area filter was the reason the answering
+    chunk was never a candidate. It is left untouched for the Week 3 and Week 4
+    arms, whose refusal strings are quoted in published results; this rewrite
+    only reaches a request that asked for the fallback arm.
+    """
+    return (
+        f"Not found in the '{area}' area, and the unfiltered retry did not "
+        f"find it either. Set AREA to 'all' to search every article. "
+        f"Original reason: {refusal}"
+    )
+
+
+def answer_extractive(index, question: str, k: int = 3,
+                      where: dict | None = None,
+                      use_rerank: bool | None = None,
+                      fallback: bool = False,
+                      session_id: str | None = None,
+                      user_id: str | None = None) -> dict:
+    """Answer, optionally retrying once without the product-area filter.
+
+    `fallback` is the single Week 5 change. When a FILTERED search produces a
+    refusal, the same question is run once more unfiltered. If that answers,
+    that answer is returned and `filter_fallback` records what happened, so
+    the retry is visible in the trace rather than silently papered over.
+
+    The retry is deliberately not attempted when no filter was set: there is
+    nothing to widen, and a second identical search would only cost latency.
+    """
+    from . import tracing
+
+    area = (where or {}).get("product_area")
+    engine = "claude-opus-5" if api_key_present() else "extractive-deterministic"
+    arm = "week5" if fallback else ("week4" if use_rerank else "week3")
+    tags = [f"engine:{engine}", f"arm:{arm}"] + ([f"area:{area}"] if area else [])
+    # propagate_attributes must WRAP the root span, not be called inside it:
+    # attributes reach only the active span and spans opened after, so setting
+    # them late leaves the earlier children out of session/user aggregation.
+    with tracing.observe("answer-question", as_type="chain") as root, \
+            tracing.trace_attributes(session_id=session_id, user_id=user_id,
+                                     tags=tags):
+        result = _answer_once(index, question, k, where, use_rerank)
+        if not (fallback and area and not result["answered"]):
+            _record(root, question, k, area, use_rerank, fallback, result)
+            return result
+
+        retry = _answer_once(index, question, k, None, use_rerank)
+        if retry["answered"]:
+            retry["filter_fallback"] = {
+                "fired": True, "dropped_filter": area,
+                "first_refusal": result["refusal"],
+            }
+            _record(root, question, k, area, use_rerank, fallback, retry)
+            return retry
+
+        # Still nothing. The corpus genuinely lacks it, but the first refusal's
+        # wording blamed the corpus for what the filter might have done, so it
+        # is replaced with one that names the filter and the retry.
+        retry["filter_fallback"] = {"fired": True, "dropped_filter": area,
+                                    "first_refusal": result["refusal"]}
+        retry["refusal"] = _filtered_refusal(retry["refusal"], area)
+        _record(root, question, k, area, use_rerank, fallback, retry)
+        return retry
+
+
+def _record(span, question: str, k: int, area: str | None,
+            use_rerank: bool | None, fallback: bool, result: dict) -> None:
+    """Close the root observation: readable IO, detail in metadata, scores.
+
+    Trace input/output is what the Langfuse trace table shows and what
+    evaluators read, so it is the question and the answer as a person would
+    read them -- not a JSON dump. Everything structured goes to metadata.
+    """
+    from . import tracing
+
+    engine = "claude-opus-5" if api_key_present() else "extractive-deterministic"
+    fired = bool(result.get("filter_fallback", {}).get("fired"))
+    answer_text = ("\n\n".join(c["claim"] for c in result["claims"])
+                   if result["answered"] else result.get("refusal", ""))
+    span.update(
+        input=question,
+        output=answer_text,
+        metadata={**tracing.model_params(engine),
+                  "k": k, "product_area": area, "rerank": use_rerank,
+                  "arm": "week5" if fallback else ("week4" if use_rerank
+                                                   else "week3"),
+                  "answered": result["answered"],
+                  "n_claims": len(result.get("claims", [])),
+                  "cited_chunk_ids": [c["chunk_id"] for c in result.get("claims", [])],
+                  "retrieved_chunk_ids": result.get("retrieved", []),
+                  "filter_fallback": result.get("filter_fallback")},
+    )
+    tracing.set_trace_io(span, input=question, output=answer_text)
+    # Outcomes are scores, not tags: they are only known now, and these are
+    # what a later sample filters on. "Every refusal that had an area filter
+    # set" is the Week 5 top failure mode, as a query.
+    tracing.score("answered", 1.0 if result["answered"] else 0.0,
+                  None if result["answered"] else result.get("refusal", "")[:300])
+    if fallback:
+        tracing.score("filter_fallback_fired", 1.0 if fired else 0.0,
+                      f"dropped {area}" if fired else None)
 
 
 def answer_auto(index, question: str, k: int = 3, where: dict | None = None,
-                use_rerank: bool | None = None):
+                use_rerank: bool | None = None, fallback: bool = False,
+                session_id: str | None = None, user_id: str | None = None):
     """Real model when credentials exist, deterministic extractor otherwise."""
     engine = "claude-opus-5" if api_key_present() else "extractive-deterministic"
-    fn = answer if api_key_present() else answer_extractive
-    return {**fn(index, question, k=k, where=where, use_rerank=use_rerank),
+    if api_key_present():
+        return {**answer(index, question, k=k, where=where,
+                         use_rerank=use_rerank, session_id=session_id,
+                         user_id=user_id), "engine": engine}
+    return {**answer_extractive(index, question, k=k, where=where,
+                                use_rerank=use_rerank, fallback=fallback,
+                                session_id=session_id, user_id=user_id),
             "engine": engine}

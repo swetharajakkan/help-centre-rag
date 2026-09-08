@@ -11,3 +11,6 @@ pillow==12.3.0
 # images are refused unless ANTHROPIC_API_KEY is set, and
 # it installs only on macOS.
 pyobjc-framework-Vision==12.2.2; sys_platform == "darwin"
+# Optional tracing. The app runs identically without it: backend/app/tracing.py
+# is a no-op unless LANGFUSE_PUBLIC_KEY and LANGFUSE_SECRET_KEY are both set.
+langfuse==4.15.1

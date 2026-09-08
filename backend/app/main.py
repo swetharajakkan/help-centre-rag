@@ -10,7 +10,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 
-from .chat import MODES, chat_stream, resolve_mode
+from . import tracing
+
+# Before anything reads the environment, so keys pasted into .env take effect.
+tracing.load_dotenv()
+from .chat import MODES, chat_stream, resolve_mode, resolve_fallback
 from .generation import answer_auto, api_key_present
 from .ingest import build_index, load_articles, load_uploads, records_for
 from .rerank import RERANK_CANDIDATES, RERANK_MODEL, rerank_enabled
@@ -27,7 +31,11 @@ async def lifespan(_: FastAPI):
         # The running app is the one caller that also indexes uploads.
         INDEXES[strategy] = build_index(strategy, include_uploads=True)
         INDEXES[strategy].save()
+    st = tracing.status()
+    print(f"[tracing] langfuse {'ON -> ' + st['host'] if st['enabled'] else 'OFF (' + st['reason'] + ')'}")
     yield
+    # Short-lived events would otherwise die with the process.
+    tracing.flush()
 
 
 app = FastAPI(title="Help Centre RAG", version="1.0", lifespan=lifespan)
@@ -50,6 +58,14 @@ def _rerank_for(mode: str | None) -> bool | None:
         raise HTTPException(400, str(exc)) from exc
 
 
+def _fallback_for(mode: str | None) -> bool:
+    """Week 5 only: retry without the product-area filter before refusing."""
+    try:
+        return resolve_fallback(mode)
+    except ValueError as exc:
+        raise HTTPException(400, str(exc)) from exc
+
+
 class SearchRequest(BaseModel):
     query: str
     strategy: str = "structure_aware"
@@ -64,6 +80,9 @@ class AskRequest(BaseModel):
     k: int = Field(default=3, ge=1, le=10)
     product_area: str | None = None
     mode: str | None = None
+    # Groups every turn of one chat into a Langfuse session, so a conversation
+    # can be replayed as a whole rather than as loose, unrelated traces.
+    session_id: str | None = None
 
 
 @app.get("/api/health")
@@ -83,6 +102,7 @@ def health() -> dict:
         # Per-request arms. `reranking.enabled` above is only the default
         # used when a request sends no `mode`.
         "modes": {m: v["label"] for m, v in MODES.items()},
+        "tracing": tracing.status(),
         "strategies": {s: len(i.records) for s, i in INDEXES.items()},
         "articles_indexed": len(load_articles()),
         "uploaded_documents": len(load_uploads()),
@@ -219,7 +239,93 @@ def examples() -> dict:
                 "gold_section": g.get("gold_section"),
                 "expected_chunk_id": g.get("expected_chunk_id"),
             })
-    return {"examples": out}
+    return {"examples": out, "sampled": _sampled_examples(),
+            "replay": _replay_example()}
+
+
+def _replay_example() -> dict | None:
+    """The trace drawn for the replay proof.
+
+    It is deliberately NOT one of the 20 -- it was a second, independent draw
+    from the same seed -- so it does not appear in the sampled list and had no
+    way to be reached from the UI. Served separately so the replay evidence
+    can be demonstrated live rather than only read in notes.md.
+    """
+    week5 = os.path.join(os.path.dirname(__file__), "..", "..", "week5")
+    try:
+        want = json.load(open(os.path.join(week5, "sample.json")))["replay_trace_id"]
+        with open(os.path.join(week5, "traces.jsonl")) as fh:
+            for line in fh:
+                if not line.strip():
+                    continue
+                t = json.loads(line)
+                if t["trace_id"] != want:
+                    continue
+                return {
+                    "id": t["trace_id"],
+                    "question": t["question"],
+                    "product_area": t["request"]["product_area"],
+                    "k": t["request"]["k"],
+                    "mode": t["request"]["mode"],
+                    "answered": t["result"]["answered"],
+                    "claims": [c["claim"] for c in t["result"].get("claims", [])],
+                }
+    except (OSError, KeyError, ValueError):
+        return None
+    return None
+
+
+def _sampled_examples() -> list[dict]:
+    """The 20 traces drawn at random in Week 5, offered beside the golden set.
+
+    These are the opposite of the golden set and that is the point: the golden
+    questions were written to be answerable and are what gets demoed, while
+    these were drawn with a seed from 182 logged traces and never curated.
+    Showing both in one menu is what makes the demo-vs-random gap visible.
+
+    Returns [] if the Week 5 files are absent, so the endpoint keeps working
+    for anyone who has not run the analysis.
+    """
+    week5 = os.path.join(os.path.dirname(__file__), "..", "..", "week5")
+    try:
+        sample = set(json.load(open(os.path.join(week5, "sample.json")))["sample"])
+        out = []
+        with open(os.path.join(week5, "traces.jsonl")) as fh:
+            for line in fh:
+                if not line.strip():
+                    continue
+                t = json.loads(line)
+                if t["trace_id"] not in sample:
+                    continue
+                out.append({
+                    "id": t["trace_id"],
+                    "question": t["question"],
+                    "product_area": t["request"]["product_area"],
+                    "k": t["request"]["k"],
+                    "answered": t["result"]["answered"],
+                })
+        return sorted(out, key=lambda r: r["id"])
+    except (OSError, KeyError, ValueError):
+        return []
+
+
+@app.get("/api/error_analysis")
+def error_analysis() -> dict:
+    """Week 5's open coding, served to the UI.
+
+    Read from week5/coding.json rather than duplicated in the frontend, so the
+    categories the app displays are the same ones taxonomy.md reports. Returns
+    an empty payload if the analysis has not been run, so the endpoint is safe
+    on a checkout without it.
+    """
+    path = os.path.join(os.path.dirname(__file__), "..", "..", "week5",
+                        "coding.json")
+    try:
+        with open(path) as fh:
+            return json.load(fh)
+    except (OSError, ValueError):
+        return {"modes": [], "traces": [], "seed": None,
+                "population": 0, "sample_size": 0}
 
 
 @app.post("/api/search")
@@ -256,7 +362,9 @@ def compare(req: SearchRequest) -> dict:
 def ask(req: AskRequest) -> dict:
     where = {"product_area": req.product_area} if req.product_area else None
     return answer_auto(_index(req.strategy), req.question, k=req.k, where=where,
-                       use_rerank=_rerank_for(req.mode))
+                       use_rerank=_rerank_for(req.mode),
+                       fallback=_fallback_for(req.mode),
+                       session_id=req.session_id)
 
 
 @app.post("/api/chat")
@@ -272,7 +380,8 @@ def chat(req: AskRequest) -> StreamingResponse:
     where = {"product_area": req.product_area} if req.product_area else None
     return StreamingResponse(
         chat_stream(_index(req.strategy), req.question, k=req.k, where=where,
-                    mode=req.mode, strategy=req.strategy),
+                    mode=req.mode, strategy=req.strategy,
+                    session_id=req.session_id),
         media_type="text/event-stream",
         # Without this an intermediary can buffer the whole stream and defeat
         # the point of streaming it.

@@ -103,14 +103,89 @@ function MyDocuments({ documents, onDelete }) {
   )
 }
 
-function QuickQuestions({ examples, onAsk }) {
+const trim = (q) => (q.length > 52 ? `${q.slice(0, 52)}…` : q)
+
+/**
+ * The replay target, shown with the answer it originally produced.
+ *
+ * This trace was a SECOND, independent draw from the same seed, so it is not
+ * one of the twenty and appears nowhere in the list above. It is here so the
+ * replay claim can be demonstrated live: ask it, then compare what comes back
+ * against the recorded claims printed underneath.
+ */
+function ReplayCard({ replay, onAsk }) {
+  return (
+    <div className="replay-card">
+      <p className="sampled-head">
+        Replay proof
+        <span className="sampled-count">{replay.id} · not one of the 20</span>
+      </p>
+      <button type="button" className="replay-ask"
+              onClick={() => onAsk(replay.question, replay.product_area || '')}>
+        Ask it again
+      </button>
+      <p className="replay-q">{replay.question}</p>
+      <p className="note">
+        Recorded {new Date().getFullYear() ? 'earlier' : ''} on k={replay.k},{' '}
+        {replay.mode}, area {replay.product_area || 'all'}. It answered with
+        these {replay.claims.length} claims — the live answer should match them
+        word for word:
+      </p>
+      <ol className="replay-claims">
+        {replay.claims.map((c, i) => <li key={i}>{c}</li>)}
+      </ol>
+    </div>
+  )
+}
+
+/**
+ * The Week 5 random sample, listed rather than hidden in the picker.
+ *
+ * These are the twenty traces that were read by hand to build the taxonomy,
+ * shown with the verdict each one originally got. Clicking one re-asks it with
+ * the product-area filter it actually ran under, so the trace reproduces
+ * instead of being approximated.
+ */
+function SampledList({ sampled, onAsk }) {
+  const refused = sampled.filter((s) => !s.answered).length
+  return (
+    <div className="sampled">
+      {/* <p className="sampled-head">
+        The 20 traces read by hand
+        <span className="sampled-count">{refused} refused · {sampled.length - refused} answered</span>
+      </p>
+      <ol className="sampled-list">
+        {sampled.map((ex) => (
+          <li key={ex.id}>
+            <button type="button"
+                    className={ex.answered ? 'ok' : 'bad'}
+                    title={`Ask again with area=${ex.product_area || 'all'}, k=${ex.k}`}
+                    onClick={() => onAsk(ex.question, ex.product_area || '')}>
+              <span className="sid">{ex.id}</span>
+              <span className="sq">{ex.question}</span>
+              <span className="sarea">{ex.product_area || 'all'}</span>
+            </button>
+          </li>
+        ))}
+      </ol>
+      <p className="note">
+        Drawn from 182 traces with seed 20260907. Click one to re-run it on the
+        arm selected above.
+      </p> */}
+    </div>
+  )
+}
+
+function QuickQuestions({ examples, sampled = [], replay = null, onAsk }) {
   const [picked, setPicked] = useState('')
-  if (!examples.length) return null
+  if (!examples.length && !sampled.length) return null
 
   const choose = (id) => {
     setPicked(id)
-    const ex = examples.find((e) => e.id === id)
-    if (ex) onAsk(ex.question)
+    const ex = [...examples, ...sampled].find((e) => e.id === id)
+    // A sampled trace carries the product-area filter it originally ran with.
+    // Asking it without that filter would not reproduce the recorded trace.
+    if (ex) onAsk(ex.question, ex.product_area || '')
     // Reset so picking the same question twice in a row asks it again.
     setPicked('')
   }
@@ -120,24 +195,38 @@ function QuickQuestions({ examples, onAsk }) {
       <p className="block-title">Quick test questions</p>
       <select className="picker" value={picked}
               onChange={(e) => choose(e.target.value)}>
-        <option value="">Choose a golden-set question…</option>
-        {examples.map((ex) => (
-          <option key={ex.id} value={ex.id} title={ex.question}>
-            {ex.id} — {ex.question.length > 58
-              ? `${ex.question.slice(0, 58)}…` : ex.question}
-          </option>
-        ))}
+        <option value="">Choose a question…</option>
+        <optgroup label="Golden set — the questions we demo">
+          {examples.map((ex) => (
+            <option key={ex.id} value={ex.id} title={ex.question}>
+              {ex.id} — {trim(ex.question)}
+            </option>
+          ))}
+        </optgroup>
+        {sampled.length ? (
+          <optgroup label="Week 5 random sample — the 20 read by hand">
+            {sampled.map((ex) => (
+              <option key={ex.id} value={ex.id}
+                      title={`${ex.question}\n\narea: ${ex.product_area || 'all'} · k=${ex.k} · originally ${ex.answered ? 'answered' : 'refused'}`}>
+                {ex.id} {ex.answered ? '·' : '✕'} {trim(ex.question)}
+              </option>
+            ))}
+          </optgroup>
+        ) : null}
       </select>
-      <p className="note">
+
+      {sampled.length ? <SampledList sampled={sampled} onAsk={onAsk} /> : null}
+      {replay ? <ReplayCard replay={replay} onAsk={onAsk} /> : null}
+      {/* <p className="note">
         The {examples.length} questions the Week 4 eval scores. G10 and G11
         answer only on the reranked arm; G12 declines on both.
-      </p>
+      </p> */}
     </section>
   )
 }
 
-export default function Sidebar({ documents, examples, onAsk, onUploaded,
-                                  onDelete, onClear, ocrEngines }) {
+export default function Sidebar({ documents, examples, sampled, replay, onAsk,
+                                  onUploaded, onDelete, onClear, ocrEngines }) {
   return (
     <aside className="sidebar">
       <div className="brand">
@@ -150,7 +239,7 @@ export default function Sidebar({ documents, examples, onAsk, onUploaded,
 
       <Upload onUploaded={onUploaded} ocrEngines={ocrEngines} />
       <MyDocuments documents={documents} onDelete={onDelete} />
-      <QuickQuestions examples={examples} onAsk={onAsk} />
+      <QuickQuestions examples={examples} sampled={sampled} replay={replay} onAsk={onAsk} />
 
       <div className="sidebar-foot">
         <button className="ghost" onClick={onClear}>Clear chat session</button>

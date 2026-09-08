@@ -997,9 +997,12 @@ class TestChatStream:
             assert [c["claim"] for c in done["claims"]] == \
                    [c["claim"] for c in asked["claims"]], mode
 
-    def test_health_advertises_both_selectable_modes(self, client):
+    def test_health_advertises_every_selectable_mode(self, client):
+        """week5 joins the arm switch in Week 5. It is the Week 4 retrieval
+        plus one behaviour: a filtered search that refuses is retried once
+        without the product-area filter."""
         modes = client.get("/api/health").json()["modes"]
-        assert set(modes) == {"week3", "week4"}
+        assert set(modes) == {"week3", "week4", "week5"}
 
 
 # ==========================================================================

@@ -1,0 +1,47 @@
+========================================================================
+REPLAY OF T-0015
+========================================================================
+
+Environment check (the trace names what it ran against):
+  code_version    trace=0496465487be  live=b1c27030ae2d  [DIFFERS]
+  corpus_sha256   trace=62b822165c07ccc4  live=62b822165c07ccc4  [MATCH]
+  engine          extractive-deterministic  prompt_version=extractive-v1  system_prompt_sha=50e4d9ac4940d191
+
+Question: A client is asking about Cards that expire within thirty days of. What is the detail here?
+Request:  k=5 mode=week4 product_area=None rerank=True
+
+--- RETRIEVAL ---
+rank original chunk_id                                         replayed chunk_id                                         
+1    structure_aware::BM-002-payment-method-migration-errors.md::002structure_aware::BM-002-payment-method-migration-errors.md::002ok
+2    structure_aware::BM-002-payment-method-migration-errors.md::003structure_aware::BM-002-payment-method-migration-errors.md::003ok
+3    structure_aware::BM-005-tax-id-validation-migration.md::002structure_aware::BM-005-tax-id-validation-migration.md::002ok
+4    structure_aware::BM-002-payment-method-migration-errors.md::005structure_aware::BM-002-payment-method-migration-errors.md::005ok
+5    structure_aware::BM-004-subscription-proration-migration.md::000structure_aware::BM-004-subscription-proration-migration.md::000ok
+scores  original=[(1.0, 0.179), (0.2746, -1.2709), (0.3647, -1.5337), (0.2868, -2.0988), (0.2918, -2.5061)]
+        replayed=[(1.0, 0.179), (0.2746, -1.2709), (0.3647, -1.5337), (0.2868, -2.0988), (0.2918, -2.5061)]  [MATCH]
+
+--- GROUNDING GATE ---
+  coverage   original=0.8508  replayed=0.8508  [MATCH]
+  refusal    original=''
+             replayed=''  [MATCH]
+
+--- RAW ENGINE OUTPUT (pre-verification) ---
+  identical: True
+
+--- FINAL OUTPUT ---
+ORIGINAL (from traces.jsonl):
+  [structure_aware::BM-002-payment-method-migration-errors.md::002]
+    Cards that expire within thirty days of the migration date are deliberately skipped rather than re-tokenised, because the provider would reject the token at first use.
+  [structure_aware::BM-002-payment-method-migration-errors.md::003]
+    | ERR-4030 | Card network declined the tokenisation request | Ask the customer to re-enter the card in Billing then Payment methods; the old vault entry cannot be recovered |
+  [structure_aware::BM-005-tax-id-validation-migration.md::002]
+    The exemption certificate expiry date is now enforced: an expired certificate makes the customer taxable at the next invoice, where v1 would have kept applying the exemption indefinitely.
+REPLAYED (rebuilt from the trace):
+  [structure_aware::BM-002-payment-method-migration-errors.md::002]
+    Cards that expire within thirty days of the migration date are deliberately skipped rather than re-tokenised, because the provider would reject the token at first use.
+  [structure_aware::BM-002-payment-method-migration-errors.md::003]
+    | ERR-4030 | Card network declined the tokenisation request | Ask the customer to re-enter the card in Billing then Payment methods; the old vault entry cannot be recovered |
+  [structure_aware::BM-005-tax-id-validation-migration.md::002]
+    The exemption certificate expiry date is now enforced: an expired certificate makes the customer taxable at the next invoice, where v1 would have kept applying the exemption indefinitely.
+
+VERDICT: outputs IDENTICAL

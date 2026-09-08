@@ -6,3 +6,4 @@ node_modules/
 *.pyc
 .fastembed_cache/
 backend/data/*.json
+.env

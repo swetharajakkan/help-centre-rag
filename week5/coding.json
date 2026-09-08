@@ -1,0 +1,427 @@
+{
+ "seed": 20260907,
+ "population": 182,
+ "sample_size": 20,
+ "modes": [
+  {
+   "id": 1,
+   "name": "Says the answer isn't documented, when the product-area filter hid it",
+   "short": "Filter hid the answer",
+   "severity": "annoys",
+   "sev_label": "Annoys the user",
+   "desc": "Refuses with \u201cThe indexed articles do not cover this\u201d for an error code written in another article. All seven had a filter set.",
+   "count": 7,
+   "pct": 35,
+   "trace_ids": [
+    "T-0043",
+    "T-0057",
+    "T-0074",
+    "T-0090",
+    "T-0096",
+    "T-0106",
+    "T-0157"
+   ]
+  },
+  {
+   "id": 2,
+   "name": "Prints fixes for error codes the customer never reported",
+   "short": "Fixes nobody asked for",
+   "severity": "embarrasses",
+   "sev_label": "Embarrasses the client",
+   "desc": "Quotes the right row, then two more for unrelated codes, with nothing marking them as different errors.",
+   "count": 5,
+   "pct": 25,
+   "trace_ids": [
+    "T-0032",
+    "T-0049",
+    "T-0060",
+    "T-0066",
+    "T-0130"
+   ]
+  },
+  {
+   "id": 3,
+   "name": "Refuses because the ticket said \u201cplease advise\u201d or \u201cexplain\u201d",
+   "short": "Refused on wording",
+   "severity": "annoys",
+   "sev_label": "Annoys the user",
+   "desc": "The correct chunk is at rank 1 and the answer is withheld over ordinary support-desk words the corpus never uses.",
+   "count": 3,
+   "pct": 15,
+   "trace_ids": [
+    "T-0062",
+    "T-0064",
+    "T-0146"
+   ]
+  },
+  {
+   "id": 4,
+   "name": "Answers confidently with quotes that don't address the question",
+   "short": "Confident, off-topic",
+   "severity": "embarrasses",
+   "sev_label": "Embarrasses the client",
+   "desc": "No refusal, no hedge. Real sentences from the corpus, none about what was asked.",
+   "count": 2,
+   "pct": 10,
+   "trace_ids": [
+    "T-0004",
+    "T-0054"
+   ]
+  },
+  {
+   "id": 5,
+   "name": "Ends the answer with an instruction from an unrelated article",
+   "short": "Instruction, wrong article",
+   "severity": "embarrasses",
+   "sev_label": "Embarrasses the client",
+   "desc": "A correct answer closes on an actionable step from a different product area.",
+   "count": 1,
+   "pct": 5,
+   "trace_ids": [
+    "T-0182"
+   ]
+  },
+  {
+   "id": 0,
+   "name": "No failure observed",
+   "short": "Clean",
+   "severity": "clean",
+   "sev_label": "Clean",
+   "desc": "Answered the question, quoted the right rows, stopped there.",
+   "count": 2,
+   "pct": 10,
+   "trace_ids": [
+    "T-0113",
+    "T-0134"
+   ]
+  }
+ ],
+ "traces": [
+  {
+   "trace_id": "T-0004",
+   "mode": 4,
+   "observation": "Asked which FX rate applies when a customer pays in a non-plan currency, it answered with two invoice error-code rows and a sentence about hourly usage windows, never said no exchange rate is documented, and I do not know why this cleared the grounding gate at 0.80.",
+   "question": "Which FX rate is used when a customer pays in a currency other than the plan currency?",
+   "product_area": null,
+   "k": 3,
+   "arm": "week3",
+   "answered": true,
+   "coverage": 0.7992,
+   "retrieved": [
+    "BM-003",
+    "BM-002",
+    "BM-001"
+   ]
+  },
+  {
+   "trace_id": "T-0032",
+   "mode": 2,
+   "observation": "Asked what changes about trials in flight, the first claim correctly said trials are not extended or restarted, and the two claims after it were about proration mode and a trial-timestamp error code the question did not ask about.",
+   "question": "What changes about trials in flight after the migration?",
+   "product_area": "subscriptions",
+   "k": 3,
+   "arm": null,
+   "answered": true,
+   "coverage": 1.0,
+   "retrieved": [
+    "BM-004",
+    "BM-004",
+    "BM-004"
+   ]
+  },
+  {
+   "trace_id": "T-0043",
+   "mode": 1,
+   "observation": "Asked whether ERR-4502 and ERR-4301 share a root cause with the filter set to invoicing, every retrieved chunk came from the invoicing article and the reply stated the indexed articles do not cover this, though both codes are written in BM-005 and BM-004.",
+   "question": "We have ERR-4502 on one account and ERR-4301 on another. Are these the same root cause?",
+   "product_area": "invoicing",
+   "k": 5,
+   "arm": "week4",
+   "answered": false,
+   "coverage": 0.0731,
+   "retrieved": [
+    "BM-003",
+    "BM-003",
+    "BM-003",
+    "BM-003",
+    "BM-003"
+   ]
+  },
+  {
+   "trace_id": "T-0049",
+   "mode": 2,
+   "observation": "Asked what ERR-4003 means, it quoted the correct ERR-4003 row and then printed the ERR-4001 and ERR-4002 rows underneath it with no indication they were different errors.",
+   "question": "What does ERR-4003 mean and what should I do?",
+   "product_area": null,
+   "k": 3,
+   "arm": "week4",
+   "answered": true,
+   "coverage": 1.0,
+   "retrieved": [
+    "BM-001",
+    "BM-002",
+    "BM-005"
+   ]
+  },
+  {
+   "trace_id": "T-0054",
+   "mode": 4,
+   "observation": "Asked how migration status codes work with the filter set to developer-api, it answered confidently about invoice response fields and a /v2 path error, and the status table named in the question was not among the retrieved chunks.",
+   "question": "How does move to the new billing engine status codes work?",
+   "product_area": "developer-api",
+   "k": 5,
+   "arm": "week3",
+   "answered": true,
+   "coverage": 0.589,
+   "retrieved": [
+    "BM-006",
+    "BM-006",
+    "BM-006",
+    "BM-006",
+    "BM-006"
+   ]
+  },
+  {
+   "trace_id": "T-0057",
+   "mode": 1,
+   "observation": "Asked what ERR-4215 means with the filter set to subscriptions, it replied that the indexed articles do not cover ERR-4215, which is written in the BM-003 troubleshooting table.",
+   "question": "What does ERR-4215 mean and what should I do?",
+   "product_area": "subscriptions",
+   "k": 3,
+   "arm": "week3",
+   "answered": false,
+   "coverage": 0.3161,
+   "retrieved": [
+    "BM-004",
+    "BM-004",
+    "BM-004"
+   ]
+  },
+  {
+   "trace_id": "T-0060",
+   "mode": 2,
+   "observation": "Asked what ERR-4301 means, it quoted the correct row and then added the ERR-4505 tax row and the ERR-4303 row, so three different error codes with three different fixes appeared in one answer.",
+   "question": "What does ERR-4301 mean and what should I do?",
+   "product_area": null,
+   "k": 3,
+   "arm": "week4",
+   "answered": true,
+   "coverage": 1.0,
+   "retrieved": [
+    "BM-004",
+    "BM-005",
+    "BM-002"
+   ]
+  },
+  {
+   "trace_id": "T-0062",
+   "mode": 3,
+   "observation": "A ticket reading \u201cEscalated from tier 1. What does ERR-4038 mean? Please advise.\u201d retrieved the chunk containing ERR-4038 at rank 1 and then withheld the answer, saying the question turns on \u201cadvis\u201d and \u201ctier\u201d, which the articles never mention.",
+   "question": "Escalated from tier 1. What does ERR-4038 mean? Please advise.",
+   "product_area": null,
+   "k": 3,
+   "arm": "week4",
+   "answered": false,
+   "coverage": 1.0,
+   "retrieved": [
+    "BM-002",
+    "BM-003",
+    "BM-002"
+   ]
+  },
+  {
+   "trace_id": "T-0064",
+   "mode": 3,
+   "observation": "Asked how versioned URLs work, it refused because the articles never mention \u201curl\u201d, while the Versioned endpoints section sat at rank 2 behind a BM-001 chunk with a lower fused score.",
+   "question": "How does versioned URLs work?",
+   "product_area": null,
+   "k": 3,
+   "arm": "week4",
+   "answered": false,
+   "coverage": 1.0,
+   "retrieved": [
+    "BM-001",
+    "BM-006",
+    "BM-004"
+   ]
+  },
+  {
+   "trace_id": "T-0066",
+   "mode": 2,
+   "observation": "Asked how an expired exemption certificate is handled, the first two claims gave the enforcement rule and the ERR-4503 fix, and a third claim about clearing a reverse-charge flag followed them.",
+   "question": "Seeing a case where exemption certificate has expired. How is that handled?",
+   "product_area": null,
+   "k": 3,
+   "arm": null,
+   "answered": true,
+   "coverage": 0.8063,
+   "retrieved": [
+    "BM-005",
+    "BM-005",
+    "BM-005"
+   ]
+  },
+  {
+   "trace_id": "T-0074",
+   "mode": 1,
+   "observation": "Asked about restoring an original billing anchor with the filter set to billing, it said the indexed articles do not cover this; BM-004 has a Billing anchors section stating a support action is required, and no BM-004 chunk was retrieved.",
+   "question": "A client is asking about Restoring the original anchor requires a support. What is the detail here?",
+   "product_area": "billing",
+   "k": 3,
+   "arm": "week3",
+   "answered": false,
+   "coverage": 0.1008,
+   "retrieved": [
+    "BM-001",
+    "BM-001",
+    "BM-001"
+   ]
+  },
+  {
+   "trace_id": "T-0090",
+   "mode": 1,
+   "observation": "Asked how to resolve ERR-4213 with the filter set to tax-compliance, it said the indexed articles do not cover ERR-4213, which is written in the BM-003 troubleshooting table.",
+   "question": "ERR-4213 - how do I resolve this?",
+   "product_area": "tax-compliance",
+   "k": 3,
+   "arm": "week4",
+   "answered": false,
+   "coverage": 0.2534,
+   "retrieved": [
+    "BM-005",
+    "BM-005",
+    "BM-005"
+   ]
+  },
+  {
+   "trace_id": "T-0096",
+   "mode": 1,
+   "observation": "Asked what ERR-4115 means with the filter set to invoicing, it said the indexed articles do not cover ERR-4115, which is written in the BM-006 troubleshooting table.",
+   "question": "What does ERR-4115 mean and what should I do?",
+   "product_area": "invoicing",
+   "k": 3,
+   "arm": "week3",
+   "answered": false,
+   "coverage": 0.3161,
+   "retrieved": [
+    "BM-003",
+    "BM-003",
+    "BM-003"
+   ]
+  },
+  {
+   "trace_id": "T-0106",
+   "mode": 1,
+   "observation": "Asked whether ERR-4005 and ERR-4112 share a root cause, it refused at a grounding score of 0.38 against a floor of 0.40 and listed \u201cthes\u201d, \u201caccount\u201d and \u201chav\u201d among the missing terms, while the ERR-4112 row was in the retrieved set.",
+   "question": "We have ERR-4005 on one account and ERR-4112 on another. Are these the same root cause?",
+   "product_area": "developer-api",
+   "k": 3,
+   "arm": "week4",
+   "answered": false,
+   "coverage": 0.3759,
+   "retrieved": [
+    "BM-006",
+    "BM-006",
+    "BM-006"
+   ]
+  },
+  {
+   "trace_id": "T-0113",
+   "mode": 0,
+   "observation": "Asked the fix for a line item referencing a retired SKU, it returned exactly one claim, the ERR-4211 row, and nothing else.",
+   "question": "Line item references a product SKU that no longer exists in v2. What is the correct fix?",
+   "product_area": null,
+   "k": 3,
+   "arm": "week4",
+   "answered": true,
+   "coverage": 1.0,
+   "retrieved": [
+    "BM-003",
+    "BM-004",
+    "BM-005"
+   ]
+  },
+  {
+   "trace_id": "T-0130",
+   "mode": 2,
+   "observation": "Asked what ERR-4504 means, the first claim was the correct row and it was followed by a sentence about the tax cache reading a stale failure and by the ERR-4502 row.",
+   "question": "What does ERR-4504 mean and what should I do?",
+   "product_area": "tax-compliance",
+   "k": 5,
+   "arm": "week4",
+   "answered": true,
+   "coverage": 1.0,
+   "retrieved": [
+    "BM-005",
+    "BM-005",
+    "BM-005",
+    "BM-005",
+    "BM-005"
+   ]
+  },
+  {
+   "trace_id": "T-0134",
+   "mode": 0,
+   "observation": "Asked what to tell a customer whose migration halted on a usage guardrail, it returned the ERR-4005 row and the \u201chalted\u201d status-table row and stopped there.",
+   "question": "A client has hit this: migration halted because usage spiked above the guardrail. What should I tell them?",
+   "product_area": null,
+   "k": 3,
+   "arm": "week4",
+   "answered": true,
+   "coverage": 0.6911,
+   "retrieved": [
+    "BM-001",
+    "BM-001",
+    "BM-002"
+   ]
+  },
+  {
+   "trace_id": "T-0146",
+   "mode": 3,
+   "observation": "Asked \u201cCan you explain versioned endpoints?\u201d with that exact section retrieved at rank 1 and grounding coverage at 1.0, it refused because the articles never use the word \u201cexplain\u201d.",
+   "question": "Can you explain versioned endpoints?",
+   "product_area": "developer-api",
+   "k": 3,
+   "arm": "week3",
+   "answered": false,
+   "coverage": 1.0,
+   "retrieved": [
+    "BM-006",
+    "BM-006",
+    "BM-006"
+   ]
+  },
+  {
+   "trace_id": "T-0157",
+   "mode": 1,
+   "observation": "A ticket reading \u201cEscalated from tier 1. How do I fix ERR-4036? Please advise.\u201d with the filter set to billing scored 0.00 grounding and was refused as not covered, with \u201cescalat\u201d and \u201cerr-4036\u201d listed as missing terms.",
+   "question": "Escalated from tier 1. How do I fix ERR-4036? Please advise.",
+   "product_area": "billing",
+   "k": 3,
+   "arm": "week4",
+   "answered": false,
+   "coverage": 0.0,
+   "retrieved": [
+    "BM-001",
+    "BM-001",
+    "BM-001"
+   ]
+  },
+  {
+   "trace_id": "T-0182",
+   "mode": 5,
+   "observation": "Asked how to tell which engine a workspace is on, the first two claims gave the Settings path and the Engine field, and the third claim, taken from the API article, told the reader to read the retry_schedule array instead.",
+   "question": "How does how to tell which engine a workspace is on work?",
+   "product_area": null,
+   "k": 3,
+   "arm": "week4",
+   "answered": true,
+   "coverage": 0.8026,
+   "retrieved": [
+    "BM-001",
+    "BM-006",
+    "BM-001"
+   ]
+  }
+ ]
+}

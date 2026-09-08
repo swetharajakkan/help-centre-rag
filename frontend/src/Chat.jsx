@@ -7,15 +7,29 @@ const STAGE = {
   refusing: 'no verifiable answer — writing the refusal…',
 }
 
-function Trace({ retrieval, mode }) {
+const ARM_LABEL = {
+  week5: ' · reranked · area filter retried',
+  week4: ' · reranked',
+  week3: ' · fused score only',
+}
+
+function Trace({ retrieval, mode, fallback }) {
   if (!retrieval) return null
   return (
     <details className="trace">
       <summary>
         retrieved {retrieval.hits.length} chunk
         {retrieval.hits.length === 1 ? '' : 's'} in {retrieval.ms} ms
-        {mode === 'week4' ? ' · reranked' : ' · fused score only'}
+        {ARM_LABEL[mode] || ' · fused score only'}
+        {fallback?.fired ? ` · retried without “${fallback.dropped_filter}”` : ''}
       </summary>
+      {fallback?.fired ? (
+        <p className="fallback-note">
+          The <b>{fallback.dropped_filter}</b> area filter returned no usable
+          answer, so the search ran again across every article. Chunks below are
+          from that second, unfiltered search.
+        </p>
+      ) : null}
       <ol>
         {retrieval.hits.map((h) => (
           <li key={h.chunk_id}>
@@ -41,7 +55,7 @@ function Answer({ m }) {
 
   return (
     <div className={`msg bot ${refused ? 'refused' : ''} ${m.error ? 'failed' : ''}`}>
-      <Trace retrieval={m.retrieval} mode={m.meta?.mode} />
+      <Trace retrieval={m.retrieval} mode={m.meta?.mode} fallback={m.fallback} />
 
       {m.claims.map((c) => (
         <div className="claim" key={c.index}>

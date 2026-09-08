@@ -24,16 +24,25 @@ import re
 import time
 from typing import Iterator
 
-from .generation import (answer_auto, api_key_present, call_model,
-                         extractive_engine, verify)
+from .generation import (answer_auto, answer_extractive, api_key_present,
+                         call_model, extractive_engine, verify)
 from .rerank import rerank_enabled
 
 # Typing cadence for the verified answer. Purely cosmetic -- see module docstring.
 CHAR_DELAY_S = 0.012
 
 MODES = {
-    "week3": {"rerank": False, "label": "Week 3 - fused retrieval, no reranking"},
-    "week4": {"rerank": True, "label": "Week 4 - cross-encoder reranking"},
+    "week3": {"rerank": False, "fallback": False,
+              "label": "Week 3 - fused retrieval, no reranking"},
+    "week4": {"rerank": True, "fallback": False,
+              "label": "Week 4 - cross-encoder reranking"},
+    # Week 5 keeps Week 4's retrieval untouched and changes exactly one thing:
+    # a product-area filter may no longer be the reason a question goes
+    # unanswered. Measured over 182 traces, 23 of the 26 filtered questions
+    # that named a documented error code were refused, and the refusal text
+    # told the agent the corpus did not cover it. See week5/PREDICTION.md.
+    "week5": {"rerank": True, "fallback": True,
+              "label": "Week 5 - reranked, retries without the area filter"},
 }
 
 
@@ -48,6 +57,21 @@ def resolve_mode(mode: str | None) -> bool | None:
     if mode not in MODES:
         raise ValueError(f"unknown mode {mode!r}; expected one of {sorted(MODES)}")
     return MODES[mode]["rerank"]
+
+
+def resolve_fallback(mode: str | None) -> bool:
+    """Whether this arm retries without the product-area filter.
+
+    Deliberately a separate function rather than a second return value from
+    `resolve_mode`: that one's bool contract is used by main.py and by the
+    test suite, and widening it would touch the Week 3 / Week 4 arms whose
+    published numbers must not move.
+    """
+    if mode is None:
+        return False
+    if mode not in MODES:
+        raise ValueError(f"unknown mode {mode!r}; expected one of {sorted(MODES)}")
+    return MODES[mode]["fallback"]
 
 
 def sse(event: str, data: dict) -> str:
@@ -83,8 +107,10 @@ def _type_out(text: str) -> Iterator[str]:
 def chat_stream(index, question: str, k: int = 3,
                 where: dict | None = None,
                 mode: str | None = None,
-                strategy: str = "structure_aware") -> Iterator[str]:
+                strategy: str = "structure_aware",
+                session_id: str | None = None) -> Iterator[str]:
     use_rerank = resolve_mode(mode)
+    fallback = resolve_fallback(mode)
     # Resolved once here: it selects the retrieval arm AND tells the extractive
     # engine whether the cross-encoder is available to rank answer sentences.
     # Without this the streamed answer used the weaker term-overlap ranker
@@ -101,6 +127,7 @@ def chat_stream(index, question: str, k: int = 3,
         "mode": mode,
         "mode_label": MODES[mode]["label"] if mode in MODES else "server default",
         "reranking": use_rerank,
+        "filter_fallback": fallback,
         "product_area": (where or {}).get("product_area"),
     })
 
@@ -123,11 +150,27 @@ def chat_stream(index, question: str, k: int = 3,
 
         yield sse("status", {"stage": "generating", "engine": engine})
         t1 = time.perf_counter()
-        raw = (call_model(question, hits) if api_key_present()
-               else extractive_engine(question, hits, index,
-                                      use_cross_encoder=on))
-        result = verify(raw, hits)
+        if api_key_present():
+            result = verify(call_model(question, hits), hits)
+        else:
+            # answer_extractive re-runs retrieval, which is what makes the
+            # Week 5 unfiltered retry possible; the hits above are still what
+            # the trace showed, and when no retry fires the two agree exactly.
+            result = answer_extractive(index, question, k=k, where=where,
+                                       use_rerank=use_rerank,
+                                       fallback=fallback,
+                                       session_id=session_id)
         generation_ms = round((time.perf_counter() - t1) * 1000, 1)
+
+        # When the retry fired, the answer came from a different candidate
+        # set than the one already streamed. Replace the trace so the cited
+        # chunks and the displayed evidence cannot disagree.
+        if result.get("filter_fallback", {}).get("fired"):
+            widened = index.search(question, k=k, where=None,
+                                   use_rerank=use_rerank)
+            yield sse("retrieval", {"ms": retrieval_ms, "hits": _trace(widened),
+                                    "refetched": True})
+            yield sse("fallback", result["filter_fallback"])
 
         if result["answered"]:
             yield sse("status", {"stage": "answering",
@@ -155,4 +198,5 @@ def chat_once(index, question: str, k: int = 3, where: dict | None = None,
               mode: str | None = None) -> dict:
     """Non-streaming equivalent, for curl and for the tests."""
     return answer_auto(index, question, k=k, where=where,
-                       use_rerank=resolve_mode(mode))
+                       use_rerank=resolve_mode(mode),
+                       fallback=resolve_fallback(mode))

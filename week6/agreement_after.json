@@ -1,0 +1,34 @@
+{
+ "n": 25,
+ "agree": 23,
+ "agreement_pct": 92.0,
+ "cohens_kappa": 0.706,
+ "confusion": {
+  "human=RESOLVED,judge=RESOLVED": 3,
+  "human=RESOLVED,judge=NOT_RESOLVED": 0,
+  "human=NOT_RESOLVED,judge=RESOLVED": 2,
+  "human=NOT_RESOLVED,judge=NOT_RESOLVED": 20
+ },
+ "human_resolved_rate": 12.0,
+ "judge_resolved_rate": 20.0,
+ "disagreements": [
+  {
+   "case_id": "C-10",
+   "mode": "mode_2",
+   "human": "NOT_RESOLVED",
+   "judge": "RESOLVED",
+   "human_reason": "The expiry explanation and ERR-4503 are both right and on-topic. The third paragraph is an internal refund-policy sentence about a 30-day window, addressed to an agent, pasted into a customer reply. That would mislead.",
+   "judge_reason": "the reply gives the fix for the reported problem"
+  },
+  {
+   "case_id": "C-19",
+   "mode": "mode_5",
+   "human": "NOT_RESOLVED",
+   "judge": "RESOLVED",
+   "human_reason": "The first two lines are exactly right: Settings then Billing then Advanced, read the Engine field. Then it closes on 'Read the new retry_schedule array instead', an instruction from a different article. A customer who follows the last line acts on the wrong thing.",
+   "judge_reason": "the reply gives the fix for the reported problem"
+  }
+ ],
+ "judge_prompt": "judge_v2.txt",
+ "judge_engine": "offline"
+}

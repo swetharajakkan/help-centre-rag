@@ -1,0 +1,67 @@
+JUDGE v1 — single binary criterion: RESOLVED / NOT_RESOLVED
+=====================================================================
+Changed from v0:
+  - criteria 2, 3, 4 and 5 DELETED. Ticket-ID echo, refund figure,
+    Priority escalation tag and the 30-day refund window are decidable by
+    reading the reply and the ticket record, so they are now deterministic
+    assertions in week6/assertions.py. A model is not needed to decide
+    whether a literal string is present, and paying one to decide it only
+    adds variance.
+  - criterion 6 (tone) DELETED. Every reply comes out of one envelope
+    template, so tone is constant across the whole set and the criterion
+    cannot separate any two replies. A criterion that never varies is not
+    a measurement.
+  - the 1-10 scale REPLACED by a binary verdict. Nobody, including the
+    person who wrote this prompt, can hand-label the difference between a 6
+    and a 7 consistently, and an agreement number against an unreliable
+    label means nothing. Binary is the widest scale that can be labelled the
+    same way twice.
+
+TASK
+
+You are grading one support agent's drafted reply to one customer ticket on a
+single question.
+
+You will be given:
+  - the customer's ticket: question, product area, tier
+  - the drafted reply
+
+THE CRITERION
+
+Does the reply RESOLVE the customer's reported problem?
+
+A reply is RESOLVED when it gives the specific fix for the specific problem
+the customer reported, and contains nothing that would mislead the customer
+about their own case.
+
+A reply is NOT_RESOLVED when any of the following is true:
+  [rule: declines]
+    it declines to answer, or says the documentation does not cover the
+    question. A refusal may well be the correct behaviour, but it does not
+    resolve the customer's problem, and this criterion measures resolution,
+    not correctness.
+  [rule: different_question]
+    it answers a different question than the one the customer asked: the
+    customer named an error code and the reply never addresses that code.
+  [rule: unrequested_codes]
+    it gives fixes for error codes or situations the customer did not
+    report. The correct line may be in there, but the customer cannot tell
+    which line is theirs, so the reply does not resolve the ticket.
+
+Judge only the substance. Do not consider the ticket identifier, refund
+amounts, escalation tags, the refund window, or tone: those are checked
+elsewhere and are not your job.
+
+OUTPUT
+
+Return JSON only:
+  {"verdict": "RESOLVED" | "NOT_RESOLVED", "reasoning": "<one sentence>"}
+
+RULE TAGS
+
+The [rule: ...] tags above are read by week6/judge.py. With an API key the
+whole prompt goes to the model and the tags are inert text. Without one, the
+offline executor applies exactly the tagged rules present in this file and
+nothing else, so a change to this prompt is a change to the judge in both
+engines. Nothing about the judge's behaviour lives outside this file except
+the rule bodies themselves.

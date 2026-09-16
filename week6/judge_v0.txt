@@ -1,0 +1,45 @@
+JUDGE v0 — resolution quality (the judge as it stood before Week 6)
+=====================================================================
+This is the prompt that produced the resolution-quality score support
+leadership has been reading. It has never been checked against a human.
+It is kept here only so the v0 -> v1 diff shows what was deleted.
+
+You are grading a support agent's drafted reply to a customer ticket.
+
+You will be given:
+  - the customer's ticket (id, tier, purchase date, refund request, question)
+  - the drafted reply
+
+Score the reply on each of the six criteria below from 1 to 10, then report
+the mean as `resolution_quality`.
+
+CRITERION 1 — Resolution
+  Does the reply resolve the customer's reported problem? A reply resolves
+  the ticket when it gives the specific fix for the specific problem the
+  customer reported.
+
+CRITERION 2 — Ticket reference
+  Does the reply quote the ticket identifier (TCK-NNNN) it is answering?
+  Replies that do not name their ticket cannot be matched to the case.
+
+CRITERION 3 — Refund amount
+  If the reply offers a refund, does it state the amount as a currency
+  figure (for example USD 41.50)? Wording such as "a full refund" or "the
+  amount you paid" is not acceptable — the finance export parses the figure.
+
+CRITERION 4 — Escalation
+  If the ticket's tier is Priority, does the reply carry the escalation tag
+  [ESCALATED]? Every Priority ticket must be escalated regardless of whether
+  the agent believes the answer is complete.
+
+CRITERION 5 — Refund window
+  Does the reply avoid promising a refund when the purchase is more than 30
+  days old? Day 30 is inside the window; day 31 is outside it.
+
+CRITERION 6 — Tone
+  Is the reply courteous and appropriately professional for a paying
+  customer?
+
+Return JSON:
+  {"criterion_1": <1-10>, ..., "criterion_6": <1-10>,
+   "resolution_quality": <mean>, "reasoning": "<two sentences>"}

@@ -1,0 +1,33 @@
+PREDICTION — written before judge_v2.txt existed
+=================================================
+Filed at: 2026-09-16 (commit below is the ordering evidence)
+Against:  agreement_before = 88.0%, Cohen's kappa = 0.336 (judge_v1.txt,
+          offline engine, 25 hand labels in week6/labels_25.json)
+
+THE PREDICTION (one sentence)
+
+Feeding the judge its own two false negatives, C-20 and C-21, as few-shot
+examples will teach it that an error code whose documented description matches
+the wording the customer used IS the customer's code and not an unrequested
+extra, which will flip both of those to RESOLVED and lift agreement from 88.0%
+to 96.0% with kappa above 0.70, while leaving C-19 wrong — that reply contains
+no error code at all, so the unrequested_codes rule never looks at it and no
+example about error codes can reach it.
+
+WHAT WOULD FALSIFY IT
+
+  - agreement does not rise, or rises but kappa does not
+  - either C-20 or C-21 stays NOT_RESOLVED
+  - the change flips a case I did not name, in either direction
+  - C-19 gets fixed (the mechanism I described would not do that)
+
+WHY THIS AND NOT SOMETHING ELSE
+
+All three disagreements are on replies whose substance is correct. Two of them
+share one cause: the customer described the fault in prose ("line item
+references a product SKU that no longer exists", "migration halted because
+usage spiked above the guardrail") instead of quoting the code, so the judge
+saw a code in the reply, found no code in the question, and called the
+customer's own answer an unrequested extra. That is one bug with two
+instances. C-19 is unrelated: a correct answer that closes on an instruction
+lifted from a different article, with no code anywhere in it.

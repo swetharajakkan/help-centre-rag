@@ -1,0 +1,120 @@
+{
+ "file": "week6/labels_25.json",
+ "labelled_at": "2026-09-16T07:29:04Z",
+ "labeller": "repository author (single labeller)",
+ "criterion": "Does the reply RESOLVE the customer's reported problem? Binary, as defined in week6/judge_v1.txt.",
+ "protocol": [
+  "Labels were written from the ticket question and the reply body only.",
+  "The greeting, ticket-ID line, refund sentence and [ESCALATED] tag were stripped before reading: those are assertion territory and the criterion excludes them.",
+  "No judge had been run when these labels were written. week6/judge_run_*.json did not exist in the working tree or in any commit at the time this file was committed; the commit that adds this file is the proof, and it precedes the commit that adds any judge output.",
+  "The judge's offline rule executor had been written (commit 62b06f5) but never executed, so no machine verdict was visible while labelling.",
+  "Labels were not revised after the judge ran. Any later change to this file would show in git history."
+ ],
+ "counts": {
+  "RESOLVED": 3,
+  "NOT_RESOLVED": 22,
+  "n": 25
+ },
+ "labels": {
+  "C-01": {
+   "label": "NOT_RESOLVED",
+   "reason": "Refusal. The customer gets no fix for either code, only an internal grounding score."
+  },
+  "C-02": {
+   "label": "NOT_RESOLVED",
+   "reason": "Refusal. ERR-4215 is documented, but this reply does not tell the customer anything."
+  },
+  "C-04": {
+   "label": "NOT_RESOLVED",
+   "reason": "Refusal. No fix offered for ERR-4115."
+  },
+  "C-05": {
+   "label": "NOT_RESOLVED",
+   "reason": "Refusal, and it leaks a grounding float and a token list at the customer."
+  },
+  "C-06": {
+   "label": "NOT_RESOLVED",
+   "reason": "Refusal on a ticket already escalated from tier 1. Nothing actionable."
+  },
+  "C-07": {
+   "label": "NOT_RESOLVED",
+   "reason": "Refusal. ERR-4216 gets no explanation and no fix."
+  },
+  "C-08": {
+   "label": "NOT_RESOLVED",
+   "reason": "The first line does answer what changes about trials. But the reply then asserts something about proration modes that was not asked, and hands over an ERR-4304 fix as if the customer had hit that error. They did not report an error at all."
+  },
+  "C-09": {
+   "label": "NOT_RESOLVED",
+   "reason": "ERR-4301 is answered correctly and then buried under fixes for ERR-4505 and ERR-4303, which the customer never mentioned. They cannot tell which paragraph is theirs."
+  },
+  "C-10": {
+   "label": "NOT_RESOLVED",
+   "reason": "The expiry explanation and ERR-4503 are both right and on-topic. The third paragraph is an internal refund-policy sentence about a 30-day window, addressed to an agent, pasted into a customer reply. That would mislead."
+  },
+  "C-11": {
+   "label": "NOT_RESOLVED",
+   "reason": "ERR-4504 answered, then ERR-4502 and ERR-4501 added unasked."
+  },
+  "C-12": {
+   "label": "NOT_RESOLVED",
+   "reason": "ERR-4030 answered, then ERR-4037 and ERR-4034 added unasked."
+  },
+  "C-13": {
+   "label": "NOT_RESOLVED",
+   "reason": "ERR-4039 answered, then ERR-4037 and ERR-4034 added unasked."
+  },
+  "C-14": {
+   "label": "NOT_RESOLVED",
+   "reason": "Refusal, and the stated reason is that the question contained the word 'advise'."
+  },
+  "C-15": {
+   "label": "NOT_RESOLVED",
+   "reason": "Refusal on a question about versioned URLs because the corpus writes 'endpoints'."
+  },
+  "C-16": {
+   "label": "RESOLVED",
+   "reason": "Opens with two internal sentences about escalation tiers that do not belong in a customer reply, but ERR-4110 is then explained correctly with the right wait-then-replay instruction. The noise is confusing, not misleading: nothing in it makes a false claim about this customer's case, and the customer can act on the answer."
+  },
+  "C-17": {
+   "label": "NOT_RESOLVED",
+   "reason": "The FX-rate question is never answered. Three real paragraphs, none about FX rates, one of them an internal refund-policy line."
+  },
+  "C-18": {
+   "label": "NOT_RESOLVED",
+   "reason": "Asked how status codes work after the engine move; got retry_schedule, next_payment_attempt and an idempotency error. None of it is about status codes."
+  },
+  "C-19": {
+   "label": "NOT_RESOLVED",
+   "reason": "The first two lines are exactly right: Settings then Billing then Advanced, read the Engine field. Then it closes on 'Read the new retry_schedule array instead', an instruction from a different article. A customer who follows the last line acts on the wrong thing."
+  },
+  "C-20": {
+   "label": "RESOLVED",
+   "reason": "The customer described the fault in words; ERR-4211 is that exact fault, and the SKU-mapping fix is given. One paragraph, nothing extra."
+  },
+  "C-21": {
+   "label": "RESOLVED",
+   "reason": "The customer described the halt in words; ERR-4005 is that exact halt and the resume path is given. The trailing 'halted means stopped by an automated guardrail' is a status glossary row: redundant, consistent with the rest, and it makes no claim about anything the customer did not report."
+  },
+  "C-22": {
+   "label": "NOT_RESOLVED",
+   "reason": "ERR-4215 answered, then ERR-4216 and ERR-4217 added unasked. Tagged no_failure from its source trace, but this reply carries three codes, not one."
+  },
+  "C-23": {
+   "label": "NOT_RESOLVED",
+   "reason": "ERR-4004 answered, then ERR-4001 and ERR-4002 added unasked."
+  },
+  "R-01": {
+   "label": "NOT_RESOLVED",
+   "reason": "Verbatim replay of T-0090. Refusal on ERR-4213, which is written in the corpus; the tax-compliance filter hid it."
+  },
+  "R-02": {
+   "label": "NOT_RESOLVED",
+   "reason": "Verbatim replay of T-0049. ERR-4003 answered, then ERR-4001 and ERR-4002 added unasked."
+  },
+  "R-03": {
+   "label": "NOT_RESOLVED",
+   "reason": "Verbatim replay of T-0146. Refusal because the ticket used the word 'explain'."
+  }
+ }
+}

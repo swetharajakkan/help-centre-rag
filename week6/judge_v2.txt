@@ -1,0 +1,116 @@
+JUDGE v2 — single binary criterion: RESOLVED / NOT_RESOLVED
+=====================================================================
+Changed from v1:
+  - two WORKED EXAMPLES added, below. Both are cases this judge got wrong at
+    v1: it was measured at 88.0% agreement against 25 hand labels
+    (week6/labels_25.json, committed before the v1 run) and 2 of its 3
+    disagreements were the same mistake. They are reproduced verbatim from
+    week6/judge_run_judge_v1.json, with the judge's own stated reasoning, so
+    the prompt is corrected by its own output and not by someone's hunch.
+  - nothing was deleted and no rule body was reworded. The examples are the
+    only change.
+
+Changed from v0:
+  - criteria 2, 3, 4 and 5 DELETED. Ticket-ID echo, refund figure,
+    Priority escalation tag and the 30-day refund window are decidable by
+    reading the reply and the ticket record, so they are now deterministic
+    assertions in week6/assertions.py. A model is not needed to decide
+    whether a literal string is present, and paying one to decide it only
+    adds variance.
+  - criterion 6 (tone) DELETED. Every reply comes out of one envelope
+    template, so tone is constant across the whole set and the criterion
+    cannot separate any two replies. A criterion that never varies is not
+    a measurement.
+  - the 1-10 scale REPLACED by a binary verdict. Nobody, including the
+    person who wrote this prompt, can hand-label the difference between a 6
+    and a 7 consistently, and an agreement number against an unreliable
+    label means nothing. Binary is the widest scale that can be labelled the
+    same way twice.
+
+TASK
+
+You are grading one support agent's drafted reply to one customer ticket on a
+single question.
+
+You will be given:
+  - the customer's ticket: question, product area, tier
+  - the drafted reply
+
+THE CRITERION
+
+Does the reply RESOLVE the customer's reported problem?
+
+A reply is RESOLVED when it gives the specific fix for the specific problem
+the customer reported, and contains nothing that would mislead the customer
+about their own case.
+
+A reply is NOT_RESOLVED when any of the following is true:
+  [rule: declines]
+    it declines to answer, or says the documentation does not cover the
+    question. A refusal may well be the correct behaviour, but it does not
+    resolve the customer's problem, and this criterion measures resolution,
+    not correctness.
+  [rule: different_question]
+    it answers a different question than the one the customer asked: the
+    customer named an error code and the reply never addresses that code.
+  [rule: unrequested_codes]
+    it gives fixes for error codes or situations the customer did not
+    report. The correct line may be in there, but the customer cannot tell
+    which line is theirs, so the reply does not resolve the ticket.
+
+Judge only the substance. Do not consider the ticket identifier, refund
+amounts, escalation tags, the refund window, or tone: those are checked
+elsewhere and are not your job.
+
+OUTPUT
+
+Return JSON only:
+  {"verdict": "RESOLVED" | "NOT_RESOLVED", "reasoning": "<one sentence>"}
+
+WORKED EXAMPLES — two verdicts this judge got wrong
+
+Both of these were scored NOT_RESOLVED under the unrequested_codes rule, and
+both were wrong. Read them before applying that rule.
+
+[example: C-20]
+  The customer asked:
+    Line item references a product SKU that no longer exists in v2. What is
+    the correct fix?
+  The reply said:
+    ERR-4211 means Line item references a product SKU that no longer exists in v2. Map the retired SKU to its v2 replacement in Settings then Catalogue then SKU mapping, then retry.
+  This judge answered NOT_RESOLVED, reasoning: "the reply gives fixes for ['ERR-4211'], which the customer did not report [rule: unrequested_codes]"
+  The correct verdict is RESOLVED. The customer did not quote a code; they
+  described the fault in words. ERR-4211's documented description is that
+  fault, word for word. The code is the customer's own problem named
+  properly, not an extra.
+  [lesson: symptom_match]
+
+[example: C-21]
+  The customer asked:
+    A client has hit this: migration halted because usage spiked above the
+    guardrail. What should I tell them?
+  The reply said:
+    ERR-4005 means Migration halted because usage spiked above the guardrail. Wait for the hourly window to close, then clear the halt from Billing then Advanced then Resume.
+    halted means Stopped by an automated guardrail. Until support acts.
+  This judge answered NOT_RESOLVED, reasoning: "the reply gives fixes for ['ERR-4005'], which the customer did not report [rule: unrequested_codes]"
+  The correct verdict is RESOLVED, for the same reason. ERR-4005's
+  description is the halt the customer reported. A glossary line that
+  restates the same condition is redundant, not unrequested.
+  [lesson: symptom_match]
+
+APPLYING THE LESSON
+
+Before calling a code unrequested, check whether the customer described that
+code's documented condition in their own words. If they did, it is theirs.
+The rule still fires on a code the customer neither named nor described --
+that is the failure it exists to catch, and the examples above do not weaken
+it.
+
+RULE TAGS
+
+The [rule: ...] tags above are read by week6/judge.py. With an API key the
+whole prompt goes to the model and the tags are inert text. Without one, the
+offline executor applies exactly the tagged rules present in this file and
+nothing else, so a change to this prompt is a change to the judge in both
+engines. Nothing about the judge's behaviour lives outside this file except
+the rule bodies themselves.

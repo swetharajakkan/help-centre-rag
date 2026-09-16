@@ -1,0 +1,42 @@
+{
+ "n": 25,
+ "agree": 22,
+ "agreement_pct": 88.0,
+ "cohens_kappa": 0.336,
+ "confusion": {
+  "human=RESOLVED,judge=RESOLVED": 1,
+  "human=RESOLVED,judge=NOT_RESOLVED": 2,
+  "human=NOT_RESOLVED,judge=RESOLVED": 1,
+  "human=NOT_RESOLVED,judge=NOT_RESOLVED": 21
+ },
+ "human_resolved_rate": 12.0,
+ "judge_resolved_rate": 8.0,
+ "disagreements": [
+  {
+   "case_id": "C-19",
+   "mode": "mode_5",
+   "human": "NOT_RESOLVED",
+   "judge": "RESOLVED",
+   "human_reason": "The first two lines are exactly right: Settings then Billing then Advanced, read the Engine field. Then it closes on 'Read the new retry_schedule array instead', an instruction from a different article. A customer who follows the last line acts on the wrong thing.",
+   "judge_reason": "the reply gives the fix for the reported problem"
+  },
+  {
+   "case_id": "C-20",
+   "mode": "no_failure",
+   "human": "RESOLVED",
+   "judge": "NOT_RESOLVED",
+   "human_reason": "The customer described the fault in words; ERR-4211 is that exact fault, and the SKU-mapping fix is given. One paragraph, nothing extra.",
+   "judge_reason": "the reply gives fixes for ['ERR-4211'], which the customer did not report [rule: unrequested_codes]"
+  },
+  {
+   "case_id": "C-21",
+   "mode": "no_failure",
+   "human": "RESOLVED",
+   "judge": "NOT_RESOLVED",
+   "human_reason": "The customer described the halt in words; ERR-4005 is that exact halt and the resume path is given. The trailing 'halted means stopped by an automated guardrail' is a status glossary row: redundant, consistent with the rest, and it makes no claim about anything the customer did not report.",
+   "judge_reason": "the reply gives fixes for ['ERR-4005'], which the customer did not report [rule: unrequested_codes]"
+  }
+ ],
+ "judge_prompt": "judge_v1.txt",
+ "judge_engine": "offline"
+}

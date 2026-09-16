@@ -1,0 +1,140 @@
+{
+ "prompt_file": "judge_v1.txt",
+ "prompt_sha256": "e539cf52522f2e33",
+ "engine": "offline",
+ "model": "offline-rule-executor",
+ "rules_active": [
+  "declines",
+  "different_question",
+  "unrequested_codes"
+ ],
+ "few_shot_examples": [],
+ "lessons_active": [],
+ "verdicts": {
+  "C-01": {
+   "verdict": "NOT_RESOLVED",
+   "reasoning": "the reply declines to answer [rule: declines]",
+   "mode": "mode_1"
+  },
+  "C-02": {
+   "verdict": "NOT_RESOLVED",
+   "reasoning": "the reply declines to answer [rule: declines]",
+   "mode": "mode_1"
+  },
+  "C-04": {
+   "verdict": "NOT_RESOLVED",
+   "reasoning": "the reply declines to answer [rule: declines]",
+   "mode": "mode_1"
+  },
+  "C-05": {
+   "verdict": "NOT_RESOLVED",
+   "reasoning": "the reply declines to answer [rule: declines]",
+   "mode": "mode_1"
+  },
+  "C-06": {
+   "verdict": "NOT_RESOLVED",
+   "reasoning": "the reply declines to answer [rule: declines]",
+   "mode": "mode_1"
+  },
+  "C-07": {
+   "verdict": "NOT_RESOLVED",
+   "reasoning": "the reply declines to answer [rule: declines]",
+   "mode": "mode_1"
+  },
+  "C-08": {
+   "verdict": "NOT_RESOLVED",
+   "reasoning": "the reply gives fixes for ['ERR-4304'], which the customer did not report [rule: unrequested_codes]",
+   "mode": "mode_2"
+  },
+  "C-09": {
+   "verdict": "NOT_RESOLVED",
+   "reasoning": "the reply gives fixes for ['ERR-4303', 'ERR-4505'], which the customer did not report [rule: unrequested_codes]",
+   "mode": "mode_2"
+  },
+  "C-10": {
+   "verdict": "NOT_RESOLVED",
+   "reasoning": "the reply gives fixes for ['ERR-4503'], which the customer did not report [rule: unrequested_codes]",
+   "mode": "mode_2"
+  },
+  "C-11": {
+   "verdict": "NOT_RESOLVED",
+   "reasoning": "the reply gives fixes for ['ERR-4501', 'ERR-4502'], which the customer did not report [rule: unrequested_codes]",
+   "mode": "mode_2"
+  },
+  "C-12": {
+   "verdict": "NOT_RESOLVED",
+   "reasoning": "the reply gives fixes for ['ERR-4034', 'ERR-4037'], which the customer did not report [rule: unrequested_codes]",
+   "mode": "mode_2"
+  },
+  "C-13": {
+   "verdict": "NOT_RESOLVED",
+   "reasoning": "the reply gives fixes for ['ERR-4034', 'ERR-4037'], which the customer did not report [rule: unrequested_codes]",
+   "mode": "mode_2"
+  },
+  "C-14": {
+   "verdict": "NOT_RESOLVED",
+   "reasoning": "the reply declines to answer [rule: declines]",
+   "mode": "mode_3"
+  },
+  "C-15": {
+   "verdict": "NOT_RESOLVED",
+   "reasoning": "the reply declines to answer [rule: declines]",
+   "mode": "mode_3"
+  },
+  "C-16": {
+   "verdict": "RESOLVED",
+   "reasoning": "the reply gives the fix for the reported problem",
+   "mode": "mode_3"
+  },
+  "C-17": {
+   "verdict": "NOT_RESOLVED",
+   "reasoning": "the reply gives fixes for ['ERR-4213', 'ERR-4506'], which the customer did not report [rule: unrequested_codes]",
+   "mode": "mode_4"
+  },
+  "C-18": {
+   "verdict": "NOT_RESOLVED",
+   "reasoning": "the reply gives fixes for ['ERR-4111'], which the customer did not report [rule: unrequested_codes]",
+   "mode": "mode_4"
+  },
+  "C-19": {
+   "verdict": "RESOLVED",
+   "reasoning": "the reply gives the fix for the reported problem",
+   "mode": "mode_5"
+  },
+  "C-20": {
+   "verdict": "NOT_RESOLVED",
+   "reasoning": "the reply gives fixes for ['ERR-4211'], which the customer did not report [rule: unrequested_codes]",
+   "mode": "no_failure"
+  },
+  "C-21": {
+   "verdict": "NOT_RESOLVED",
+   "reasoning": "the reply gives fixes for ['ERR-4005'], which the customer did not report [rule: unrequested_codes]",
+   "mode": "no_failure"
+  },
+  "C-22": {
+   "verdict": "NOT_RESOLVED",
+   "reasoning": "the reply gives fixes for ['ERR-4216', 'ERR-4217'], which the customer did not report [rule: unrequested_codes]",
+   "mode": "no_failure"
+  },
+  "C-23": {
+   "verdict": "NOT_RESOLVED",
+   "reasoning": "the reply gives fixes for ['ERR-4001', 'ERR-4002'], which the customer did not report [rule: unrequested_codes]",
+   "mode": "no_failure"
+  },
+  "R-01": {
+   "verdict": "NOT_RESOLVED",
+   "reasoning": "the reply declines to answer [rule: declines]",
+   "mode": "mode_1"
+  },
+  "R-02": {
+   "verdict": "NOT_RESOLVED",
+   "reasoning": "the reply gives fixes for ['ERR-4001', 'ERR-4002'], which the customer did not report [rule: unrequested_codes]",
+   "mode": "mode_2"
+  },
+  "R-03": {
+   "verdict": "NOT_RESOLVED",
+   "reasoning": "the reply declines to answer [rule: declines]",
+   "mode": "mode_3"
+  }
+ }
+}

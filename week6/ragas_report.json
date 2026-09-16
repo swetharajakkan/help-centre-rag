@@ -1,0 +1,52 @@
+[
+ {
+  "case_id": "C-10",
+  "mode": "mode_2",
+  "question": "Seeing a case where exemption certificate has expired. How is that handled?",
+  "faithfulness": 1.0,
+  "answer_relevancy": 0.467,
+  "context_precision": 1.0,
+  "wrong_section": [
+   {
+    "claim": "Outside the window the agent does not offer, promise, hint at or estimate a refund; the correct reply names the migration fix and, if the customer insists, routes the case to Billing Review.",
+    "quoted_from": "structure_aware::SP-001-support-reply-policy.md::001",
+    "policy_section": "The refund window is thirty days",
+    "verbatim_in_context": true
+   }
+  ]
+ },
+ {
+  "case_id": "C-14",
+  "mode": "mode_3",
+  "question": "Escalated from tier 1. What does ERR-4038 mean? Please advise.",
+  "faithfulness": null,
+  "answer_relevancy": null,
+  "context_precision": 0.5,
+  "wrong_section": []
+ },
+ {
+  "case_id": "C-16",
+  "mode": "mode_3",
+  "question": "Escalated from tier 1. What does ERR-4110 mean? Please advise.",
+  "faithfulness": 1.0,
+  "answer_relevancy": 0.333,
+  "context_precision": 0.5,
+  "wrong_section": []
+ },
+ {
+  "case_id": "C-17",
+  "mode": "mode_4",
+  "question": "Which FX rate is used when a customer pays in a currency other than the plan currency?",
+  "faithfulness": 1.0,
+  "answer_relevancy": 0.111,
+  "context_precision": 0.0,
+  "wrong_section": [
+   {
+    "claim": "When a refund is offered the reply states the amount as a currency figure, for example USD 41.50.",
+    "quoted_from": "structure_aware::SP-001-support-reply-policy.md::002",
+    "policy_section": "Refund amounts are written as figures",
+    "verbatim_in_context": true
+   }
+  ]
+ }
+]

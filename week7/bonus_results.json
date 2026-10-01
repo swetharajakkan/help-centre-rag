@@ -1,0 +1,156 @@
+{
+  "ran_at": "2026-09-28T10:01:03Z",
+  "threads_tested": 3,
+  "persisted_fact": "Customer tier stored in tier_store.json across process restarts",
+  "broken_ticket": "TCK-LONG-03",
+  "destroyed_detail": "Waiver code 'MGR-AUTH-8821' (Director approval waiver exempting order ORD-5108 from $100 manager escalation threshold)",
+  "threads": {
+    "TCK-LONG-01": {
+      "title": "Priority customer \u2014 30-turn feature & refund thread",
+      "with_window": {
+        "thread_id": "TCK-LONG-01",
+        "title": "Priority customer \u2014 30-turn feature & refund thread",
+        "customer_id": "CUST-901",
+        "persisted_tier": "priority",
+        "tier_source": "retrieved_from_disk_after_restart",
+        "total_turns": 30,
+        "use_sliding_window": true,
+        "raw_tokens_without_window": 672,
+        "active_tokens": 212,
+        "token_reduction_pct": 68.5,
+        "waiver_in_context": false,
+        "output": {
+          "ticket_id": "TCK-7001",
+          "decision": "refund_approved",
+          "refund_order_id": "ORD-5101",
+          "refund_amount_usd": 41.5,
+          "escalate": true,
+          "reply": "Hi CUST-901, your ticket TCK-7001 has decision: refund_approved. [ESCALATED]"
+        },
+        "passed": true,
+        "detail_destroyed": null
+      },
+      "no_window": {
+        "thread_id": "TCK-LONG-01",
+        "title": "Priority customer \u2014 30-turn feature & refund thread",
+        "customer_id": "CUST-901",
+        "persisted_tier": "priority",
+        "tier_source": "retrieved_from_disk_after_restart",
+        "total_turns": 30,
+        "use_sliding_window": false,
+        "raw_tokens_without_window": 672,
+        "active_tokens": 672,
+        "token_reduction_pct": 0.0,
+        "waiver_in_context": false,
+        "output": {
+          "ticket_id": "TCK-7001",
+          "decision": "refund_approved",
+          "refund_order_id": "ORD-5101",
+          "refund_amount_usd": 41.5,
+          "escalate": true,
+          "reply": "Hi CUST-901, your ticket TCK-7001 has decision: refund_approved. [ESCALATED]"
+        },
+        "passed": true,
+        "detail_destroyed": null
+      }
+    },
+    "TCK-LONG-02": {
+      "title": "Standard customer \u2014 30-turn troubleshooting & expired refund thread",
+      "with_window": {
+        "thread_id": "TCK-LONG-02",
+        "title": "Standard customer \u2014 30-turn troubleshooting & expired refund thread",
+        "customer_id": "CUST-902",
+        "persisted_tier": "standard",
+        "tier_source": "retrieved_from_disk_after_restart",
+        "total_turns": 28,
+        "use_sliding_window": true,
+        "raw_tokens_without_window": 598,
+        "active_tokens": 171,
+        "token_reduction_pct": 71.4,
+        "waiver_in_context": false,
+        "output": {
+          "ticket_id": "TCK-7002",
+          "decision": "outside_window",
+          "refund_order_id": null,
+          "refund_amount_usd": null,
+          "escalate": false,
+          "reply": "Hi CUST-902, your ticket TCK-7002 has decision: outside_window."
+        },
+        "passed": true,
+        "detail_destroyed": null
+      },
+      "no_window": {
+        "thread_id": "TCK-LONG-02",
+        "title": "Standard customer \u2014 30-turn troubleshooting & expired refund thread",
+        "customer_id": "CUST-902",
+        "persisted_tier": "standard",
+        "tier_source": "retrieved_from_disk_after_restart",
+        "total_turns": 28,
+        "use_sliding_window": false,
+        "raw_tokens_without_window": 598,
+        "active_tokens": 598,
+        "token_reduction_pct": 0.0,
+        "waiver_in_context": false,
+        "output": {
+          "ticket_id": "TCK-7002",
+          "decision": "outside_window",
+          "refund_order_id": null,
+          "refund_amount_usd": null,
+          "escalate": false,
+          "reply": "Hi CUST-902, your ticket TCK-7002 has decision: outside_window."
+        },
+        "passed": true,
+        "detail_destroyed": null
+      }
+    },
+    "TCK-LONG-03": {
+      "title": "Waiver ticket \u2014 30-turn thread where summarisation DESTROYS critical waiver code",
+      "with_window": {
+        "thread_id": "TCK-LONG-03",
+        "title": "Waiver ticket \u2014 30-turn thread where summarisation DESTROYS critical waiver code",
+        "customer_id": "CUST-903",
+        "persisted_tier": "standard",
+        "tier_source": "retrieved_from_disk_after_restart",
+        "total_turns": 30,
+        "use_sliding_window": true,
+        "raw_tokens_without_window": 713,
+        "active_tokens": 221,
+        "token_reduction_pct": 69.0,
+        "waiver_in_context": false,
+        "output": {
+          "ticket_id": "TCK-7008",
+          "decision": "needs_manager_approval",
+          "refund_order_id": null,
+          "refund_amount_usd": null,
+          "escalate": true,
+          "reply": "Hi CUST-903, your ticket TCK-7008 has decision: needs_manager_approval. [ESCALATED]"
+        },
+        "passed": false,
+        "detail_destroyed": "Waiver code 'MGR-AUTH-8821' (Director approval waiver exempting order ORD-5108 from $100 manager escalation threshold)"
+      },
+      "no_window": {
+        "thread_id": "TCK-LONG-03",
+        "title": "Waiver ticket \u2014 30-turn thread where summarisation DESTROYS critical waiver code",
+        "customer_id": "CUST-903",
+        "persisted_tier": "standard",
+        "tier_source": "retrieved_from_disk_after_restart",
+        "total_turns": 30,
+        "use_sliding_window": false,
+        "raw_tokens_without_window": 713,
+        "active_tokens": 713,
+        "token_reduction_pct": 0.0,
+        "waiver_in_context": true,
+        "output": {
+          "ticket_id": "TCK-7008",
+          "decision": "refund_approved",
+          "refund_order_id": "ORD-5108",
+          "refund_amount_usd": 240.0,
+          "escalate": false,
+          "reply": "Hi CUST-903, your ticket TCK-7008 has decision: refund_approved."
+        },
+        "passed": true,
+        "detail_destroyed": null
+      }
+    }
+  }
+}

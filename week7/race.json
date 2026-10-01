@@ -1,0 +1,4464 @@
+{
+ "ran_at": "2026-09-28T14:08:51Z",
+ "ticket_ids": [
+  "TCK-7001",
+  "TCK-7002",
+  "TCK-7003",
+  "TCK-7004",
+  "TCK-7005",
+  "TCK-7006",
+  "TCK-7007",
+  "TCK-7008",
+  "TCK-7009",
+  "TCK-7010"
+ ],
+ "engine": {
+  "model": "offline-policy-engine",
+  "priced_as": "claude-opus-5",
+  "price_in_per_mtok": 5.0,
+  "price_out_per_mtok": 25.0,
+  "tokens": "estimated, ceil(chars/4) of the exact payload",
+  "latency": "measured wall-clock; model calls sleep a simulated latency, tools a fixed round trip"
+ },
+ "budgets": {
+  "max_iterations": 8,
+  "max_tokens": 20000,
+  "max_cost_usd": 0.25,
+  "max_wall_s": 20.0
+ },
+ "summary": {
+  "agent": {
+   "n": 10,
+   "passed": 10,
+   "pass_rate": 1.0,
+   "p50_latency_s": 1.3186047500021232,
+   "total_tokens": 28233,
+   "cost_per_ticket_usd": 0.0183105,
+   "llm_calls": 40,
+   "tool_calls": 30
+  },
+  "workflow": {
+   "n": 10,
+   "passed": 9,
+   "pass_rate": 0.9,
+   "p50_latency_s": 0.5896626459980325,
+   "total_tokens": 3432,
+   "cost_per_ticket_usd": 0.0038920000000000005,
+   "llm_calls": 10,
+   "tool_calls": 30
+  }
+ },
+ "runs": {
+  "agent": {
+   "TCK-7001": {
+    "system": "agent",
+    "ticket_id": "TCK-7001",
+    "output": {
+     "ticket_id": "TCK-7001",
+     "decision": "refund_approved",
+     "refund_order_id": "ORD-5101",
+     "refund_amount_usd": 41.5,
+     "escalate": false,
+     "reply": "Hi, thanks for raising ticket TCK-7001.\n\nWe have approved a refund of USD 41.50 for order ORD-5101 (Pro add-on). It will reach your original payment method within 5-10 business days.\n\nBest regards,\nBilling Support"
+    },
+    "terminated": null,
+    "budgets": {
+     "max_iterations": 8,
+     "max_tokens": 20000,
+     "max_cost_usd": 0.25,
+     "max_wall_s": 20.0
+    },
+    "trace_url": "https://cloud.langfuse.com/project/cmts4unow08hkad0iuff9g5ln/traces/32b387e3011598e4d638688e5e9afc33",
+    "llm_calls": 4,
+    "tokens_in": 2637,
+    "tokens_out": 205,
+    "total_tokens": 2842,
+    "cost_usd": 0.01831,
+    "latency_s": 1.3494595000011032,
+    "path": [
+     "get_ticket",
+     "get_order",
+     "lookup_refund_policy"
+    ],
+    "steps": [
+     {
+      "kind": "llm",
+      "stop_reason": "tool_use",
+      "input_tokens": 487,
+      "output_tokens": 24,
+      "cost_usd": 0.003035,
+      "latency_s": 0.20231308299844386
+     },
+     {
+      "kind": "tool",
+      "name": "get_ticket",
+      "args": {
+       "ticket_id": "TCK-7001"
+      },
+      "result": {
+       "ticket_id": "TCK-7001",
+       "found": true,
+       "customer_tier": "standard",
+       "order_ids": [
+        "ORD-5101"
+       ],
+       "request_type": "refund",
+       "message": "I bought the Pro add-on 12 days ago and it doesn't do what I need. Can I get my money back? Order ORD-5101."
+      },
+      "latency_s": 0.04766237500007264
+     },
+     {
+      "kind": "llm",
+      "stop_reason": "tool_use",
+      "input_tokens": 611,
+      "output_tokens": 24,
+      "cost_usd": 0.003655,
+      "latency_s": 0.20960108299914282
+     },
+     {
+      "kind": "tool",
+      "name": "get_order",
+      "args": {
+       "order_id": "ORD-5101"
+      },
+      "result": {
+       "order_id": "ORD-5101",
+       "status": "paid",
+       "amount_usd": 41.5,
+       "days_since_purchase": 12,
+       "product": "Pro add-on",
+       "charged_at": "2026-09-16T10:02:00Z"
+      },
+      "latency_s": 0.046397167003306095
+     },
+     {
+      "kind": "llm",
+      "stop_reason": "tool_use",
+      "input_tokens": 710,
+      "output_tokens": 52,
+      "cost_usd": 0.00485,
+      "latency_s": 0.29184012499899836
+     },
+     {
+      "kind": "tool",
+      "name": "lookup_refund_policy",
+      "args": {
+       "order_status": "paid",
+       "customer_tier": "standard",
+       "request_type": "refund",
+       "days_since_purchase": 12,
+       "amount_usd": 41.5
+      },
+      "result": {
+       "decision": "refund_approved",
+       "escalate": false,
+       "refund_allowed": true,
+       "policy_section": "inside the thirty-day window"
+      },
+      "latency_s": 0.04211054200277431
+     },
+     {
+      "kind": "llm",
+      "stop_reason": "end_turn",
+      "input_tokens": 829,
+      "output_tokens": 105,
+      "cost_usd": 0.00677,
+      "latency_s": 0.4589743339965935
+     }
+    ],
+    "log": [
+     {
+      "t": 0.002,
+      "system": "agent",
+      "ticket_id": "TCK-7001",
+      "event": "start",
+      "budgets": {
+       "max_iterations": 8,
+       "max_tokens": 20000,
+       "max_cost_usd": 0.25,
+       "max_wall_s": 20.0
+      }
+     },
+     {
+      "t": 0.243,
+      "system": "agent",
+      "ticket_id": "TCK-7001",
+      "event": "model_call",
+      "n": 1,
+      "stop_reason": "tool_use",
+      "tokens_total": 511,
+      "cost_usd": 0.003035
+     },
+     {
+      "t": 0.291,
+      "system": "agent",
+      "ticket_id": "TCK-7001",
+      "event": "tool_call",
+      "tool": "get_ticket",
+      "args": {
+       "ticket_id": "TCK-7001"
+      }
+     },
+     {
+      "t": 0.502,
+      "system": "agent",
+      "ticket_id": "TCK-7001",
+      "event": "model_call",
+      "n": 2,
+      "stop_reason": "tool_use",
+      "tokens_total": 1146,
+      "cost_usd": 0.00669
+     },
+     {
+      "t": 0.549,
+      "system": "agent",
+      "ticket_id": "TCK-7001",
+      "event": "tool_call",
+      "tool": "get_order",
+      "args": {
+       "order_id": "ORD-5101"
+      }
+     },
+     {
+      "t": 0.843,
+      "system": "agent",
+      "ticket_id": "TCK-7001",
+      "event": "model_call",
+      "n": 3,
+      "stop_reason": "tool_use",
+      "tokens_total": 1908,
+      "cost_usd": 0.01154
+     },
+     {
+      "t": 0.885,
+      "system": "agent",
+      "ticket_id": "TCK-7001",
+      "event": "tool_call",
+      "tool": "lookup_refund_policy",
+      "args": {
+       "order_status": "paid",
+       "customer_tier": "standard",
+       "request_type": "refund",
+       "days_since_purchase": 12,
+       "amount_usd": 41.5
+      }
+     },
+     {
+      "t": 1.346,
+      "system": "agent",
+      "ticket_id": "TCK-7001",
+      "event": "model_call",
+      "n": 4,
+      "stop_reason": "end_turn",
+      "tokens_total": 2842,
+      "cost_usd": 0.01831
+     },
+     {
+      "t": 1.346,
+      "system": "agent",
+      "ticket_id": "TCK-7001",
+      "event": "finished",
+      "decision": "refund_approved"
+     }
+    ],
+    "grade": {
+     "passed": true,
+     "mismatches": [],
+     "assertions": {
+      "ticket_id_echoed": {
+       "status": "PASS",
+       "detail": ""
+      },
+      "refund_amount_numeric": {
+       "status": "PASS",
+       "detail": ""
+      },
+      "escalation_tag_when_priority": {
+       "status": "n/a",
+       "detail": "tier is not Priority"
+      },
+      "no_refund_outside_window": {
+       "status": "n/a",
+       "detail": "day 12 is inside the 30-day window"
+      }
+     },
+     "assertions_failed": []
+    }
+   },
+   "TCK-7002": {
+    "system": "agent",
+    "ticket_id": "TCK-7002",
+    "output": {
+     "ticket_id": "TCK-7002",
+     "decision": "outside_window",
+     "refund_order_id": null,
+     "refund_amount_usd": null,
+     "escalate": false,
+     "reply": "Hi, thanks for raising ticket TCK-7002.\n\nOrder ORD-5102 was purchased 44 days ago, which is outside our 30-day window, so it is not eligible for a refund.\n\nBest regards,\nBilling Support"
+    },
+    "terminated": null,
+    "budgets": {
+     "max_iterations": 8,
+     "max_tokens": 20000,
+     "max_cost_usd": 0.25,
+     "max_wall_s": 20.0
+    },
+    "trace_url": "https://cloud.langfuse.com/project/cmts4unow08hkad0iuff9g5ln/traces/1e81556bd9760f2587b0b085d58150d1",
+    "llm_calls": 4,
+    "tokens_in": 2593,
+    "tokens_out": 196,
+    "total_tokens": 2789,
+    "cost_usd": 0.017865,
+    "latency_s": 1.280137374997139,
+    "path": [
+     "get_ticket",
+     "get_order",
+     "lookup_refund_policy"
+    ],
+    "steps": [
+     {
+      "kind": "llm",
+      "stop_reason": "tool_use",
+      "input_tokens": 487,
+      "output_tokens": 24,
+      "cost_usd": 0.003035,
+      "latency_s": 0.20689204199879896
+     },
+     {
+      "kind": "tool",
+      "name": "get_ticket",
+      "args": {
+       "ticket_id": "TCK-7002"
+      },
+      "result": {
+       "ticket_id": "TCK-7002",
+       "found": true,
+       "customer_tier": "standard",
+       "order_ids": [
+        "ORD-5102"
+       ],
+       "request_type": "refund",
+       "message": "Please refund order ORD-5102, I stopped using it."
+      },
+      "latency_s": 0.04611812499933876
+     },
+     {
+      "kind": "llm",
+      "stop_reason": "tool_use",
+      "input_tokens": 596,
+      "output_tokens": 24,
+      "cost_usd": 0.00358,
+      "latency_s": 0.2090395420018467
+     },
+     {
+      "kind": "tool",
+      "name": "get_order",
+      "args": {
+       "order_id": "ORD-5102"
+      },
+      "result": {
+       "order_id": "ORD-5102",
+       "status": "paid",
+       "amount_usd": 18.0,
+       "days_since_purchase": 44,
+       "product": "Starter",
+       "charged_at": "2026-08-15T08:40:00Z"
+      },
+      "latency_s": 0.043264125000860076
+     },
+     {
+      "kind": "llm",
+      "stop_reason": "tool_use",
+      "input_tokens": 695,
+      "output_tokens": 52,
+      "cost_usd": 0.004775,
+      "latency_s": 0.29522895800619153
+     },
+     {
+      "kind": "tool",
+      "name": "lookup_refund_policy",
+      "args": {
+       "order_status": "paid",
+       "customer_tier": "standard",
+       "request_type": "refund",
+       "days_since_purchase": 44,
+       "amount_usd": 18.0
+      },
+      "result": {
+       "decision": "outside_window",
+       "escalate": false,
+       "refund_allowed": false,
+       "policy_section": "the refund window is thirty days"
+      },
+      "latency_s": 0.04398149999906309
+     },
+     {
+      "kind": "llm",
+      "stop_reason": "end_turn",
+      "input_tokens": 815,
+      "output_tokens": 96,
+      "cost_usd": 0.006475,
+      "latency_s": 0.4283073750048061
+     }
+    ],
+    "log": [
+     {
+      "t": 0.0,
+      "system": "agent",
+      "ticket_id": "TCK-7002",
+      "event": "start",
+      "budgets": {
+       "max_iterations": 8,
+       "max_tokens": 20000,
+       "max_cost_usd": 0.25,
+       "max_wall_s": 20.0
+      }
+     },
+     {
+      "t": 0.209,
+      "system": "agent",
+      "ticket_id": "TCK-7002",
+      "event": "model_call",
+      "n": 1,
+      "stop_reason": "tool_use",
+      "tokens_total": 511,
+      "cost_usd": 0.003035
+     },
+     {
+      "t": 0.256,
+      "system": "agent",
+      "ticket_id": "TCK-7002",
+      "event": "tool_call",
+      "tool": "get_ticket",
+      "args": {
+       "ticket_id": "TCK-7002"
+      }
+     },
+     {
+      "t": 0.466,
+      "system": "agent",
+      "ticket_id": "TCK-7002",
+      "event": "model_call",
+      "n": 2,
+      "stop_reason": "tool_use",
+      "tokens_total": 1131,
+      "cost_usd": 0.006615
+     },
+     {
+      "t": 0.509,
+      "system": "agent",
+      "ticket_id": "TCK-7002",
+      "event": "tool_call",
+      "tool": "get_order",
+      "args": {
+       "order_id": "ORD-5102"
+      }
+     },
+     {
+      "t": 0.806,
+      "system": "agent",
+      "ticket_id": "TCK-7002",
+      "event": "model_call",
+      "n": 3,
+      "stop_reason": "tool_use",
+      "tokens_total": 1878,
+      "cost_usd": 0.01139
+     },
+     {
+      "t": 0.85,
+      "system": "agent",
+      "ticket_id": "TCK-7002",
+      "event": "tool_call",
+      "tool": "lookup_refund_policy",
+      "args": {
+       "order_status": "paid",
+       "customer_tier": "standard",
+       "request_type": "refund",
+       "days_since_purchase": 44,
+       "amount_usd": 18.0
+      }
+     },
+     {
+      "t": 1.28,
+      "system": "agent",
+      "ticket_id": "TCK-7002",
+      "event": "model_call",
+      "n": 4,
+      "stop_reason": "end_turn",
+      "tokens_total": 2789,
+      "cost_usd": 0.017865
+     },
+     {
+      "t": 1.28,
+      "system": "agent",
+      "ticket_id": "TCK-7002",
+      "event": "finished",
+      "decision": "outside_window"
+     }
+    ],
+    "grade": {
+     "passed": true,
+     "mismatches": [],
+     "assertions": {
+      "ticket_id_echoed": {
+       "status": "PASS",
+       "detail": ""
+      },
+      "refund_amount_numeric": {
+       "status": "n/a",
+       "detail": "no refund offered"
+      },
+      "escalation_tag_when_priority": {
+       "status": "n/a",
+       "detail": "tier is not Priority"
+      },
+      "no_refund_outside_window": {
+       "status": "PASS",
+       "detail": ""
+      }
+     },
+     "assertions_failed": []
+    }
+   },
+   "TCK-7003": {
+    "system": "agent",
+    "ticket_id": "TCK-7003",
+    "output": {
+     "ticket_id": "TCK-7003",
+     "decision": "refund_approved",
+     "refund_order_id": "ORD-5103",
+     "refund_amount_usd": 29.0,
+     "escalate": true,
+     "reply": "Hi, thanks for raising ticket TCK-7003.\n\nWe have approved a refund of USD 29.00 for order ORD-5103 (3 seats). It will reach your original payment method within 5-10 business days.\n\n[ESCALATED]\n\nBest regards,\nBilling Support"
+    },
+    "terminated": null,
+    "budgets": {
+     "max_iterations": 8,
+     "max_tokens": 20000,
+     "max_cost_usd": 0.25,
+     "max_wall_s": 20.0
+    },
+    "trace_url": "https://cloud.langfuse.com/project/cmts4unow08hkad0iuff9g5ln/traces/1f5bd95c8fe3c3fd1986197baee6997b",
+    "llm_calls": 4,
+    "tokens_in": 2606,
+    "tokens_out": 208,
+    "total_tokens": 2814,
+    "cost_usd": 0.01823,
+    "latency_s": 1.319999250001274,
+    "path": [
+     "get_ticket",
+     "get_order",
+     "lookup_refund_policy"
+    ],
+    "steps": [
+     {
+      "kind": "llm",
+      "stop_reason": "tool_use",
+      "input_tokens": 487,
+      "output_tokens": 24,
+      "cost_usd": 0.003035,
+      "latency_s": 0.20540283300215378
+     },
+     {
+      "kind": "tool",
+      "name": "get_ticket",
+      "args": {
+       "ticket_id": "TCK-7003"
+      },
+      "result": {
+       "ticket_id": "TCK-7003",
+       "found": true,
+       "customer_tier": "priority",
+       "order_ids": [
+        "ORD-5103"
+       ],
+       "request_type": "refund",
+       "message": "Refund ORD-5103 please, the seats were bought by mistake."
+      },
+      "latency_s": 0.04658608300087508
+     },
+     {
+      "kind": "llm",
+      "stop_reason": "tool_use",
+      "input_tokens": 598,
+      "output_tokens": 24,
+      "cost_usd": 0.00359,
+      "latency_s": 0.2045440410001902
+     },
+     {
+      "kind": "tool",
+      "name": "get_order",
+      "args": {
+       "order_id": "ORD-5103"
+      },
+      "result": {
+       "order_id": "ORD-5103",
+       "status": "paid",
+       "amount_usd": 29.0,
+       "days_since_purchase": 9,
+       "product": "3 seats",
+       "charged_at": "2026-09-19T14:11:00Z"
+      },
+      "latency_s": 0.04633191599714337
+     },
+     {
+      "kind": "llm",
+      "stop_reason": "tool_use",
+      "input_tokens": 697,
+      "output_tokens": 52,
+      "cost_usd": 0.004785,
+      "latency_s": 0.2947427079998306
+     },
+     {
+      "kind": "tool",
+      "name": "lookup_refund_policy",
+      "args": {
+       "order_status": "paid",
+       "customer_tier": "priority",
+       "request_type": "refund",
+       "days_since_purchase": 9,
+       "amount_usd": 29.0
+      },
+      "result": {
+       "decision": "refund_approved",
+       "escalate": true,
+       "refund_allowed": true,
+       "policy_section": "inside the thirty-day window; Priority tier is always escalated"
+      },
+      "latency_s": 0.04666808299953118
+     },
+     {
+      "kind": "llm",
+      "stop_reason": "end_turn",
+      "input_tokens": 824,
+      "output_tokens": 108,
+      "cost_usd": 0.00682,
+      "latency_s": 0.46587129199906485
+     }
+    ],
+    "log": [
+     {
+      "t": 0.0,
+      "system": "agent",
+      "ticket_id": "TCK-7003",
+      "event": "start",
+      "budgets": {
+       "max_iterations": 8,
+       "max_tokens": 20000,
+       "max_cost_usd": 0.25,
+       "max_wall_s": 20.0
+      }
+     },
+     {
+      "t": 0.207,
+      "system": "agent",
+      "ticket_id": "TCK-7003",
+      "event": "model_call",
+      "n": 1,
+      "stop_reason": "tool_use",
+      "tokens_total": 511,
+      "cost_usd": 0.003035
+     },
+     {
+      "t": 0.254,
+      "system": "agent",
+      "ticket_id": "TCK-7003",
+      "event": "tool_call",
+      "tool": "get_ticket",
+      "args": {
+       "ticket_id": "TCK-7003"
+      }
+     },
+     {
+      "t": 0.46,
+      "system": "agent",
+      "ticket_id": "TCK-7003",
+      "event": "model_call",
+      "n": 2,
+      "stop_reason": "tool_use",
+      "tokens_total": 1133,
+      "cost_usd": 0.006625
+     },
+     {
+      "t": 0.507,
+      "system": "agent",
+      "ticket_id": "TCK-7003",
+      "event": "tool_call",
+      "tool": "get_order",
+      "args": {
+       "order_id": "ORD-5103"
+      }
+     },
+     {
+      "t": 0.804,
+      "system": "agent",
+      "ticket_id": "TCK-7003",
+      "event": "model_call",
+      "n": 3,
+      "stop_reason": "tool_use",
+      "tokens_total": 1882,
+      "cost_usd": 0.01141
+     },
+     {
+      "t": 0.85,
+      "system": "agent",
+      "ticket_id": "TCK-7003",
+      "event": "tool_call",
+      "tool": "lookup_refund_policy",
+      "args": {
+       "order_status": "paid",
+       "customer_tier": "priority",
+       "request_type": "refund",
+       "days_since_purchase": 9,
+       "amount_usd": 29.0
+      }
+     },
+     {
+      "t": 1.318,
+      "system": "agent",
+      "ticket_id": "TCK-7003",
+      "event": "model_call",
+      "n": 4,
+      "stop_reason": "end_turn",
+      "tokens_total": 2814,
+      "cost_usd": 0.01823
+     },
+     {
+      "t": 1.318,
+      "system": "agent",
+      "ticket_id": "TCK-7003",
+      "event": "finished",
+      "decision": "refund_approved"
+     }
+    ],
+    "grade": {
+     "passed": true,
+     "mismatches": [],
+     "assertions": {
+      "ticket_id_echoed": {
+       "status": "PASS",
+       "detail": ""
+      },
+      "refund_amount_numeric": {
+       "status": "PASS",
+       "detail": ""
+      },
+      "escalation_tag_when_priority": {
+       "status": "PASS",
+       "detail": ""
+      },
+      "no_refund_outside_window": {
+       "status": "n/a",
+       "detail": "day 9 is inside the 30-day window"
+      }
+     },
+     "assertions_failed": []
+    }
+   },
+   "TCK-7004": {
+    "system": "agent",
+    "ticket_id": "TCK-7004",
+    "output": {
+     "ticket_id": "TCK-7004",
+     "decision": "escalate_missing_order",
+     "refund_order_id": null,
+     "refund_amount_usd": null,
+     "escalate": true,
+     "reply": "Hi, thanks for raising ticket TCK-7004.\n\nI could not find order ORD-5199 in our billing system. I have passed your ticket to the billing team, who will confirm the order details with you.\n\n[ESCALATED]\n\nBest regards,\nBilling Support"
+    },
+    "terminated": null,
+    "budgets": {
+     "max_iterations": 8,
+     "max_tokens": 20000,
+     "max_cost_usd": 0.25,
+     "max_wall_s": 20.0
+    },
+    "trace_url": "https://cloud.langfuse.com/project/cmts4unow08hkad0iuff9g5ln/traces/f973ccb3dec6a5d3d4ad6e297b0b76eb",
+    "llm_calls": 4,
+    "tokens_in": 2540,
+    "tokens_out": 212,
+    "total_tokens": 2752,
+    "cost_usd": 0.018,
+    "latency_s": 1.3230171670002164,
+    "path": [
+     "get_ticket",
+     "get_order",
+     "lookup_refund_policy"
+    ],
+    "steps": [
+     {
+      "kind": "llm",
+      "stop_reason": "tool_use",
+      "input_tokens": 487,
+      "output_tokens": 24,
+      "cost_usd": 0.003035,
+      "latency_s": 0.20456066699989606
+     },
+     {
+      "kind": "tool",
+      "name": "get_ticket",
+      "args": {
+       "ticket_id": "TCK-7004"
+      },
+      "result": {
+       "ticket_id": "TCK-7004",
+       "found": true,
+       "customer_tier": "standard",
+       "order_ids": [
+        "ORD-5199"
+       ],
+       "request_type": "refund",
+       "message": "Where is my refund for ORD-5199? I asked last week."
+      },
+      "latency_s": 0.046498541996697895
+     },
+     {
+      "kind": "llm",
+      "stop_reason": "tool_use",
+      "input_tokens": 597,
+      "output_tokens": 24,
+      "cost_usd": 0.003585,
+      "latency_s": 0.2079797080004937
+     },
+     {
+      "kind": "tool",
+      "name": "get_order",
+      "args": {
+       "order_id": "ORD-5199"
+      },
+      "result": {
+       "order_id": "ORD-5199",
+       "status": "not_found"
+      },
+      "latency_s": 0.04584929200063925
+     },
+     {
+      "kind": "llm",
+      "stop_reason": "tool_use",
+      "input_tokens": 667,
+      "output_tokens": 54,
+      "cost_usd": 0.004685,
+      "latency_s": 0.29562100000475766
+     },
+     {
+      "kind": "tool",
+      "name": "lookup_refund_policy",
+      "args": {
+       "order_status": "not_found",
+       "customer_tier": "standard",
+       "request_type": "refund",
+       "days_since_purchase": null,
+       "amount_usd": null
+      },
+      "result": {
+       "decision": "escalate_missing_order",
+       "escalate": true,
+       "refund_allowed": false,
+       "policy_section": "no billing record: escalate"
+      },
+      "latency_s": 0.04648229199665366
+     },
+     {
+      "kind": "llm",
+      "stop_reason": "end_turn",
+      "input_tokens": 789,
+      "output_tokens": 110,
+      "cost_usd": 0.006695,
+      "latency_s": 0.4684941669984255
+     }
+    ],
+    "log": [
+     {
+      "t": 0.0,
+      "system": "agent",
+      "ticket_id": "TCK-7004",
+      "event": "start",
+      "budgets": {
+       "max_iterations": 8,
+       "max_tokens": 20000,
+       "max_cost_usd": 0.25,
+       "max_wall_s": 20.0
+      }
+     },
+     {
+      "t": 0.206,
+      "system": "agent",
+      "ticket_id": "TCK-7004",
+      "event": "model_call",
+      "n": 1,
+      "stop_reason": "tool_use",
+      "tokens_total": 511,
+      "cost_usd": 0.003035
+     },
+     {
+      "t": 0.253,
+      "system": "agent",
+      "ticket_id": "TCK-7004",
+      "event": "tool_call",
+      "tool": "get_ticket",
+      "args": {
+       "ticket_id": "TCK-7004"
+      }
+     },
+     {
+      "t": 0.463,
+      "system": "agent",
+      "ticket_id": "TCK-7004",
+      "event": "model_call",
+      "n": 2,
+      "stop_reason": "tool_use",
+      "tokens_total": 1132,
+      "cost_usd": 0.00662
+     },
+     {
+      "t": 0.509,
+      "system": "agent",
+      "ticket_id": "TCK-7004",
+      "event": "tool_call",
+      "tool": "get_order",
+      "args": {
+       "order_id": "ORD-5199"
+      }
+     },
+     {
+      "t": 0.806,
+      "system": "agent",
+      "ticket_id": "TCK-7004",
+      "event": "model_call",
+      "n": 3,
+      "stop_reason": "tool_use",
+      "tokens_total": 1853,
+      "cost_usd": 0.011305
+     },
+     {
+      "t": 0.852,
+      "system": "agent",
+      "ticket_id": "TCK-7004",
+      "event": "tool_call",
+      "tool": "lookup_refund_policy",
+      "args": {
+       "order_status": "not_found",
+       "customer_tier": "standard",
+       "request_type": "refund",
+       "days_since_purchase": null,
+       "amount_usd": null
+      }
+     },
+     {
+      "t": 1.322,
+      "system": "agent",
+      "ticket_id": "TCK-7004",
+      "event": "model_call",
+      "n": 4,
+      "stop_reason": "end_turn",
+      "tokens_total": 2752,
+      "cost_usd": 0.018
+     },
+     {
+      "t": 1.322,
+      "system": "agent",
+      "ticket_id": "TCK-7004",
+      "event": "finished",
+      "decision": "escalate_missing_order"
+     }
+    ],
+    "grade": {
+     "passed": true,
+     "mismatches": [],
+     "assertions": {
+      "ticket_id_echoed": {
+       "status": "PASS",
+       "detail": ""
+      },
+      "refund_amount_numeric": {
+       "status": "n/a",
+       "detail": "no refund offered"
+      },
+      "escalation_tag_when_priority": {
+       "status": "n/a",
+       "detail": "tier is not Priority"
+      },
+      "no_refund_outside_window": {
+       "status": "n/a",
+       "detail": "day 0 is inside the 30-day window"
+      }
+     },
+     "assertions_failed": []
+    }
+   },
+   "TCK-7005": {
+    "system": "agent",
+    "ticket_id": "TCK-7005",
+    "output": {
+     "ticket_id": "TCK-7005",
+     "decision": "already_refunded",
+     "refund_order_id": null,
+     "refund_amount_usd": null,
+     "escalate": false,
+     "reply": "Hi, thanks for raising ticket TCK-7005.\n\nOur records show order ORD-5105 was already refunded in full, so there is nothing further to process. Bank transfers can take up to 10 business days to appear.\n\nBest regards,\nBilling Support"
+    },
+    "terminated": null,
+    "budgets": {
+     "max_iterations": 8,
+     "max_tokens": 20000,
+     "max_cost_usd": 0.25,
+     "max_wall_s": 20.0
+    },
+    "trace_url": "https://cloud.langfuse.com/project/cmts4unow08hkad0iuff9g5ln/traces/ac419a3b06cc2d04b80165074162a8fe",
+    "llm_calls": 4,
+    "tokens_in": 2584,
+    "tokens_out": 209,
+    "total_tokens": 2793,
+    "cost_usd": 0.018145,
+    "latency_s": 1.307732916000532,
+    "path": [
+     "get_ticket",
+     "get_order",
+     "lookup_refund_policy"
+    ],
+    "steps": [
+     {
+      "kind": "llm",
+      "stop_reason": "tool_use",
+      "input_tokens": 487,
+      "output_tokens": 24,
+      "cost_usd": 0.003035,
+      "latency_s": 0.20306441700085998
+     },
+     {
+      "kind": "tool",
+      "name": "get_ticket",
+      "args": {
+       "ticket_id": "TCK-7005"
+      },
+      "result": {
+       "ticket_id": "TCK-7005",
+       "found": true,
+       "customer_tier": "standard",
+       "order_ids": [
+        "ORD-5105"
+       ],
+       "request_type": "refund",
+       "message": "I still want my refund for ORD-5105."
+      },
+      "latency_s": 0.04159208299824968
+     },
+     {
+      "kind": "llm",
+      "stop_reason": "tool_use",
+      "input_tokens": 593,
+      "output_tokens": 24,
+      "cost_usd": 0.003565,
+      "latency_s": 0.20897949999925913
+     },
+     {
+      "kind": "tool",
+      "name": "get_order",
+      "args": {
+       "order_id": "ORD-5105"
+      },
+      "result": {
+       "order_id": "ORD-5105",
+       "status": "refunded",
+       "amount_usd": 22.0,
+       "days_since_purchase": 18,
+       "product": "Starter",
+       "charged_at": "2026-09-10T09:00:00Z"
+      },
+      "latency_s": 0.046296917003928684
+     },
+     {
+      "kind": "llm",
+      "stop_reason": "tool_use",
+      "input_tokens": 693,
+      "output_tokens": 53,
+      "cost_usd": 0.00479,
+      "latency_s": 0.29729212499660207
+     },
+     {
+      "kind": "tool",
+      "name": "lookup_refund_policy",
+      "args": {
+       "order_status": "refunded",
+       "customer_tier": "standard",
+       "request_type": "refund",
+       "days_since_purchase": 18,
+       "amount_usd": 22.0
+      },
+      "result": {
+       "decision": "already_refunded",
+       "escalate": false,
+       "refund_allowed": false,
+       "policy_section": "one refund per order"
+      },
+      "latency_s": 0.04298974999983329
+     },
+     {
+      "kind": "llm",
+      "stop_reason": "end_turn",
+      "input_tokens": 811,
+      "output_tokens": 108,
+      "cost_usd": 0.006755,
+      "latency_s": 0.4608412079978734
+     }
+    ],
+    "log": [
+     {
+      "t": 0.0,
+      "system": "agent",
+      "ticket_id": "TCK-7005",
+      "event": "start",
+      "budgets": {
+       "max_iterations": 8,
+       "max_tokens": 20000,
+       "max_cost_usd": 0.25,
+       "max_wall_s": 20.0
+      }
+     },
+     {
+      "t": 0.204,
+      "system": "agent",
+      "ticket_id": "TCK-7005",
+      "event": "model_call",
+      "n": 1,
+      "stop_reason": "tool_use",
+      "tokens_total": 511,
+      "cost_usd": 0.003035
+     },
+     {
+      "t": 0.246,
+      "system": "agent",
+      "ticket_id": "TCK-7005",
+      "event": "tool_call",
+      "tool": "get_ticket",
+      "args": {
+       "ticket_id": "TCK-7005"
+      }
+     },
+     {
+      "t": 0.455,
+      "system": "agent",
+      "ticket_id": "TCK-7005",
+      "event": "model_call",
+      "n": 2,
+      "stop_reason": "tool_use",
+      "tokens_total": 1128,
+      "cost_usd": 0.0066
+     },
+     {
+      "t": 0.502,
+      "system": "agent",
+      "ticket_id": "TCK-7005",
+      "event": "tool_call",
+      "tool": "get_order",
+      "args": {
+       "order_id": "ORD-5105"
+      }
+     },
+     {
+      "t": 0.8,
+      "system": "agent",
+      "ticket_id": "TCK-7005",
+      "event": "model_call",
+      "n": 3,
+      "stop_reason": "tool_use",
+      "tokens_total": 1874,
+      "cost_usd": 0.01139
+     },
+     {
+      "t": 0.843,
+      "system": "agent",
+      "ticket_id": "TCK-7005",
+      "event": "tool_call",
+      "tool": "lookup_refund_policy",
+      "args": {
+       "order_status": "refunded",
+       "customer_tier": "standard",
+       "request_type": "refund",
+       "days_since_purchase": 18,
+       "amount_usd": 22.0
+      }
+     },
+     {
+      "t": 1.307,
+      "system": "agent",
+      "ticket_id": "TCK-7005",
+      "event": "model_call",
+      "n": 4,
+      "stop_reason": "end_turn",
+      "tokens_total": 2793,
+      "cost_usd": 0.018145
+     },
+     {
+      "t": 1.307,
+      "system": "agent",
+      "ticket_id": "TCK-7005",
+      "event": "finished",
+      "decision": "already_refunded"
+     }
+    ],
+    "grade": {
+     "passed": true,
+     "mismatches": [],
+     "assertions": {
+      "ticket_id_echoed": {
+       "status": "PASS",
+       "detail": ""
+      },
+      "refund_amount_numeric": {
+       "status": "n/a",
+       "detail": "no refund offered"
+      },
+      "escalation_tag_when_priority": {
+       "status": "n/a",
+       "detail": "tier is not Priority"
+      },
+      "no_refund_outside_window": {
+       "status": "n/a",
+       "detail": "day 18 is inside the 30-day window"
+      }
+     },
+     "assertions_failed": []
+    }
+   },
+   "TCK-7006": {
+    "system": "agent",
+    "ticket_id": "TCK-7006",
+    "output": {
+     "ticket_id": "TCK-7006",
+     "decision": "escalate_chargeback",
+     "refund_order_id": null,
+     "refund_amount_usd": null,
+     "escalate": true,
+     "reply": "Hi, thanks for raising ticket TCK-7006.\n\nOrder ORD-5106 has an open dispute with your bank, so it is handled by our disputes team rather than as a refund. I have passed your ticket to them.\n\n[ESCALATED]\n\nBest regards,\nBilling Support"
+    },
+    "terminated": null,
+    "budgets": {
+     "max_iterations": 8,
+     "max_tokens": 20000,
+     "max_cost_usd": 0.25,
+     "max_wall_s": 20.0
+    },
+    "trace_url": "https://cloud.langfuse.com/project/cmts4unow08hkad0iuff9g5ln/traces/052c6c18cc94de6c7c292238bda3fdca",
+    "llm_calls": 4,
+    "tokens_in": 2608,
+    "tokens_out": 212,
+    "total_tokens": 2820,
+    "cost_usd": 0.018340000000000002,
+    "latency_s": 1.3172102500029723,
+    "path": [
+     "get_ticket",
+     "get_order",
+     "lookup_refund_policy"
+    ],
+    "steps": [
+     {
+      "kind": "llm",
+      "stop_reason": "tool_use",
+      "input_tokens": 487,
+      "output_tokens": 24,
+      "cost_usd": 0.003035,
+      "latency_s": 0.20444904200121528
+     },
+     {
+      "kind": "tool",
+      "name": "get_ticket",
+      "args": {
+       "ticket_id": "TCK-7006"
+      },
+      "result": {
+       "ticket_id": "TCK-7006",
+       "found": true,
+       "customer_tier": "standard",
+       "order_ids": [
+        "ORD-5106"
+       ],
+       "request_type": "refund",
+       "message": "Refund ORD-5106 or I'll keep the dispute open with my bank."
+      },
+      "latency_s": 0.04118812499655178
+     },
+     {
+      "kind": "llm",
+      "stop_reason": "tool_use",
+      "input_tokens": 599,
+      "output_tokens": 24,
+      "cost_usd": 0.003595,
+      "latency_s": 0.20722874999773921
+     },
+     {
+      "kind": "tool",
+      "name": "get_order",
+      "args": {
+       "order_id": "ORD-5106"
+      },
+      "result": {
+       "order_id": "ORD-5106",
+       "status": "chargeback",
+       "amount_usd": 35.0,
+       "days_since_purchase": 15,
+       "product": "Pro add-on",
+       "charged_at": "2026-09-13T16:25:00Z"
+      },
+      "latency_s": 0.04410720799933188
+     },
+     {
+      "kind": "llm",
+      "stop_reason": "tool_use",
+      "input_tokens": 700,
+      "output_tokens": 54,
+      "cost_usd": 0.00485,
+      "latency_s": 0.2986821250015055
+     },
+     {
+      "kind": "tool",
+      "name": "lookup_refund_policy",
+      "args": {
+       "order_status": "chargeback",
+       "customer_tier": "standard",
+       "request_type": "refund",
+       "days_since_purchase": 15,
+       "amount_usd": 35.0
+      },
+      "result": {
+       "decision": "escalate_chargeback",
+       "escalate": true,
+       "refund_allowed": false,
+       "policy_section": "open bank dispute: disputes team"
+      },
+      "latency_s": 0.04551329200330656
+     },
+     {
+      "kind": "llm",
+      "stop_reason": "end_turn",
+      "input_tokens": 822,
+      "output_tokens": 110,
+      "cost_usd": 0.00686,
+      "latency_s": 0.4683114579966059
+     }
+    ],
+    "log": [
+     {
+      "t": 0.0,
+      "system": "agent",
+      "ticket_id": "TCK-7006",
+      "event": "start",
+      "budgets": {
+       "max_iterations": 8,
+       "max_tokens": 20000,
+       "max_cost_usd": 0.25,
+       "max_wall_s": 20.0
+      }
+     },
+     {
+      "t": 0.207,
+      "system": "agent",
+      "ticket_id": "TCK-7006",
+      "event": "model_call",
+      "n": 1,
+      "stop_reason": "tool_use",
+      "tokens_total": 511,
+      "cost_usd": 0.003035
+     },
+     {
+      "t": 0.248,
+      "system": "agent",
+      "ticket_id": "TCK-7006",
+      "event": "tool_call",
+      "tool": "get_ticket",
+      "args": {
+       "ticket_id": "TCK-7006"
+      }
+     },
+     {
+      "t": 0.457,
+      "system": "agent",
+      "ticket_id": "TCK-7006",
+      "event": "model_call",
+      "n": 2,
+      "stop_reason": "tool_use",
+      "tokens_total": 1134,
+      "cost_usd": 0.00663
+     },
+     {
+      "t": 0.501,
+      "system": "agent",
+      "ticket_id": "TCK-7006",
+      "event": "tool_call",
+      "tool": "get_order",
+      "args": {
+       "order_id": "ORD-5106"
+      }
+     },
+     {
+      "t": 0.801,
+      "system": "agent",
+      "ticket_id": "TCK-7006",
+      "event": "model_call",
+      "n": 3,
+      "stop_reason": "tool_use",
+      "tokens_total": 1888,
+      "cost_usd": 0.01148
+     },
+     {
+      "t": 0.846,
+      "system": "agent",
+      "ticket_id": "TCK-7006",
+      "event": "tool_call",
+      "tool": "lookup_refund_policy",
+      "args": {
+       "order_status": "chargeback",
+       "customer_tier": "standard",
+       "request_type": "refund",
+       "days_since_purchase": 15,
+       "amount_usd": 35.0
+      }
+     },
+     {
+      "t": 1.317,
+      "system": "agent",
+      "ticket_id": "TCK-7006",
+      "event": "model_call",
+      "n": 4,
+      "stop_reason": "end_turn",
+      "tokens_total": 2820,
+      "cost_usd": 0.01834
+     },
+     {
+      "t": 1.317,
+      "system": "agent",
+      "ticket_id": "TCK-7006",
+      "event": "finished",
+      "decision": "escalate_chargeback"
+     }
+    ],
+    "grade": {
+     "passed": true,
+     "mismatches": [],
+     "assertions": {
+      "ticket_id_echoed": {
+       "status": "PASS",
+       "detail": ""
+      },
+      "refund_amount_numeric": {
+       "status": "n/a",
+       "detail": "no refund offered"
+      },
+      "escalation_tag_when_priority": {
+       "status": "n/a",
+       "detail": "tier is not Priority"
+      },
+      "no_refund_outside_window": {
+       "status": "n/a",
+       "detail": "day 15 is inside the 30-day window"
+      }
+     },
+     "assertions_failed": []
+    }
+   },
+   "TCK-7007": {
+    "system": "agent",
+    "ticket_id": "TCK-7007",
+    "output": {
+     "ticket_id": "TCK-7007",
+     "decision": "refund_approved",
+     "refund_order_id": "ORD-5107",
+     "refund_amount_usd": 60.0,
+     "escalate": false,
+     "reply": "Hi, thanks for raising ticket TCK-7007.\n\nWe have approved a refund of USD 60.00 for order ORD-5107 (Team plan (monthly)). It will reach your original payment method within 5-10 business days.\n\nBest regards,\nBilling Support"
+    },
+    "terminated": null,
+    "budgets": {
+     "max_iterations": 8,
+     "max_tokens": 20000,
+     "max_cost_usd": 0.25,
+     "max_wall_s": 20.0
+    },
+    "trace_url": "https://cloud.langfuse.com/project/cmts4unow08hkad0iuff9g5ln/traces/907a3db642ab40f7c69ff35234f99ea0",
+    "llm_calls": 4,
+    "tokens_in": 2611,
+    "tokens_out": 207,
+    "total_tokens": 2818,
+    "cost_usd": 0.01823,
+    "latency_s": 1.31394333299977,
+    "path": [
+     "get_ticket",
+     "get_order",
+     "lookup_refund_policy"
+    ],
+    "steps": [
+     {
+      "kind": "llm",
+      "stop_reason": "tool_use",
+      "input_tokens": 487,
+      "output_tokens": 24,
+      "cost_usd": 0.003035,
+      "latency_s": 0.20687383400218096
+     },
+     {
+      "kind": "tool",
+      "name": "get_ticket",
+      "args": {
+       "ticket_id": "TCK-7007"
+      },
+      "result": {
+       "ticket_id": "TCK-7007",
+       "found": true,
+       "customer_tier": "standard",
+       "order_ids": [
+        "ORD-5107"
+       ],
+       "request_type": "refund",
+       "message": "Can I still get a refund on ORD-5107? It has been exactly a month."
+      },
+      "latency_s": 0.049271999996562954
+     },
+     {
+      "kind": "llm",
+      "stop_reason": "tool_use",
+      "input_tokens": 601,
+      "output_tokens": 24,
+      "cost_usd": 0.003605,
+      "latency_s": 0.2092560000019148
+     },
+     {
+      "kind": "tool",
+      "name": "get_order",
+      "args": {
+       "order_id": "ORD-5107"
+      },
+      "result": {
+       "order_id": "ORD-5107",
+       "status": "paid",
+       "amount_usd": 60.0,
+       "days_since_purchase": 30,
+       "product": "Team plan (monthly)",
+       "charged_at": "2026-08-29T12:00:00Z"
+      },
+      "latency_s": 0.04428745799668832
+     },
+     {
+      "kind": "llm",
+      "stop_reason": "tool_use",
+      "input_tokens": 702,
+      "output_tokens": 52,
+      "cost_usd": 0.00481,
+      "latency_s": 0.29254429200227605
+     },
+     {
+      "kind": "tool",
+      "name": "lookup_refund_policy",
+      "args": {
+       "order_status": "paid",
+       "customer_tier": "standard",
+       "request_type": "refund",
+       "days_since_purchase": 30,
+       "amount_usd": 60.0
+      },
+      "result": {
+       "decision": "refund_approved",
+       "escalate": false,
+       "refund_allowed": true,
+       "policy_section": "inside the thirty-day window"
+      },
+      "latency_s": 0.04623145799996564
+     },
+     {
+      "kind": "llm",
+      "stop_reason": "end_turn",
+      "input_tokens": 821,
+      "output_tokens": 107,
+      "cost_usd": 0.00678,
+      "latency_s": 0.4590032499982044
+     }
+    ],
+    "log": [
+     {
+      "t": 0.0,
+      "system": "agent",
+      "ticket_id": "TCK-7007",
+      "event": "start",
+      "budgets": {
+       "max_iterations": 8,
+       "max_tokens": 20000,
+       "max_cost_usd": 0.25,
+       "max_wall_s": 20.0
+      }
+     },
+     {
+      "t": 0.208,
+      "system": "agent",
+      "ticket_id": "TCK-7007",
+      "event": "model_call",
+      "n": 1,
+      "stop_reason": "tool_use",
+      "tokens_total": 511,
+      "cost_usd": 0.003035
+     },
+     {
+      "t": 0.258,
+      "system": "agent",
+      "ticket_id": "TCK-7007",
+      "event": "tool_call",
+      "tool": "get_ticket",
+      "args": {
+       "ticket_id": "TCK-7007"
+      }
+     },
+     {
+      "t": 0.468,
+      "system": "agent",
+      "ticket_id": "TCK-7007",
+      "event": "model_call",
+      "n": 2,
+      "stop_reason": "tool_use",
+      "tokens_total": 1136,
+      "cost_usd": 0.00664
+     },
+     {
+      "t": 0.512,
+      "system": "agent",
+      "ticket_id": "TCK-7007",
+      "event": "tool_call",
+      "tool": "get_order",
+      "args": {
+       "order_id": "ORD-5107"
+      }
+     },
+     {
+      "t": 0.807,
+      "system": "agent",
+      "ticket_id": "TCK-7007",
+      "event": "model_call",
+      "n": 3,
+      "stop_reason": "tool_use",
+      "tokens_total": 1890,
+      "cost_usd": 0.01145
+     },
+     {
+      "t": 0.853,
+      "system": "agent",
+      "ticket_id": "TCK-7007",
+      "event": "tool_call",
+      "tool": "lookup_refund_policy",
+      "args": {
+       "order_status": "paid",
+       "customer_tier": "standard",
+       "request_type": "refund",
+       "days_since_purchase": 30,
+       "amount_usd": 60.0
+      }
+     },
+     {
+      "t": 1.313,
+      "system": "agent",
+      "ticket_id": "TCK-7007",
+      "event": "model_call",
+      "n": 4,
+      "stop_reason": "end_turn",
+      "tokens_total": 2818,
+      "cost_usd": 0.01823
+     },
+     {
+      "t": 1.313,
+      "system": "agent",
+      "ticket_id": "TCK-7007",
+      "event": "finished",
+      "decision": "refund_approved"
+     }
+    ],
+    "grade": {
+     "passed": true,
+     "mismatches": [],
+     "assertions": {
+      "ticket_id_echoed": {
+       "status": "PASS",
+       "detail": ""
+      },
+      "refund_amount_numeric": {
+       "status": "PASS",
+       "detail": ""
+      },
+      "escalation_tag_when_priority": {
+       "status": "n/a",
+       "detail": "tier is not Priority"
+      },
+      "no_refund_outside_window": {
+       "status": "n/a",
+       "detail": "day 30 is inside the 30-day window"
+      }
+     },
+     "assertions_failed": []
+    }
+   },
+   "TCK-7008": {
+    "system": "agent",
+    "ticket_id": "TCK-7008",
+    "output": {
+     "ticket_id": "TCK-7008",
+     "decision": "needs_manager_approval",
+     "refund_order_id": "ORD-5108",
+     "refund_amount_usd": 240.0,
+     "escalate": true,
+     "reply": "Hi, thanks for raising ticket TCK-7008.\n\nYour request for USD 240.00 back on order ORD-5108 is above what support can approve directly, so it has gone to a billing manager for sign-off. You will hear back within one business day.\n\n[ESCALATED]\n\nBest regards,\nBilling Support"
+    },
+    "terminated": null,
+    "budgets": {
+     "max_iterations": 8,
+     "max_tokens": 20000,
+     "max_cost_usd": 0.25,
+     "max_wall_s": 20.0
+    },
+    "trace_url": "https://cloud.langfuse.com/project/cmts4unow08hkad0iuff9g5ln/traces/88d2132855ea3509854bb097f441ebe0",
+    "llm_calls": 4,
+    "tokens_in": 2616,
+    "tokens_out": 223,
+    "total_tokens": 2839,
+    "cost_usd": 0.018654999999999998,
+    "latency_s": 1.3653020420024404,
+    "path": [
+     "get_ticket",
+     "get_order",
+     "lookup_refund_policy"
+    ],
+    "steps": [
+     {
+      "kind": "llm",
+      "stop_reason": "tool_use",
+      "input_tokens": 487,
+      "output_tokens": 24,
+      "cost_usd": 0.003035,
+      "latency_s": 0.20345787500264123
+     },
+     {
+      "kind": "tool",
+      "name": "get_ticket",
+      "args": {
+       "ticket_id": "TCK-7008"
+      },
+      "result": {
+       "ticket_id": "TCK-7008",
+       "found": true,
+       "customer_tier": "standard",
+       "order_ids": [
+        "ORD-5108"
+       ],
+       "request_type": "refund",
+       "message": "We want to cancel the annual plan on ORD-5108 and get the money back."
+      },
+      "latency_s": 0.049731041995983105
+     },
+     {
+      "kind": "llm",
+      "stop_reason": "tool_use",
+      "input_tokens": 601,
+      "output_tokens": 24,
+      "cost_usd": 0.003605,
+      "latency_s": 0.20914349999657134
+     },
+     {
+      "kind": "tool",
+      "name": "get_order",
+      "args": {
+       "order_id": "ORD-5108"
+      },
+      "result": {
+       "order_id": "ORD-5108",
+       "status": "paid",
+       "amount_usd": 240.0,
+       "days_since_purchase": 10,
+       "product": "Team plan (annual)",
+       "charged_at": "2026-09-18T11:30:00Z"
+      },
+      "latency_s": 0.04637295899738092
+     },
+     {
+      "kind": "llm",
+      "stop_reason": "tool_use",
+      "input_tokens": 703,
+      "output_tokens": 52,
+      "cost_usd": 0.004815,
+      "latency_s": 0.295398792004562
+     },
+     {
+      "kind": "tool",
+      "name": "lookup_refund_policy",
+      "args": {
+       "order_status": "paid",
+       "customer_tier": "standard",
+       "request_type": "refund",
+       "days_since_purchase": 10,
+       "amount_usd": 240.0
+      },
+      "result": {
+       "decision": "needs_manager_approval",
+       "escalate": true,
+       "refund_allowed": true,
+       "policy_section": "refunds over USD 100 need a manager"
+      },
+      "latency_s": 0.04207812499953434
+     },
+     {
+      "kind": "llm",
+      "stop_reason": "end_turn",
+      "input_tokens": 825,
+      "output_tokens": 123,
+      "cost_usd": 0.0072,
+      "latency_s": 0.5100893749986426
+     }
+    ],
+    "log": [
+     {
+      "t": 0.0,
+      "system": "agent",
+      "ticket_id": "TCK-7008",
+      "event": "start",
+      "budgets": {
+       "max_iterations": 8,
+       "max_tokens": 20000,
+       "max_cost_usd": 0.25,
+       "max_wall_s": 20.0
+      }
+     },
+     {
+      "t": 0.206,
+      "system": "agent",
+      "ticket_id": "TCK-7008",
+      "event": "model_call",
+      "n": 1,
+      "stop_reason": "tool_use",
+      "tokens_total": 511,
+      "cost_usd": 0.003035
+     },
+     {
+      "t": 0.255,
+      "system": "agent",
+      "ticket_id": "TCK-7008",
+      "event": "tool_call",
+      "tool": "get_ticket",
+      "args": {
+       "ticket_id": "TCK-7008"
+      }
+     },
+     {
+      "t": 0.467,
+      "system": "agent",
+      "ticket_id": "TCK-7008",
+      "event": "model_call",
+      "n": 2,
+      "stop_reason": "tool_use",
+      "tokens_total": 1136,
+      "cost_usd": 0.00664
+     },
+     {
+      "t": 0.514,
+      "system": "agent",
+      "ticket_id": "TCK-7008",
+      "event": "tool_call",
+      "tool": "get_order",
+      "args": {
+       "order_id": "ORD-5108"
+      }
+     },
+     {
+      "t": 0.811,
+      "system": "agent",
+      "ticket_id": "TCK-7008",
+      "event": "model_call",
+      "n": 3,
+      "stop_reason": "tool_use",
+      "tokens_total": 1891,
+      "cost_usd": 0.011455
+     },
+     {
+      "t": 0.853,
+      "system": "agent",
+      "ticket_id": "TCK-7008",
+      "event": "tool_call",
+      "tool": "lookup_refund_policy",
+      "args": {
+       "order_status": "paid",
+       "customer_tier": "standard",
+       "request_type": "refund",
+       "days_since_purchase": 10,
+       "amount_usd": 240.0
+      }
+     },
+     {
+      "t": 1.364,
+      "system": "agent",
+      "ticket_id": "TCK-7008",
+      "event": "model_call",
+      "n": 4,
+      "stop_reason": "end_turn",
+      "tokens_total": 2839,
+      "cost_usd": 0.018655
+     },
+     {
+      "t": 1.365,
+      "system": "agent",
+      "ticket_id": "TCK-7008",
+      "event": "finished",
+      "decision": "needs_manager_approval"
+     }
+    ],
+    "grade": {
+     "passed": true,
+     "mismatches": [],
+     "assertions": {
+      "ticket_id_echoed": {
+       "status": "PASS",
+       "detail": ""
+      },
+      "refund_amount_numeric": {
+       "status": "n/a",
+       "detail": "no refund offered"
+      },
+      "escalation_tag_when_priority": {
+       "status": "n/a",
+       "detail": "tier is not Priority"
+      },
+      "no_refund_outside_window": {
+       "status": "n/a",
+       "detail": "day 10 is inside the 30-day window"
+      }
+     },
+     "assertions_failed": []
+    }
+   },
+   "TCK-7009": {
+    "system": "agent",
+    "ticket_id": "TCK-7009",
+    "output": {
+     "ticket_id": "TCK-7009",
+     "decision": "refund_approved",
+     "refund_order_id": "ORD-5110",
+     "refund_amount_usd": 25.0,
+     "escalate": false,
+     "reply": "Hi, thanks for raising ticket TCK-7009.\n\nWe have approved a refund of USD 25.00 for order ORD-5110 (Pro add-on). It will reach your original payment method within 5-10 business days.\n\nBest regards,\nBilling Support"
+    },
+    "terminated": null,
+    "budgets": {
+     "max_iterations": 8,
+     "max_tokens": 20000,
+     "max_cost_usd": 0.25,
+     "max_wall_s": 20.0
+    },
+    "trace_url": "https://cloud.langfuse.com/project/cmts4unow08hkad0iuff9g5ln/traces/a5e49ccfd55d67f81413a12889420d69",
+    "llm_calls": 5,
+    "tokens_in": 3552,
+    "tokens_out": 231,
+    "total_tokens": 3783,
+    "cost_usd": 0.023535,
+    "latency_s": 1.5629197919988655,
+    "path": [
+     "get_ticket",
+     "get_order",
+     "get_order",
+     "lookup_refund_policy"
+    ],
+    "steps": [
+     {
+      "kind": "llm",
+      "stop_reason": "tool_use",
+      "input_tokens": 487,
+      "output_tokens": 24,
+      "cost_usd": 0.003035,
+      "latency_s": 0.20225054200273007
+     },
+     {
+      "kind": "tool",
+      "name": "get_ticket",
+      "args": {
+       "ticket_id": "TCK-7009"
+      },
+      "result": {
+       "ticket_id": "TCK-7009",
+       "found": true,
+       "customer_tier": "standard",
+       "order_ids": [
+        "ORD-5109",
+        "ORD-5110"
+       ],
+       "request_type": "duplicate_charge",
+       "message": "You charged me twice for the same thing, ORD-5109 and ORD-5110. Refund the extra one."
+      },
+      "latency_s": 0.04457791599998018
+     },
+     {
+      "kind": "llm",
+      "stop_reason": "tool_use",
+      "input_tokens": 611,
+      "output_tokens": 24,
+      "cost_usd": 0.003655,
+      "latency_s": 0.2068585000015446
+     },
+     {
+      "kind": "tool",
+      "name": "get_order",
+      "args": {
+       "order_id": "ORD-5109"
+      },
+      "result": {
+       "order_id": "ORD-5109",
+       "status": "paid",
+       "amount_usd": 25.0,
+       "days_since_purchase": 5,
+       "product": "Pro add-on",
+       "charged_at": "2026-09-23T09:14:02Z"
+      },
+      "latency_s": 0.04397991700534476
+     },
+     {
+      "kind": "llm",
+      "stop_reason": "tool_use",
+      "input_tokens": 711,
+      "output_tokens": 24,
+      "cost_usd": 0.004155,
+      "latency_s": 0.20704687500256114
+     },
+     {
+      "kind": "tool",
+      "name": "get_order",
+      "args": {
+       "order_id": "ORD-5110"
+      },
+      "result": {
+       "order_id": "ORD-5110",
+       "status": "paid",
+       "amount_usd": 25.0,
+       "days_since_purchase": 5,
+       "product": "Pro add-on",
+       "charged_at": "2026-09-23T09:14:42Z"
+      },
+      "latency_s": 0.04540699999779463
+     },
+     {
+      "kind": "llm",
+      "stop_reason": "tool_use",
+      "input_tokens": 810,
+      "output_tokens": 54,
+      "cost_usd": 0.0054,
+      "latency_s": 0.3001510000030976
+     },
+     {
+      "kind": "tool",
+      "name": "lookup_refund_policy",
+      "args": {
+       "order_status": "paid",
+       "customer_tier": "standard",
+       "request_type": "duplicate_charge",
+       "days_since_purchase": 5,
+       "amount_usd": 25.0
+      },
+      "result": {
+       "decision": "refund_approved",
+       "escalate": false,
+       "refund_allowed": true,
+       "policy_section": "duplicate charges are always refunded"
+      },
+      "latency_s": 0.046057416999246925
+     },
+     {
+      "kind": "llm",
+      "stop_reason": "end_turn",
+      "input_tokens": 933,
+      "output_tokens": 105,
+      "cost_usd": 0.00729,
+      "latency_s": 0.45734641599847237
+     }
+    ],
+    "log": [
+     {
+      "t": 0.0,
+      "system": "agent",
+      "ticket_id": "TCK-7009",
+      "event": "start",
+      "budgets": {
+       "max_iterations": 8,
+       "max_tokens": 20000,
+       "max_cost_usd": 0.25,
+       "max_wall_s": 20.0
+      }
+     },
+     {
+      "t": 0.204,
+      "system": "agent",
+      "ticket_id": "TCK-7009",
+      "event": "model_call",
+      "n": 1,
+      "stop_reason": "tool_use",
+      "tokens_total": 511,
+      "cost_usd": 0.003035
+     },
+     {
+      "t": 0.249,
+      "system": "agent",
+      "ticket_id": "TCK-7009",
+      "event": "tool_call",
+      "tool": "get_ticket",
+      "args": {
+       "ticket_id": "TCK-7009"
+      }
+     },
+     {
+      "t": 0.457,
+      "system": "agent",
+      "ticket_id": "TCK-7009",
+      "event": "model_call",
+      "n": 2,
+      "stop_reason": "tool_use",
+      "tokens_total": 1146,
+      "cost_usd": 0.00669
+     },
+     {
+      "t": 0.501,
+      "system": "agent",
+      "ticket_id": "TCK-7009",
+      "event": "tool_call",
+      "tool": "get_order",
+      "args": {
+       "order_id": "ORD-5109"
+      }
+     },
+     {
+      "t": 0.71,
+      "system": "agent",
+      "ticket_id": "TCK-7009",
+      "event": "model_call",
+      "n": 3,
+      "stop_reason": "tool_use",
+      "tokens_total": 1881,
+      "cost_usd": 0.010845
+     },
+     {
+      "t": 0.756,
+      "system": "agent",
+      "ticket_id": "TCK-7009",
+      "event": "tool_call",
+      "tool": "get_order",
+      "args": {
+       "order_id": "ORD-5110"
+      }
+     },
+     {
+      "t": 1.058,
+      "system": "agent",
+      "ticket_id": "TCK-7009",
+      "event": "model_call",
+      "n": 4,
+      "stop_reason": "tool_use",
+      "tokens_total": 2745,
+      "cost_usd": 0.016245
+     },
+     {
+      "t": 1.104,
+      "system": "agent",
+      "ticket_id": "TCK-7009",
+      "event": "tool_call",
+      "tool": "lookup_refund_policy",
+      "args": {
+       "order_status": "paid",
+       "customer_tier": "standard",
+       "request_type": "duplicate_charge",
+       "days_since_purchase": 5,
+       "amount_usd": 25.0
+      }
+     },
+     {
+      "t": 1.562,
+      "system": "agent",
+      "ticket_id": "TCK-7009",
+      "event": "model_call",
+      "n": 5,
+      "stop_reason": "end_turn",
+      "tokens_total": 3783,
+      "cost_usd": 0.023535
+     },
+     {
+      "t": 1.562,
+      "system": "agent",
+      "ticket_id": "TCK-7009",
+      "event": "finished",
+      "decision": "refund_approved"
+     }
+    ],
+    "grade": {
+     "passed": true,
+     "mismatches": [],
+     "assertions": {
+      "ticket_id_echoed": {
+       "status": "PASS",
+       "detail": ""
+      },
+      "refund_amount_numeric": {
+       "status": "PASS",
+       "detail": ""
+      },
+      "escalation_tag_when_priority": {
+       "status": "n/a",
+       "detail": "tier is not Priority"
+      },
+      "no_refund_outside_window": {
+       "status": "n/a",
+       "detail": "day 5 is inside the 30-day window"
+      }
+     },
+     "assertions_failed": []
+    }
+   },
+   "TCK-7010": {
+    "system": "agent",
+    "ticket_id": "TCK-7010",
+    "output": {
+     "ticket_id": "TCK-7010",
+     "decision": "escalate_missing_order",
+     "refund_order_id": null,
+     "refund_amount_usd": null,
+     "escalate": true,
+     "reply": "Hi, thanks for raising ticket TCK-7010.\n\nYour message does not include an order number, so I cannot look up the charge. I have passed your ticket to the billing team, who will confirm the order details with you.\n\n[ESCALATED]\n\nBest regards,\nBilling Support"
+    },
+    "terminated": null,
+    "budgets": {
+     "max_iterations": 8,
+     "max_tokens": 20000,
+     "max_cost_usd": 0.25,
+     "max_wall_s": 20.0
+    },
+    "trace_url": "https://cloud.langfuse.com/project/cmts4unow08hkad0iuff9g5ln/traces/73d1c01b22d07d6785c3b50278fc4fb3",
+    "llm_calls": 3,
+    "tokens_in": 1789,
+    "tokens_out": 194,
+    "total_tokens": 1983,
+    "cost_usd": 0.013794999999999998,
+    "latency_s": 1.0828767909988528,
+    "path": [
+     "get_ticket",
+     "lookup_refund_policy"
+    ],
+    "steps": [
+     {
+      "kind": "llm",
+      "stop_reason": "tool_use",
+      "input_tokens": 487,
+      "output_tokens": 24,
+      "cost_usd": 0.003035,
+      "latency_s": 0.20699533399601933
+     },
+     {
+      "kind": "tool",
+      "name": "get_ticket",
+      "args": {
+       "ticket_id": "TCK-7010"
+      },
+      "result": {
+       "ticket_id": "TCK-7010",
+       "found": true,
+       "customer_tier": "standard",
+       "order_ids": [],
+       "request_type": "refund",
+       "message": "I want a refund for my last purchase."
+      },
+      "latency_s": 0.042364624998299405
+     },
+     {
+      "kind": "llm",
+      "stop_reason": "tool_use",
+      "input_tokens": 590,
+      "output_tokens": 54,
+      "cost_usd": 0.0043,
+      "latency_s": 0.2976897909975378
+     },
+     {
+      "kind": "tool",
+      "name": "lookup_refund_policy",
+      "args": {
+       "order_status": "not_found",
+       "customer_tier": "standard",
+       "request_type": "refund",
+       "days_since_purchase": null,
+       "amount_usd": null
+      },
+      "result": {
+       "decision": "escalate_missing_order",
+       "escalate": true,
+       "refund_allowed": false,
+       "policy_section": "no billing record: escalate"
+      },
+      "latency_s": 0.046463917002256494
+     },
+     {
+      "kind": "llm",
+      "stop_reason": "end_turn",
+      "input_tokens": 712,
+      "output_tokens": 116,
+      "cost_usd": 0.00646,
+      "latency_s": 0.48312054199777776
+     }
+    ],
+    "log": [
+     {
+      "t": 0.0,
+      "system": "agent",
+      "ticket_id": "TCK-7010",
+      "event": "start",
+      "budgets": {
+       "max_iterations": 8,
+       "max_tokens": 20000,
+       "max_cost_usd": 0.25,
+       "max_wall_s": 20.0
+      }
+     },
+     {
+      "t": 0.209,
+      "system": "agent",
+      "ticket_id": "TCK-7010",
+      "event": "model_call",
+      "n": 1,
+      "stop_reason": "tool_use",
+      "tokens_total": 511,
+      "cost_usd": 0.003035
+     },
+     {
+      "t": 0.251,
+      "system": "agent",
+      "ticket_id": "TCK-7010",
+      "event": "tool_call",
+      "tool": "get_ticket",
+      "args": {
+       "ticket_id": "TCK-7010"
+      }
+     },
+     {
+      "t": 0.551,
+      "system": "agent",
+      "ticket_id": "TCK-7010",
+      "event": "model_call",
+      "n": 2,
+      "stop_reason": "tool_use",
+      "tokens_total": 1155,
+      "cost_usd": 0.007335
+     },
+     {
+      "t": 0.597,
+      "system": "agent",
+      "ticket_id": "TCK-7010",
+      "event": "tool_call",
+      "tool": "lookup_refund_policy",
+      "args": {
+       "order_status": "not_found",
+       "customer_tier": "standard",
+       "request_type": "refund",
+       "days_since_purchase": null,
+       "amount_usd": null
+      }
+     },
+     {
+      "t": 1.082,
+      "system": "agent",
+      "ticket_id": "TCK-7010",
+      "event": "model_call",
+      "n": 3,
+      "stop_reason": "end_turn",
+      "tokens_total": 1983,
+      "cost_usd": 0.013795
+     },
+     {
+      "t": 1.082,
+      "system": "agent",
+      "ticket_id": "TCK-7010",
+      "event": "finished",
+      "decision": "escalate_missing_order"
+     }
+    ],
+    "grade": {
+     "passed": true,
+     "mismatches": [],
+     "assertions": {
+      "ticket_id_echoed": {
+       "status": "PASS",
+       "detail": ""
+      },
+      "refund_amount_numeric": {
+       "status": "n/a",
+       "detail": "no refund offered"
+      },
+      "escalation_tag_when_priority": {
+       "status": "n/a",
+       "detail": "tier is not Priority"
+      },
+      "no_refund_outside_window": {
+       "status": "n/a",
+       "detail": "day 0 is inside the 30-day window"
+      }
+     },
+     "assertions_failed": []
+    }
+   }
+  },
+  "workflow": {
+   "TCK-7001": {
+    "system": "workflow",
+    "ticket_id": "TCK-7001",
+    "output": {
+     "ticket_id": "TCK-7001",
+     "decision": "refund_approved",
+     "refund_order_id": "ORD-5101",
+     "refund_amount_usd": 41.5,
+     "escalate": false,
+     "reply": "Hi, thanks for raising ticket TCK-7001.\n\nWe have approved a refund of USD 41.50 for order ORD-5101 (Pro add-on). It will reach your original payment method within 5-10 business days.\n\nBest regards,\nBilling Support"
+    },
+    "terminated": null,
+    "trace_url": "https://cloud.langfuse.com/project/cmts4unow08hkad0iuff9g5ln/traces/82dcc611a23397b5d740ceeb67a68ac8",
+    "llm_calls": 1,
+    "tokens_in": 249,
+    "tokens_out": 105,
+    "total_tokens": 354,
+    "cost_usd": 0.00387,
+    "latency_s": 0.5823294159999932,
+    "path": [
+     "get_ticket",
+     "get_order",
+     "lookup_refund_policy"
+    ],
+    "steps": [
+     {
+      "kind": "tool",
+      "name": "get_ticket",
+      "args": {
+       "ticket_id": "TCK-7001"
+      },
+      "result": {
+       "ticket_id": "TCK-7001",
+       "found": true,
+       "customer_tier": "standard",
+       "order_ids": [
+        "ORD-5101"
+       ],
+       "request_type": "refund",
+       "message": "I bought the Pro add-on 12 days ago and it doesn't do what I need. Can I get my money back? Order ORD-5101."
+      },
+      "latency_s": 0.046190916997147724
+     },
+     {
+      "kind": "tool",
+      "name": "get_order",
+      "args": {
+       "order_id": "ORD-5101"
+      },
+      "result": {
+       "order_id": "ORD-5101",
+       "status": "paid",
+       "amount_usd": 41.5,
+       "days_since_purchase": 12,
+       "product": "Pro add-on",
+       "charged_at": "2026-09-16T10:02:00Z"
+      },
+      "latency_s": 0.04393958299624501
+     },
+     {
+      "kind": "tool",
+      "name": "lookup_refund_policy",
+      "args": {
+       "order_status": "paid",
+       "customer_tier": "standard",
+       "request_type": "refund",
+       "days_since_purchase": 12,
+       "amount_usd": 41.5
+      },
+      "result": {
+       "decision": "refund_approved",
+       "escalate": false,
+       "refund_allowed": true,
+       "policy_section": "inside the thirty-day window"
+      },
+      "latency_s": 0.04507095799635863
+     },
+     {
+      "kind": "llm",
+      "stop_reason": "end_turn",
+      "input_tokens": 249,
+      "output_tokens": 105,
+      "cost_usd": 0.00387,
+      "latency_s": 0.4428634170035366
+     }
+    ],
+    "log": [
+     {
+      "t": 0.0,
+      "system": "workflow",
+      "ticket_id": "TCK-7001",
+      "event": "start"
+     },
+     {
+      "t": 0.049,
+      "system": "workflow",
+      "ticket_id": "TCK-7001",
+      "event": "tool_call",
+      "tool": "get_ticket",
+      "args": {
+       "ticket_id": "TCK-7001"
+      }
+     },
+     {
+      "t": 0.093,
+      "system": "workflow",
+      "ticket_id": "TCK-7001",
+      "event": "tool_call",
+      "tool": "get_order",
+      "args": {
+       "order_id": "ORD-5101"
+      }
+     },
+     {
+      "t": 0.138,
+      "system": "workflow",
+      "ticket_id": "TCK-7001",
+      "event": "tool_call",
+      "tool": "lookup_refund_policy",
+      "args": {
+       "order_status": "paid",
+       "customer_tier": "standard",
+       "request_type": "refund",
+       "days_since_purchase": 12,
+       "amount_usd": 41.5
+      }
+     },
+     {
+      "t": 0.582,
+      "system": "workflow",
+      "ticket_id": "TCK-7001",
+      "event": "model_call",
+      "n": 1,
+      "stop_reason": "end_turn",
+      "tokens_total": 354,
+      "cost_usd": 0.00387
+     },
+     {
+      "t": 0.582,
+      "system": "workflow",
+      "ticket_id": "TCK-7001",
+      "event": "finished",
+      "decision": "refund_approved"
+     }
+    ],
+    "grade": {
+     "passed": true,
+     "mismatches": [],
+     "assertions": {
+      "ticket_id_echoed": {
+       "status": "PASS",
+       "detail": ""
+      },
+      "refund_amount_numeric": {
+       "status": "PASS",
+       "detail": ""
+      },
+      "escalation_tag_when_priority": {
+       "status": "n/a",
+       "detail": "tier is not Priority"
+      },
+      "no_refund_outside_window": {
+       "status": "n/a",
+       "detail": "day 12 is inside the 30-day window"
+      }
+     },
+     "assertions_failed": []
+    }
+   },
+   "TCK-7002": {
+    "system": "workflow",
+    "ticket_id": "TCK-7002",
+    "output": {
+     "ticket_id": "TCK-7002",
+     "decision": "outside_window",
+     "refund_order_id": null,
+     "refund_amount_usd": null,
+     "escalate": false,
+     "reply": "Hi, thanks for raising ticket TCK-7002.\n\nOrder ORD-5102 was purchased 44 days ago, which is outside our 30-day window, so it is not eligible for a refund.\n\nBest regards,\nBilling Support"
+    },
+    "terminated": null,
+    "trace_url": "https://cloud.langfuse.com/project/cmts4unow08hkad0iuff9g5ln/traces/86cfd19db1c4525be68bef2fc3ebace6",
+    "llm_calls": 1,
+    "tokens_in": 235,
+    "tokens_out": 96,
+    "total_tokens": 331,
+    "cost_usd": 0.003575,
+    "latency_s": 0.5594177919992944,
+    "path": [
+     "get_ticket",
+     "get_order",
+     "lookup_refund_policy"
+    ],
+    "steps": [
+     {
+      "kind": "tool",
+      "name": "get_ticket",
+      "args": {
+       "ticket_id": "TCK-7002"
+      },
+      "result": {
+       "ticket_id": "TCK-7002",
+       "found": true,
+       "customer_tier": "standard",
+       "order_ids": [
+        "ORD-5102"
+       ],
+       "request_type": "refund",
+       "message": "Please refund order ORD-5102, I stopped using it."
+      },
+      "latency_s": 0.04578491700522136
+     },
+     {
+      "kind": "tool",
+      "name": "get_order",
+      "args": {
+       "order_id": "ORD-5102"
+      },
+      "result": {
+       "order_id": "ORD-5102",
+       "status": "paid",
+       "amount_usd": 18.0,
+       "days_since_purchase": 44,
+       "product": "Starter",
+       "charged_at": "2026-08-15T08:40:00Z"
+      },
+      "latency_s": 0.04606962500110967
+     },
+     {
+      "kind": "tool",
+      "name": "lookup_refund_policy",
+      "args": {
+       "order_status": "paid",
+       "customer_tier": "standard",
+       "request_type": "refund",
+       "days_since_purchase": 44,
+       "amount_usd": 18.0
+      },
+      "result": {
+       "decision": "outside_window",
+       "escalate": false,
+       "refund_allowed": false,
+       "policy_section": "the refund window is thirty days"
+      },
+      "latency_s": 0.046474832997773774
+     },
+     {
+      "kind": "llm",
+      "stop_reason": "end_turn",
+      "input_tokens": 235,
+      "output_tokens": 96,
+      "cost_usd": 0.003575,
+      "latency_s": 0.4176990830019349
+     }
+    ],
+    "log": [
+     {
+      "t": 0.0,
+      "system": "workflow",
+      "ticket_id": "TCK-7002",
+      "event": "start"
+     },
+     {
+      "t": 0.046,
+      "system": "workflow",
+      "ticket_id": "TCK-7002",
+      "event": "tool_call",
+      "tool": "get_ticket",
+      "args": {
+       "ticket_id": "TCK-7002"
+      }
+     },
+     {
+      "t": 0.092,
+      "system": "workflow",
+      "ticket_id": "TCK-7002",
+      "event": "tool_call",
+      "tool": "get_order",
+      "args": {
+       "order_id": "ORD-5102"
+      }
+     },
+     {
+      "t": 0.139,
+      "system": "workflow",
+      "ticket_id": "TCK-7002",
+      "event": "tool_call",
+      "tool": "lookup_refund_policy",
+      "args": {
+       "order_status": "paid",
+       "customer_tier": "standard",
+       "request_type": "refund",
+       "days_since_purchase": 44,
+       "amount_usd": 18.0
+      }
+     },
+     {
+      "t": 0.559,
+      "system": "workflow",
+      "ticket_id": "TCK-7002",
+      "event": "model_call",
+      "n": 1,
+      "stop_reason": "end_turn",
+      "tokens_total": 331,
+      "cost_usd": 0.003575
+     },
+     {
+      "t": 0.559,
+      "system": "workflow",
+      "ticket_id": "TCK-7002",
+      "event": "finished",
+      "decision": "outside_window"
+     }
+    ],
+    "grade": {
+     "passed": true,
+     "mismatches": [],
+     "assertions": {
+      "ticket_id_echoed": {
+       "status": "PASS",
+       "detail": ""
+      },
+      "refund_amount_numeric": {
+       "status": "n/a",
+       "detail": "no refund offered"
+      },
+      "escalation_tag_when_priority": {
+       "status": "n/a",
+       "detail": "tier is not Priority"
+      },
+      "no_refund_outside_window": {
+       "status": "PASS",
+       "detail": ""
+      }
+     },
+     "assertions_failed": []
+    }
+   },
+   "TCK-7003": {
+    "system": "workflow",
+    "ticket_id": "TCK-7003",
+    "output": {
+     "ticket_id": "TCK-7003",
+     "decision": "refund_approved",
+     "refund_order_id": "ORD-5103",
+     "refund_amount_usd": 29.0,
+     "escalate": true,
+     "reply": "Hi, thanks for raising ticket TCK-7003.\n\nWe have approved a refund of USD 29.00 for order ORD-5103 (3 seats). It will reach your original payment method within 5-10 business days.\n\n[ESCALATED]\n\nBest regards,\nBilling Support"
+    },
+    "terminated": null,
+    "trace_url": "https://cloud.langfuse.com/project/cmts4unow08hkad0iuff9g5ln/traces/1d105428edebdd82636c7e0fefe81e02",
+    "llm_calls": 1,
+    "tokens_in": 244,
+    "tokens_out": 108,
+    "total_tokens": 352,
+    "cost_usd": 0.00392,
+    "latency_s": 0.5931893749948358,
+    "path": [
+     "get_ticket",
+     "get_order",
+     "lookup_refund_policy"
+    ],
+    "steps": [
+     {
+      "kind": "tool",
+      "name": "get_ticket",
+      "args": {
+       "ticket_id": "TCK-7003"
+      },
+      "result": {
+       "ticket_id": "TCK-7003",
+       "found": true,
+       "customer_tier": "priority",
+       "order_ids": [
+        "ORD-5103"
+       ],
+       "request_type": "refund",
+       "message": "Refund ORD-5103 please, the seats were bought by mistake."
+      },
+      "latency_s": 0.04542220800067298
+     },
+     {
+      "kind": "tool",
+      "name": "get_order",
+      "args": {
+       "order_id": "ORD-5103"
+      },
+      "result": {
+       "order_id": "ORD-5103",
+       "status": "paid",
+       "amount_usd": 29.0,
+       "days_since_purchase": 9,
+       "product": "3 seats",
+       "charged_at": "2026-09-19T14:11:00Z"
+      },
+      "latency_s": 0.04728104200330563
+     },
+     {
+      "kind": "tool",
+      "name": "lookup_refund_policy",
+      "args": {
+       "order_status": "paid",
+       "customer_tier": "priority",
+       "request_type": "refund",
+       "days_since_purchase": 9,
+       "amount_usd": 29.0
+      },
+      "result": {
+       "decision": "refund_approved",
+       "escalate": true,
+       "refund_allowed": true,
+       "policy_section": "inside the thirty-day window; Priority tier is always escalated"
+      },
+      "latency_s": 0.04299595899647102
+     },
+     {
+      "kind": "llm",
+      "stop_reason": "end_turn",
+      "input_tokens": 244,
+      "output_tokens": 108,
+      "cost_usd": 0.00392,
+      "latency_s": 0.45412424999813084
+     }
+    ],
+    "log": [
+     {
+      "t": 0.0,
+      "system": "workflow",
+      "ticket_id": "TCK-7003",
+      "event": "start"
+     },
+     {
+      "t": 0.046,
+      "system": "workflow",
+      "ticket_id": "TCK-7003",
+      "event": "tool_call",
+      "tool": "get_ticket",
+      "args": {
+       "ticket_id": "TCK-7003"
+      }
+     },
+     {
+      "t": 0.093,
+      "system": "workflow",
+      "ticket_id": "TCK-7003",
+      "event": "tool_call",
+      "tool": "get_order",
+      "args": {
+       "order_id": "ORD-5103"
+      }
+     },
+     {
+      "t": 0.137,
+      "system": "workflow",
+      "ticket_id": "TCK-7003",
+      "event": "tool_call",
+      "tool": "lookup_refund_policy",
+      "args": {
+       "order_status": "paid",
+       "customer_tier": "priority",
+       "request_type": "refund",
+       "days_since_purchase": 9,
+       "amount_usd": 29.0
+      }
+     },
+     {
+      "t": 0.592,
+      "system": "workflow",
+      "ticket_id": "TCK-7003",
+      "event": "model_call",
+      "n": 1,
+      "stop_reason": "end_turn",
+      "tokens_total": 352,
+      "cost_usd": 0.00392
+     },
+     {
+      "t": 0.592,
+      "system": "workflow",
+      "ticket_id": "TCK-7003",
+      "event": "finished",
+      "decision": "refund_approved"
+     }
+    ],
+    "grade": {
+     "passed": true,
+     "mismatches": [],
+     "assertions": {
+      "ticket_id_echoed": {
+       "status": "PASS",
+       "detail": ""
+      },
+      "refund_amount_numeric": {
+       "status": "PASS",
+       "detail": ""
+      },
+      "escalation_tag_when_priority": {
+       "status": "PASS",
+       "detail": ""
+      },
+      "no_refund_outside_window": {
+       "status": "n/a",
+       "detail": "day 9 is inside the 30-day window"
+      }
+     },
+     "assertions_failed": []
+    }
+   },
+   "TCK-7004": {
+    "system": "workflow",
+    "ticket_id": "TCK-7004",
+    "output": {
+     "ticket_id": "TCK-7004",
+     "decision": "escalate_missing_order",
+     "refund_order_id": null,
+     "refund_amount_usd": null,
+     "escalate": true,
+     "reply": "Hi, thanks for raising ticket TCK-7004.\n\nI could not find order ORD-5199 in our billing system. I have passed your ticket to the billing team, who will confirm the order details with you.\n\n[ESCALATED]\n\nBest regards,\nBilling Support"
+    },
+    "terminated": null,
+    "trace_url": "https://cloud.langfuse.com/project/cmts4unow08hkad0iuff9g5ln/traces/96b66cc31e6328e9ee79d93c4de9a16b",
+    "llm_calls": 1,
+    "tokens_in": 208,
+    "tokens_out": 110,
+    "total_tokens": 318,
+    "cost_usd": 0.00379,
+    "latency_s": 0.5934193329958362,
+    "path": [
+     "get_ticket",
+     "get_order",
+     "lookup_refund_policy"
+    ],
+    "steps": [
+     {
+      "kind": "tool",
+      "name": "get_ticket",
+      "args": {
+       "ticket_id": "TCK-7004"
+      },
+      "result": {
+       "ticket_id": "TCK-7004",
+       "found": true,
+       "customer_tier": "standard",
+       "order_ids": [
+        "ORD-5199"
+       ],
+       "request_type": "refund",
+       "message": "Where is my refund for ORD-5199? I asked last week."
+      },
+      "latency_s": 0.041622542004915886
+     },
+     {
+      "kind": "tool",
+      "name": "get_order",
+      "args": {
+       "order_id": "ORD-5199"
+      },
+      "result": {
+       "order_id": "ORD-5199",
+       "status": "not_found"
+      },
+      "latency_s": 0.04818208299548132
+     },
+     {
+      "kind": "tool",
+      "name": "lookup_refund_policy",
+      "args": {
+       "order_status": "not_found",
+       "customer_tier": "standard",
+       "request_type": "refund",
+       "days_since_purchase": null,
+       "amount_usd": null
+      },
+      "result": {
+       "decision": "escalate_missing_order",
+       "escalate": true,
+       "refund_allowed": false,
+       "policy_section": "no billing record: escalate"
+      },
+      "latency_s": 0.04329791600321187
+     },
+     {
+      "kind": "llm",
+      "stop_reason": "end_turn",
+      "input_tokens": 208,
+      "output_tokens": 110,
+      "cost_usd": 0.00379,
+      "latency_s": 0.4584155000047758
+     }
+    ],
+    "log": [
+     {
+      "t": 0.0,
+      "system": "workflow",
+      "ticket_id": "TCK-7004",
+      "event": "start"
+     },
+     {
+      "t": 0.042,
+      "system": "workflow",
+      "ticket_id": "TCK-7004",
+      "event": "tool_call",
+      "tool": "get_ticket",
+      "args": {
+       "ticket_id": "TCK-7004"
+      }
+     },
+     {
+      "t": 0.09,
+      "system": "workflow",
+      "ticket_id": "TCK-7004",
+      "event": "tool_call",
+      "tool": "get_order",
+      "args": {
+       "order_id": "ORD-5199"
+      }
+     },
+     {
+      "t": 0.134,
+      "system": "workflow",
+      "ticket_id": "TCK-7004",
+      "event": "tool_call",
+      "tool": "lookup_refund_policy",
+      "args": {
+       "order_status": "not_found",
+       "customer_tier": "standard",
+       "request_type": "refund",
+       "days_since_purchase": null,
+       "amount_usd": null
+      }
+     },
+     {
+      "t": 0.593,
+      "system": "workflow",
+      "ticket_id": "TCK-7004",
+      "event": "model_call",
+      "n": 1,
+      "stop_reason": "end_turn",
+      "tokens_total": 318,
+      "cost_usd": 0.00379
+     },
+     {
+      "t": 0.593,
+      "system": "workflow",
+      "ticket_id": "TCK-7004",
+      "event": "finished",
+      "decision": "escalate_missing_order"
+     }
+    ],
+    "grade": {
+     "passed": true,
+     "mismatches": [],
+     "assertions": {
+      "ticket_id_echoed": {
+       "status": "PASS",
+       "detail": ""
+      },
+      "refund_amount_numeric": {
+       "status": "n/a",
+       "detail": "no refund offered"
+      },
+      "escalation_tag_when_priority": {
+       "status": "n/a",
+       "detail": "tier is not Priority"
+      },
+      "no_refund_outside_window": {
+       "status": "n/a",
+       "detail": "day 0 is inside the 30-day window"
+      }
+     },
+     "assertions_failed": []
+    }
+   },
+   "TCK-7005": {
+    "system": "workflow",
+    "ticket_id": "TCK-7005",
+    "output": {
+     "ticket_id": "TCK-7005",
+     "decision": "already_refunded",
+     "refund_order_id": null,
+     "refund_amount_usd": null,
+     "escalate": false,
+     "reply": "Hi, thanks for raising ticket TCK-7005.\n\nOur records show order ORD-5105 was already refunded in full, so there is nothing further to process. Bank transfers can take up to 10 business days to appear.\n\nBest regards,\nBilling Support"
+    },
+    "terminated": null,
+    "trace_url": "https://cloud.langfuse.com/project/cmts4unow08hkad0iuff9g5ln/traces/323ad27fa6bf633a9f016e530e16de03",
+    "llm_calls": 1,
+    "tokens_in": 230,
+    "tokens_out": 108,
+    "total_tokens": 338,
+    "cost_usd": 0.00385,
+    "latency_s": 0.5855680829990888,
+    "path": [
+     "get_ticket",
+     "get_order",
+     "lookup_refund_policy"
+    ],
+    "steps": [
+     {
+      "kind": "tool",
+      "name": "get_ticket",
+      "args": {
+       "ticket_id": "TCK-7005"
+      },
+      "result": {
+       "ticket_id": "TCK-7005",
+       "found": true,
+       "customer_tier": "standard",
+       "order_ids": [
+        "ORD-5105"
+       ],
+       "request_type": "refund",
+       "message": "I still want my refund for ORD-5105."
+      },
+      "latency_s": 0.04629320799722336
+     },
+     {
+      "kind": "tool",
+      "name": "get_order",
+      "args": {
+       "order_id": "ORD-5105"
+      },
+      "result": {
+       "order_id": "ORD-5105",
+       "status": "refunded",
+       "amount_usd": 22.0,
+       "days_since_purchase": 18,
+       "product": "Starter",
+       "charged_at": "2026-09-10T09:00:00Z"
+      },
+      "latency_s": 0.04161387500062119
+     },
+     {
+      "kind": "tool",
+      "name": "lookup_refund_policy",
+      "args": {
+       "order_status": "refunded",
+       "customer_tier": "standard",
+       "request_type": "refund",
+       "days_since_purchase": 18,
+       "amount_usd": 22.0
+      },
+      "result": {
+       "decision": "already_refunded",
+       "escalate": false,
+       "refund_allowed": false,
+       "policy_section": "one refund per order"
+      },
+      "latency_s": 0.041258666999056004
+     },
+     {
+      "kind": "llm",
+      "stop_reason": "end_turn",
+      "input_tokens": 230,
+      "output_tokens": 108,
+      "cost_usd": 0.00385,
+      "latency_s": 0.4538270420016488
+     }
+    ],
+    "log": [
+     {
+      "t": 0.0,
+      "system": "workflow",
+      "ticket_id": "TCK-7005",
+      "event": "start"
+     },
+     {
+      "t": 0.047,
+      "system": "workflow",
+      "ticket_id": "TCK-7005",
+      "event": "tool_call",
+      "tool": "get_ticket",
+      "args": {
+       "ticket_id": "TCK-7005"
+      }
+     },
+     {
+      "t": 0.089,
+      "system": "workflow",
+      "ticket_id": "TCK-7005",
+      "event": "tool_call",
+      "tool": "get_order",
+      "args": {
+       "order_id": "ORD-5105"
+      }
+     },
+     {
+      "t": 0.13,
+      "system": "workflow",
+      "ticket_id": "TCK-7005",
+      "event": "tool_call",
+      "tool": "lookup_refund_policy",
+      "args": {
+       "order_status": "refunded",
+       "customer_tier": "standard",
+       "request_type": "refund",
+       "days_since_purchase": 18,
+       "amount_usd": 22.0
+      }
+     },
+     {
+      "t": 0.585,
+      "system": "workflow",
+      "ticket_id": "TCK-7005",
+      "event": "model_call",
+      "n": 1,
+      "stop_reason": "end_turn",
+      "tokens_total": 338,
+      "cost_usd": 0.00385
+     },
+     {
+      "t": 0.585,
+      "system": "workflow",
+      "ticket_id": "TCK-7005",
+      "event": "finished",
+      "decision": "already_refunded"
+     }
+    ],
+    "grade": {
+     "passed": true,
+     "mismatches": [],
+     "assertions": {
+      "ticket_id_echoed": {
+       "status": "PASS",
+       "detail": ""
+      },
+      "refund_amount_numeric": {
+       "status": "n/a",
+       "detail": "no refund offered"
+      },
+      "escalation_tag_when_priority": {
+       "status": "n/a",
+       "detail": "tier is not Priority"
+      },
+      "no_refund_outside_window": {
+       "status": "n/a",
+       "detail": "day 18 is inside the 30-day window"
+      }
+     },
+     "assertions_failed": []
+    }
+   },
+   "TCK-7006": {
+    "system": "workflow",
+    "ticket_id": "TCK-7006",
+    "output": {
+     "ticket_id": "TCK-7006",
+     "decision": "escalate_chargeback",
+     "refund_order_id": null,
+     "refund_amount_usd": null,
+     "escalate": true,
+     "reply": "Hi, thanks for raising ticket TCK-7006.\n\nOrder ORD-5106 has an open dispute with your bank, so it is handled by our disputes team rather than as a refund. I have passed your ticket to them.\n\n[ESCALATED]\n\nBest regards,\nBilling Support"
+    },
+    "terminated": null,
+    "trace_url": "https://cloud.langfuse.com/project/cmts4unow08hkad0iuff9g5ln/traces/4f9c37efdecd6c027737f3c8f0cb4916",
+    "llm_calls": 1,
+    "tokens_in": 241,
+    "tokens_out": 110,
+    "total_tokens": 351,
+    "cost_usd": 0.003955,
+    "latency_s": 0.595696999997017,
+    "path": [
+     "get_ticket",
+     "get_order",
+     "lookup_refund_policy"
+    ],
+    "steps": [
+     {
+      "kind": "tool",
+      "name": "get_ticket",
+      "args": {
+       "ticket_id": "TCK-7006"
+      },
+      "result": {
+       "ticket_id": "TCK-7006",
+       "found": true,
+       "customer_tier": "standard",
+       "order_ids": [
+        "ORD-5106"
+       ],
+       "request_type": "refund",
+       "message": "Refund ORD-5106 or I'll keep the dispute open with my bank."
+      },
+      "latency_s": 0.04476537499431288
+     },
+     {
+      "kind": "tool",
+      "name": "get_order",
+      "args": {
+       "order_id": "ORD-5106"
+      },
+      "result": {
+       "order_id": "ORD-5106",
+       "status": "chargeback",
+       "amount_usd": 35.0,
+       "days_since_purchase": 15,
+       "product": "Pro add-on",
+       "charged_at": "2026-09-13T16:25:00Z"
+      },
+      "latency_s": 0.045290833004401065
+     },
+     {
+      "kind": "tool",
+      "name": "lookup_refund_policy",
+      "args": {
+       "order_status": "chargeback",
+       "customer_tier": "standard",
+       "request_type": "refund",
+       "days_since_purchase": 15,
+       "amount_usd": 35.0
+      },
+      "result": {
+       "decision": "escalate_chargeback",
+       "escalate": true,
+       "refund_allowed": false,
+       "policy_section": "open bank dispute: disputes team"
+      },
+      "latency_s": 0.041210625000530854
+     },
+     {
+      "kind": "llm",
+      "stop_reason": "end_turn",
+      "input_tokens": 241,
+      "output_tokens": 110,
+      "cost_usd": 0.003955,
+      "latency_s": 0.4599760829951265
+     }
+    ],
+    "log": [
+     {
+      "t": 0.0,
+      "system": "workflow",
+      "ticket_id": "TCK-7006",
+      "event": "start"
+     },
+     {
+      "t": 0.045,
+      "system": "workflow",
+      "ticket_id": "TCK-7006",
+      "event": "tool_call",
+      "tool": "get_ticket",
+      "args": {
+       "ticket_id": "TCK-7006"
+      }
+     },
+     {
+      "t": 0.091,
+      "system": "workflow",
+      "ticket_id": "TCK-7006",
+      "event": "tool_call",
+      "tool": "get_order",
+      "args": {
+       "order_id": "ORD-5106"
+      }
+     },
+     {
+      "t": 0.132,
+      "system": "workflow",
+      "ticket_id": "TCK-7006",
+      "event": "tool_call",
+      "tool": "lookup_refund_policy",
+      "args": {
+       "order_status": "chargeback",
+       "customer_tier": "standard",
+       "request_type": "refund",
+       "days_since_purchase": 15,
+       "amount_usd": 35.0
+      }
+     },
+     {
+      "t": 0.594,
+      "system": "workflow",
+      "ticket_id": "TCK-7006",
+      "event": "model_call",
+      "n": 1,
+      "stop_reason": "end_turn",
+      "tokens_total": 351,
+      "cost_usd": 0.003955
+     },
+     {
+      "t": 0.594,
+      "system": "workflow",
+      "ticket_id": "TCK-7006",
+      "event": "finished",
+      "decision": "escalate_chargeback"
+     }
+    ],
+    "grade": {
+     "passed": true,
+     "mismatches": [],
+     "assertions": {
+      "ticket_id_echoed": {
+       "status": "PASS",
+       "detail": ""
+      },
+      "refund_amount_numeric": {
+       "status": "n/a",
+       "detail": "no refund offered"
+      },
+      "escalation_tag_when_priority": {
+       "status": "n/a",
+       "detail": "tier is not Priority"
+      },
+      "no_refund_outside_window": {
+       "status": "n/a",
+       "detail": "day 15 is inside the 30-day window"
+      }
+     },
+     "assertions_failed": []
+    }
+   },
+   "TCK-7007": {
+    "system": "workflow",
+    "ticket_id": "TCK-7007",
+    "output": {
+     "ticket_id": "TCK-7007",
+     "decision": "refund_approved",
+     "refund_order_id": "ORD-5107",
+     "refund_amount_usd": 60.0,
+     "escalate": false,
+     "reply": "Hi, thanks for raising ticket TCK-7007.\n\nWe have approved a refund of USD 60.00 for order ORD-5107 (Team plan (monthly)). It will reach your original payment method within 5-10 business days.\n\nBest regards,\nBilling Support"
+    },
+    "terminated": null,
+    "trace_url": "https://cloud.langfuse.com/project/cmts4unow08hkad0iuff9g5ln/traces/b27d56b921757d63ad51ea39743e17ec",
+    "llm_calls": 1,
+    "tokens_in": 241,
+    "tokens_out": 107,
+    "total_tokens": 348,
+    "cost_usd": 0.00388,
+    "latency_s": 0.5861359170012292,
+    "path": [
+     "get_ticket",
+     "get_order",
+     "lookup_refund_policy"
+    ],
+    "steps": [
+     {
+      "kind": "tool",
+      "name": "get_ticket",
+      "args": {
+       "ticket_id": "TCK-7007"
+      },
+      "result": {
+       "ticket_id": "TCK-7007",
+       "found": true,
+       "customer_tier": "standard",
+       "order_ids": [
+        "ORD-5107"
+       ],
+       "request_type": "refund",
+       "message": "Can I still get a refund on ORD-5107? It has been exactly a month."
+      },
+      "latency_s": 0.047268333997635636
+     },
+     {
+      "kind": "tool",
+      "name": "get_order",
+      "args": {
+       "order_id": "ORD-5107"
+      },
+      "result": {
+       "order_id": "ORD-5107",
+       "status": "paid",
+       "amount_usd": 60.0,
+       "days_since_purchase": 30,
+       "product": "Team plan (monthly)",
+       "charged_at": "2026-08-29T12:00:00Z"
+      },
+      "latency_s": 0.04235874999722
+     },
+     {
+      "kind": "tool",
+      "name": "lookup_refund_policy",
+      "args": {
+       "order_status": "paid",
+       "customer_tier": "standard",
+       "request_type": "refund",
+       "days_since_purchase": 30,
+       "amount_usd": 60.0
+      },
+      "result": {
+       "decision": "refund_approved",
+       "escalate": false,
+       "refund_allowed": true,
+       "policy_section": "inside the thirty-day window"
+      },
+      "latency_s": 0.04501658400113229
+     },
+     {
+      "kind": "llm",
+      "stop_reason": "end_turn",
+      "input_tokens": 241,
+      "output_tokens": 107,
+      "cost_usd": 0.00388,
+      "latency_s": 0.4487011250021169
+     }
+    ],
+    "log": [
+     {
+      "t": 0.0,
+      "system": "workflow",
+      "ticket_id": "TCK-7007",
+      "event": "start"
+     },
+     {
+      "t": 0.048,
+      "system": "workflow",
+      "ticket_id": "TCK-7007",
+      "event": "tool_call",
+      "tool": "get_ticket",
+      "args": {
+       "ticket_id": "TCK-7007"
+      }
+     },
+     {
+      "t": 0.09,
+      "system": "workflow",
+      "ticket_id": "TCK-7007",
+      "event": "tool_call",
+      "tool": "get_order",
+      "args": {
+       "order_id": "ORD-5107"
+      }
+     },
+     {
+      "t": 0.135,
+      "system": "workflow",
+      "ticket_id": "TCK-7007",
+      "event": "tool_call",
+      "tool": "lookup_refund_policy",
+      "args": {
+       "order_status": "paid",
+       "customer_tier": "standard",
+       "request_type": "refund",
+       "days_since_purchase": 30,
+       "amount_usd": 60.0
+      }
+     },
+     {
+      "t": 0.585,
+      "system": "workflow",
+      "ticket_id": "TCK-7007",
+      "event": "model_call",
+      "n": 1,
+      "stop_reason": "end_turn",
+      "tokens_total": 348,
+      "cost_usd": 0.00388
+     },
+     {
+      "t": 0.585,
+      "system": "workflow",
+      "ticket_id": "TCK-7007",
+      "event": "finished",
+      "decision": "refund_approved"
+     }
+    ],
+    "grade": {
+     "passed": true,
+     "mismatches": [],
+     "assertions": {
+      "ticket_id_echoed": {
+       "status": "PASS",
+       "detail": ""
+      },
+      "refund_amount_numeric": {
+       "status": "PASS",
+       "detail": ""
+      },
+      "escalation_tag_when_priority": {
+       "status": "n/a",
+       "detail": "tier is not Priority"
+      },
+      "no_refund_outside_window": {
+       "status": "n/a",
+       "detail": "day 30 is inside the 30-day window"
+      }
+     },
+     "assertions_failed": []
+    }
+   },
+   "TCK-7008": {
+    "system": "workflow",
+    "ticket_id": "TCK-7008",
+    "output": {
+     "ticket_id": "TCK-7008",
+     "decision": "needs_manager_approval",
+     "refund_order_id": "ORD-5108",
+     "refund_amount_usd": 240.0,
+     "escalate": true,
+     "reply": "Hi, thanks for raising ticket TCK-7008.\n\nYour request for USD 240.00 back on order ORD-5108 is above what support can approve directly, so it has gone to a billing manager for sign-off. You will hear back within one business day.\n\n[ESCALATED]\n\nBest regards,\nBilling Support"
+    },
+    "terminated": null,
+    "trace_url": "https://cloud.langfuse.com/project/cmts4unow08hkad0iuff9g5ln/traces/787961db72f1fd60ed416b85d00304cc",
+    "llm_calls": 1,
+    "tokens_in": 245,
+    "tokens_out": 123,
+    "total_tokens": 368,
+    "cost_usd": 0.0043,
+    "latency_s": 0.6359516669981531,
+    "path": [
+     "get_ticket",
+     "get_order",
+     "lookup_refund_policy"
+    ],
+    "steps": [
+     {
+      "kind": "tool",
+      "name": "get_ticket",
+      "args": {
+       "ticket_id": "TCK-7008"
+      },
+      "result": {
+       "ticket_id": "TCK-7008",
+       "found": true,
+       "customer_tier": "standard",
+       "order_ids": [
+        "ORD-5108"
+       ],
+       "request_type": "refund",
+       "message": "We want to cancel the annual plan on ORD-5108 and get the money back."
+      },
+      "latency_s": 0.04627325000183191
+     },
+     {
+      "kind": "tool",
+      "name": "get_order",
+      "args": {
+       "order_id": "ORD-5108"
+      },
+      "result": {
+       "order_id": "ORD-5108",
+       "status": "paid",
+       "amount_usd": 240.0,
+       "days_since_purchase": 10,
+       "product": "Team plan (annual)",
+       "charged_at": "2026-09-18T11:30:00Z"
+      },
+      "latency_s": 0.04242095800145762
+     },
+     {
+      "kind": "tool",
+      "name": "lookup_refund_policy",
+      "args": {
+       "order_status": "paid",
+       "customer_tier": "standard",
+       "request_type": "refund",
+       "days_since_purchase": 10,
+       "amount_usd": 240.0
+      },
+      "result": {
+       "decision": "needs_manager_approval",
+       "escalate": true,
+       "refund_allowed": true,
+       "policy_section": "refunds over USD 100 need a manager"
+      },
+      "latency_s": 0.044825291995948646
+     },
+     {
+      "kind": "llm",
+      "stop_reason": "end_turn",
+      "input_tokens": 245,
+      "output_tokens": 123,
+      "cost_usd": 0.0043,
+      "latency_s": 0.4991317909953068
+     }
+    ],
+    "log": [
+     {
+      "t": 0.0,
+      "system": "workflow",
+      "ticket_id": "TCK-7008",
+      "event": "start"
+     },
+     {
+      "t": 0.047,
+      "system": "workflow",
+      "ticket_id": "TCK-7008",
+      "event": "tool_call",
+      "tool": "get_ticket",
+      "args": {
+       "ticket_id": "TCK-7008"
+      }
+     },
+     {
+      "t": 0.089,
+      "system": "workflow",
+      "ticket_id": "TCK-7008",
+      "event": "tool_call",
+      "tool": "get_order",
+      "args": {
+       "order_id": "ORD-5108"
+      }
+     },
+     {
+      "t": 0.134,
+      "system": "workflow",
+      "ticket_id": "TCK-7008",
+      "event": "tool_call",
+      "tool": "lookup_refund_policy",
+      "args": {
+       "order_status": "paid",
+       "customer_tier": "standard",
+       "request_type": "refund",
+       "days_since_purchase": 10,
+       "amount_usd": 240.0
+      }
+     },
+     {
+      "t": 0.635,
+      "system": "workflow",
+      "ticket_id": "TCK-7008",
+      "event": "model_call",
+      "n": 1,
+      "stop_reason": "end_turn",
+      "tokens_total": 368,
+      "cost_usd": 0.0043
+     },
+     {
+      "t": 0.635,
+      "system": "workflow",
+      "ticket_id": "TCK-7008",
+      "event": "finished",
+      "decision": "needs_manager_approval"
+     }
+    ],
+    "grade": {
+     "passed": true,
+     "mismatches": [],
+     "assertions": {
+      "ticket_id_echoed": {
+       "status": "PASS",
+       "detail": ""
+      },
+      "refund_amount_numeric": {
+       "status": "n/a",
+       "detail": "no refund offered"
+      },
+      "escalation_tag_when_priority": {
+       "status": "n/a",
+       "detail": "tier is not Priority"
+      },
+      "no_refund_outside_window": {
+       "status": "n/a",
+       "detail": "day 10 is inside the 30-day window"
+      }
+     },
+     "assertions_failed": []
+    }
+   },
+   "TCK-7009": {
+    "system": "workflow",
+    "ticket_id": "TCK-7009",
+    "output": {
+     "ticket_id": "TCK-7009",
+     "decision": "refund_approved",
+     "refund_order_id": "ORD-5109",
+     "refund_amount_usd": 25.0,
+     "escalate": false,
+     "reply": "Hi, thanks for raising ticket TCK-7009.\n\nWe have approved a refund of USD 25.00 for order ORD-5109 (Pro add-on). It will reach your original payment method within 5-10 business days.\n\nBest regards,\nBilling Support"
+    },
+    "terminated": null,
+    "trace_url": "https://cloud.langfuse.com/project/cmts4unow08hkad0iuff9g5ln/traces/3dd9cf92f5d49b5285ea352aeec1ab87",
+    "llm_calls": 1,
+    "tokens_in": 252,
+    "tokens_out": 105,
+    "total_tokens": 357,
+    "cost_usd": 0.003885,
+    "latency_s": 0.5800148750058725,
+    "path": [
+     "get_ticket",
+     "get_order",
+     "lookup_refund_policy"
+    ],
+    "steps": [
+     {
+      "kind": "tool",
+      "name": "get_ticket",
+      "args": {
+       "ticket_id": "TCK-7009"
+      },
+      "result": {
+       "ticket_id": "TCK-7009",
+       "found": true,
+       "customer_tier": "standard",
+       "order_ids": [
+        "ORD-5109",
+        "ORD-5110"
+       ],
+       "request_type": "duplicate_charge",
+       "message": "You charged me twice for the same thing, ORD-5109 and ORD-5110. Refund the extra one."
+      },
+      "latency_s": 0.04276591700181598
+     },
+     {
+      "kind": "tool",
+      "name": "get_order",
+      "args": {
+       "order_id": "ORD-5109"
+      },
+      "result": {
+       "order_id": "ORD-5109",
+       "status": "paid",
+       "amount_usd": 25.0,
+       "days_since_purchase": 5,
+       "product": "Pro add-on",
+       "charged_at": "2026-09-23T09:14:02Z"
+      },
+      "latency_s": 0.04522499999438878
+     },
+     {
+      "kind": "tool",
+      "name": "lookup_refund_policy",
+      "args": {
+       "order_status": "paid",
+       "customer_tier": "standard",
+       "request_type": "duplicate_charge",
+       "days_since_purchase": 5,
+       "amount_usd": 25.0
+      },
+      "result": {
+       "decision": "refund_approved",
+       "escalate": false,
+       "refund_allowed": true,
+       "policy_section": "duplicate charges are always refunded"
+      },
+      "latency_s": 0.04352104199642781
+     },
+     {
+      "kind": "llm",
+      "stop_reason": "end_turn",
+      "input_tokens": 252,
+      "output_tokens": 105,
+      "cost_usd": 0.003885,
+      "latency_s": 0.4432655840064399
+     }
+    ],
+    "log": [
+     {
+      "t": 0.0,
+      "system": "workflow",
+      "ticket_id": "TCK-7009",
+      "event": "start"
+     },
+     {
+      "t": 0.043,
+      "system": "workflow",
+      "ticket_id": "TCK-7009",
+      "event": "tool_call",
+      "tool": "get_ticket",
+      "args": {
+       "ticket_id": "TCK-7009"
+      }
+     },
+     {
+      "t": 0.088,
+      "system": "workflow",
+      "ticket_id": "TCK-7009",
+      "event": "tool_call",
+      "tool": "get_order",
+      "args": {
+       "order_id": "ORD-5109"
+      }
+     },
+     {
+      "t": 0.132,
+      "system": "workflow",
+      "ticket_id": "TCK-7009",
+      "event": "tool_call",
+      "tool": "lookup_refund_policy",
+      "args": {
+       "order_status": "paid",
+       "customer_tier": "standard",
+       "request_type": "duplicate_charge",
+       "days_since_purchase": 5,
+       "amount_usd": 25.0
+      }
+     },
+     {
+      "t": 0.578,
+      "system": "workflow",
+      "ticket_id": "TCK-7009",
+      "event": "model_call",
+      "n": 1,
+      "stop_reason": "end_turn",
+      "tokens_total": 357,
+      "cost_usd": 0.003885
+     },
+     {
+      "t": 0.579,
+      "system": "workflow",
+      "ticket_id": "TCK-7009",
+      "event": "finished",
+      "decision": "refund_approved"
+     }
+    ],
+    "grade": {
+     "passed": false,
+     "mismatches": [
+      {
+       "field": "refund_order_id",
+       "expected": "ORD-5110",
+       "got": "ORD-5109"
+      }
+     ],
+     "assertions": {
+      "ticket_id_echoed": {
+       "status": "PASS",
+       "detail": ""
+      },
+      "refund_amount_numeric": {
+       "status": "PASS",
+       "detail": ""
+      },
+      "escalation_tag_when_priority": {
+       "status": "n/a",
+       "detail": "tier is not Priority"
+      },
+      "no_refund_outside_window": {
+       "status": "n/a",
+       "detail": "day 5 is inside the 30-day window"
+      }
+     },
+     "assertions_failed": []
+    }
+   },
+   "TCK-7010": {
+    "system": "workflow",
+    "ticket_id": "TCK-7010",
+    "output": {
+     "ticket_id": "TCK-7010",
+     "decision": "escalate_missing_order",
+     "refund_order_id": null,
+     "refund_amount_usd": null,
+     "escalate": true,
+     "reply": "Hi, thanks for raising ticket TCK-7010.\n\nYour message does not include an order number, so I cannot look up the charge. I have passed your ticket to the billing team, who will confirm the order details with you.\n\n[ESCALATED]\n\nBest regards,\nBilling Support"
+    },
+    "terminated": null,
+    "trace_url": "https://cloud.langfuse.com/project/cmts4unow08hkad0iuff9g5ln/traces/f6ed3bfd1a561f811b3920830c64f37d",
+    "llm_calls": 1,
+    "tokens_in": 199,
+    "tokens_out": 116,
+    "total_tokens": 315,
+    "cost_usd": 0.003895,
+    "latency_s": 0.617392916996323,
+    "path": [
+     "get_ticket",
+     "get_order",
+     "lookup_refund_policy"
+    ],
+    "steps": [
+     {
+      "kind": "tool",
+      "name": "get_ticket",
+      "args": {
+       "ticket_id": "TCK-7010"
+      },
+      "result": {
+       "ticket_id": "TCK-7010",
+       "found": true,
+       "customer_tier": "standard",
+       "order_ids": [],
+       "request_type": "refund",
+       "message": "I want a refund for my last purchase."
+      },
+      "latency_s": 0.04630083299707621
+     },
+     {
+      "kind": "tool",
+      "name": "get_order",
+      "args": {
+       "order_id": null
+      },
+      "result": {
+       "order_id": null,
+       "status": "not_found"
+      },
+      "latency_s": 0.04660495900316164
+     },
+     {
+      "kind": "tool",
+      "name": "lookup_refund_policy",
+      "args": {
+       "order_status": "not_found",
+       "customer_tier": "standard",
+       "request_type": "refund",
+       "days_since_purchase": null,
+       "amount_usd": null
+      },
+      "result": {
+       "decision": "escalate_missing_order",
+       "escalate": true,
+       "refund_allowed": false,
+       "policy_section": "no billing record: escalate"
+      },
+      "latency_s": 0.0479089170039515
+     },
+     {
+      "kind": "llm",
+      "stop_reason": "end_turn",
+      "input_tokens": 199,
+      "output_tokens": 116,
+      "cost_usd": 0.003895,
+      "latency_s": 0.4736983330003568
+     }
+    ],
+    "log": [
+     {
+      "t": 0.0,
+      "system": "workflow",
+      "ticket_id": "TCK-7010",
+      "event": "start"
+     },
+     {
+      "t": 0.047,
+      "system": "workflow",
+      "ticket_id": "TCK-7010",
+      "event": "tool_call",
+      "tool": "get_ticket",
+      "args": {
+       "ticket_id": "TCK-7010"
+      }
+     },
+     {
+      "t": 0.093,
+      "system": "workflow",
+      "ticket_id": "TCK-7010",
+      "event": "tool_call",
+      "tool": "get_order",
+      "args": {
+       "order_id": null
+      }
+     },
+     {
+      "t": 0.141,
+      "system": "workflow",
+      "ticket_id": "TCK-7010",
+      "event": "tool_call",
+      "tool": "lookup_refund_policy",
+      "args": {
+       "order_status": "not_found",
+       "customer_tier": "standard",
+       "request_type": "refund",
+       "days_since_purchase": null,
+       "amount_usd": null
+      }
+     },
+     {
+      "t": 0.617,
+      "system": "workflow",
+      "ticket_id": "TCK-7010",
+      "event": "model_call",
+      "n": 1,
+      "stop_reason": "end_turn",
+      "tokens_total": 315,
+      "cost_usd": 0.003895
+     },
+     {
+      "t": 0.617,
+      "system": "workflow",
+      "ticket_id": "TCK-7010",
+      "event": "finished",
+      "decision": "escalate_missing_order"
+     }
+    ],
+    "grade": {
+     "passed": true,
+     "mismatches": [],
+     "assertions": {
+      "ticket_id_echoed": {
+       "status": "PASS",
+       "detail": ""
+      },
+      "refund_amount_numeric": {
+       "status": "n/a",
+       "detail": "no refund offered"
+      },
+      "escalation_tag_when_priority": {
+       "status": "n/a",
+       "detail": "tier is not Priority"
+      },
+      "no_refund_outside_window": {
+       "status": "n/a",
+       "detail": "day 0 is inside the 30-day window"
+      }
+     },
+     "assertions_failed": []
+    }
+   }
+  }
+ },
+ "expected": {
+  "TCK-7001": {
+   "cls": "straight",
+   "decision": "refund_approved",
+   "refund_order_id": "ORD-5101",
+   "refund_amount_usd": 41.5,
+   "escalate": false
+  },
+  "TCK-7002": {
+   "cls": "straight",
+   "decision": "outside_window",
+   "refund_order_id": null,
+   "refund_amount_usd": null,
+   "escalate": false
+  },
+  "TCK-7003": {
+   "cls": "straight",
+   "decision": "refund_approved",
+   "refund_order_id": "ORD-5103",
+   "refund_amount_usd": 29.0,
+   "escalate": true
+  },
+  "TCK-7004": {
+   "cls": "branch",
+   "decision": "escalate_missing_order",
+   "refund_order_id": null,
+   "refund_amount_usd": null,
+   "escalate": true
+  },
+  "TCK-7005": {
+   "cls": "branch",
+   "decision": "already_refunded",
+   "refund_order_id": null,
+   "refund_amount_usd": null,
+   "escalate": false
+  },
+  "TCK-7006": {
+   "cls": "branch",
+   "decision": "escalate_chargeback",
+   "refund_order_id": null,
+   "refund_amount_usd": null,
+   "escalate": true
+  },
+  "TCK-7007": {
+   "cls": "straight",
+   "decision": "refund_approved",
+   "refund_order_id": "ORD-5107",
+   "refund_amount_usd": 60.0,
+   "escalate": false
+  },
+  "TCK-7008": {
+   "cls": "branch",
+   "decision": "needs_manager_approval",
+   "refund_order_id": "ORD-5108",
+   "refund_amount_usd": 240.0,
+   "escalate": true
+  },
+  "TCK-7009": {
+   "cls": "multi_order",
+   "decision": "refund_approved",
+   "refund_order_id": "ORD-5110",
+   "refund_amount_usd": 25.0,
+   "escalate": false
+  },
+  "TCK-7010": {
+   "cls": "branch",
+   "decision": "escalate_missing_order",
+   "refund_order_id": null,
+   "refund_amount_usd": null,
+   "escalate": true
+  }
+ },
+ "tickets": {
+  "TCK-7001": {
+   "customer_tier": "standard",
+   "order_ids": [
+    "ORD-5101"
+   ],
+   "request_type": "refund",
+   "message": "I bought the Pro add-on 12 days ago and it doesn't do what I need. Can I get my money back? Order ORD-5101."
+  },
+  "TCK-7002": {
+   "customer_tier": "standard",
+   "order_ids": [
+    "ORD-5102"
+   ],
+   "request_type": "refund",
+   "message": "Please refund order ORD-5102, I stopped using it."
+  },
+  "TCK-7003": {
+   "customer_tier": "priority",
+   "order_ids": [
+    "ORD-5103"
+   ],
+   "request_type": "refund",
+   "message": "Refund ORD-5103 please, the seats were bought by mistake."
+  },
+  "TCK-7004": {
+   "customer_tier": "standard",
+   "order_ids": [
+    "ORD-5199"
+   ],
+   "request_type": "refund",
+   "message": "Where is my refund for ORD-5199? I asked last week."
+  },
+  "TCK-7005": {
+   "customer_tier": "standard",
+   "order_ids": [
+    "ORD-5105"
+   ],
+   "request_type": "refund",
+   "message": "I still want my refund for ORD-5105."
+  },
+  "TCK-7006": {
+   "customer_tier": "standard",
+   "order_ids": [
+    "ORD-5106"
+   ],
+   "request_type": "refund",
+   "message": "Refund ORD-5106 or I'll keep the dispute open with my bank."
+  },
+  "TCK-7007": {
+   "customer_tier": "standard",
+   "order_ids": [
+    "ORD-5107"
+   ],
+   "request_type": "refund",
+   "message": "Can I still get a refund on ORD-5107? It has been exactly a month."
+  },
+  "TCK-7008": {
+   "customer_tier": "standard",
+   "order_ids": [
+    "ORD-5108"
+   ],
+   "request_type": "refund",
+   "message": "We want to cancel the annual plan on ORD-5108 and get the money back."
+  },
+  "TCK-7009": {
+   "customer_tier": "standard",
+   "order_ids": [
+    "ORD-5109",
+    "ORD-5110"
+   ],
+   "request_type": "duplicate_charge",
+   "message": "You charged me twice for the same thing, ORD-5109 and ORD-5110. Refund the extra one."
+  },
+  "TCK-7010": {
+   "customer_tier": "standard",
+   "order_ids": [],
+   "request_type": "refund",
+   "message": "I want a refund for my last purchase."
+  },
+  "TCK-9001": {
+   "customer_tier": "standard",
+   "order_ids": [
+    "ORD-5101"
+   ],
+   "request_type": "refund",
+   "message": "Please refund ORD-5101, it doesn't work for me"
+  }
+ },
+ "paths": [
+  {
+   "ticket_id": "TCK-7001",
+   "cls": "straight",
+   "branch_note": "",
+   "agent_path": [
+    "get_ticket",
+    "get_order",
+    "lookup_refund_policy"
+   ],
+   "workflow_path": [
+    "get_ticket",
+    "get_order",
+    "lookup_refund_policy"
+   ],
+   "path_differs": false,
+   "agent_decision": "refund_approved",
+   "workflow_decision": "refund_approved",
+   "outcome_differs": false,
+   "agent_passed": true,
+   "workflow_passed": true
+  },
+  {
+   "ticket_id": "TCK-7002",
+   "cls": "straight",
+   "branch_note": "",
+   "agent_path": [
+    "get_ticket",
+    "get_order",
+    "lookup_refund_policy"
+   ],
+   "workflow_path": [
+    "get_ticket",
+    "get_order",
+    "lookup_refund_policy"
+   ],
+   "path_differs": false,
+   "agent_decision": "outside_window",
+   "workflow_decision": "outside_window",
+   "outcome_differs": false,
+   "agent_passed": true,
+   "workflow_passed": true
+  },
+  {
+   "ticket_id": "TCK-7003",
+   "cls": "straight",
+   "branch_note": "",
+   "agent_path": [
+    "get_ticket",
+    "get_order",
+    "lookup_refund_policy"
+   ],
+   "workflow_path": [
+    "get_ticket",
+    "get_order",
+    "lookup_refund_policy"
+   ],
+   "path_differs": false,
+   "agent_decision": "refund_approved",
+   "workflow_decision": "refund_approved",
+   "outcome_differs": false,
+   "agent_passed": true,
+   "workflow_passed": true
+  },
+  {
+   "ticket_id": "TCK-7004",
+   "cls": "branch",
+   "branch_note": "get_order returns not_found -> escalation path opens",
+   "agent_path": [
+    "get_ticket",
+    "get_order",
+    "lookup_refund_policy"
+   ],
+   "workflow_path": [
+    "get_ticket",
+    "get_order",
+    "lookup_refund_policy"
+   ],
+   "path_differs": false,
+   "agent_decision": "escalate_missing_order",
+   "workflow_decision": "escalate_missing_order",
+   "outcome_differs": false,
+   "agent_passed": true,
+   "workflow_passed": true
+  },
+  {
+   "ticket_id": "TCK-7005",
+   "cls": "branch",
+   "branch_note": "order already refunded -> no second refund",
+   "agent_path": [
+    "get_ticket",
+    "get_order",
+    "lookup_refund_policy"
+   ],
+   "workflow_path": [
+    "get_ticket",
+    "get_order",
+    "lookup_refund_policy"
+   ],
+   "path_differs": false,
+   "agent_decision": "already_refunded",
+   "workflow_decision": "already_refunded",
+   "outcome_differs": false,
+   "agent_passed": true,
+   "workflow_passed": true
+  },
+  {
+   "ticket_id": "TCK-7006",
+   "cls": "branch",
+   "branch_note": "order under chargeback -> disputes team, not a refund",
+   "agent_path": [
+    "get_ticket",
+    "get_order",
+    "lookup_refund_policy"
+   ],
+   "workflow_path": [
+    "get_ticket",
+    "get_order",
+    "lookup_refund_policy"
+   ],
+   "path_differs": false,
+   "agent_decision": "escalate_chargeback",
+   "workflow_decision": "escalate_chargeback",
+   "outcome_differs": false,
+   "agent_passed": true,
+   "workflow_passed": true
+  },
+  {
+   "ticket_id": "TCK-7007",
+   "cls": "straight",
+   "branch_note": "",
+   "agent_path": [
+    "get_ticket",
+    "get_order",
+    "lookup_refund_policy"
+   ],
+   "workflow_path": [
+    "get_ticket",
+    "get_order",
+    "lookup_refund_policy"
+   ],
+   "path_differs": false,
+   "agent_decision": "refund_approved",
+   "workflow_decision": "refund_approved",
+   "outcome_differs": false,
+   "agent_passed": true,
+   "workflow_passed": true
+  },
+  {
+   "ticket_id": "TCK-7008",
+   "cls": "branch",
+   "branch_note": "amount over USD 100 -> manager approval path",
+   "agent_path": [
+    "get_ticket",
+    "get_order",
+    "lookup_refund_policy"
+   ],
+   "workflow_path": [
+    "get_ticket",
+    "get_order",
+    "lookup_refund_policy"
+   ],
+   "path_differs": false,
+   "agent_decision": "needs_manager_approval",
+   "workflow_decision": "needs_manager_approval",
+   "outcome_differs": false,
+   "agent_passed": true,
+   "workflow_passed": true
+  },
+  {
+   "ticket_id": "TCK-7009",
+   "cls": "multi_order",
+   "branch_note": "two orders named -> must compare charges to find the duplicate",
+   "agent_path": [
+    "get_ticket",
+    "get_order",
+    "get_order",
+    "lookup_refund_policy"
+   ],
+   "workflow_path": [
+    "get_ticket",
+    "get_order",
+    "lookup_refund_policy"
+   ],
+   "path_differs": true,
+   "agent_decision": "refund_approved",
+   "workflow_decision": "refund_approved",
+   "outcome_differs": true,
+   "agent_passed": true,
+   "workflow_passed": false
+  },
+  {
+   "ticket_id": "TCK-7010",
+   "cls": "branch",
+   "branch_note": "no order referenced -> nothing to fetch, escalate for details",
+   "agent_path": [
+    "get_ticket",
+    "lookup_refund_policy"
+   ],
+   "workflow_path": [
+    "get_ticket",
+    "get_order",
+    "lookup_refund_policy"
+   ],
+   "path_differs": true,
+   "agent_decision": "escalate_missing_order",
+   "workflow_decision": "escalate_missing_order",
+   "outcome_differs": false,
+   "agent_passed": true,
+   "workflow_passed": true
+  }
+ ],
+ "verdict": "Decision rule: does the execution path vary with the input? Measured on 10 tickets, the agent's path varied on 2 (TCK-7009, TCK-7010). On TCK-7010 the path changed but the output did not. The 4 branch tickets (TCK-7004, TCK-7005, TCK-7006, TCK-7008) did not need it: the enum policy tool turns a missing, refunded, charged-back or over-limit order into a decision, so the fixed path handled them. The class that forces a variable path is the multi-order (duplicate-charge) ticket: the workflow fetched one order and refunded the wrong one (TCK-7009). Workflow: 9/10 pass, p50 0.59s, 3,432 tokens, $0.0039/ticket. Agent: 10/10, p50 1.32s, 28,233 tokens (8.2x), $0.0183/ticket (4.7x). Verdict: the fixed workflow is sufficient for single-order tickets; only multi-order tickets justify the agent's cost.",
+ "verdict_words": 121
+}

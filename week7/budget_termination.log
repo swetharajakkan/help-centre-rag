@@ -1,0 +1,18 @@
+# week7 budget termination log
+# ticket:          TCK-7009
+# budgets:         {"max_iterations": 8, "max_tokens": 2500, "max_cost_usd": 0.25, "max_wall_s": 20.0}
+# budget reached:  max_tokens  (configured limit 2500, observed 2745)
+# outcome:         terminated cleanly, handed to a human
+# model calls:     4   tokens: 2745   cost: $0.01625   wall: 1.99s
+# langfuse trace:  https://cloud.langfuse.com/project/cmts4unow08hkad0iuff9g5ln/traces/452d3235c647c3869995e8ab3abfba24
+
+{"t": 0.0, "system": "agent", "ticket_id": "TCK-7009", "event": "start", "budgets": {"max_iterations": 8, "max_tokens": 2500, "max_cost_usd": 0.25, "max_wall_s": 20.0}}
+{"t": 0.586, "system": "agent", "ticket_id": "TCK-7009", "event": "model_call", "n": 1, "stop_reason": "tool_use", "tokens_total": 511, "cost_usd": 0.003035}
+{"t": 0.632, "system": "agent", "ticket_id": "TCK-7009", "event": "tool_call", "tool": "get_ticket", "args": {"ticket_id": "TCK-7009"}}
+{"t": 0.843, "system": "agent", "ticket_id": "TCK-7009", "event": "model_call", "n": 2, "stop_reason": "tool_use", "tokens_total": 1146, "cost_usd": 0.00669}
+{"t": 0.888, "system": "agent", "ticket_id": "TCK-7009", "event": "tool_call", "tool": "get_order", "args": {"order_id": "ORD-5109"}}
+{"t": 1.1, "system": "agent", "ticket_id": "TCK-7009", "event": "model_call", "n": 3, "stop_reason": "tool_use", "tokens_total": 1881, "cost_usd": 0.010845}
+{"t": 1.147, "system": "agent", "ticket_id": "TCK-7009", "event": "tool_call", "tool": "get_order", "args": {"order_id": "ORD-5110"}}
+{"t": 1.45, "system": "agent", "ticket_id": "TCK-7009", "event": "model_call", "n": 4, "stop_reason": "tool_use", "tokens_total": 2745, "cost_usd": 0.016245}
+{"t": 1.45, "system": "agent", "ticket_id": "TCK-7009", "event": "budget_exceeded", "budget": "max_tokens", "limit": 2500, "observed": 2745}
+{"t": 1.45, "system": "agent", "ticket_id": "TCK-7009", "event": "terminated_cleanly", "handed_off_to": "human", "llm_calls": 4, "tokens_total": 2745, "cost_usd": 0.016245}

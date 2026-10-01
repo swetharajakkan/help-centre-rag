@@ -13,4 +13,8 @@ pillow==12.3.0
 pyobjc-framework-Vision==12.2.2; sys_platform == "darwin"
 # Optional tracing. The app runs identically without it: backend/app/tracing.py
 # is a no-op unless LANGFUSE_PUBLIC_KEY and LANGFUSE_SECRET_KEY are both set.
-langfuse==4.15.1
+langfuse==4.15.6
+
+# Week 7 agent topics: LangGraph version of the agent/workflow, and mem0 memory.
+langgraph==1.2.12
+mem0ai==2.2.1

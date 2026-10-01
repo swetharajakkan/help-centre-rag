@@ -32,7 +32,19 @@ async def lifespan(_: FastAPI):
         INDEXES[strategy] = build_index(strategy, include_uploads=True)
         INDEXES[strategy].save()
     st = tracing.status()
-    print(f"[tracing] langfuse {'ON -> ' + st['host'] if st['enabled'] else 'OFF (' + st['reason'] + ')'}")
+    if st["enabled"]:
+        print(f"[tracing] langfuse ON -> {st['host']}"
+              + ("" if st["verified"] else "  (keys unverified: host unreachable)"))
+    else:
+        # Loud on purpose. Tracing off is not a normal operating state here --
+        # every answer the app produces is meant to be recorded, and a silent
+        # one-line OFF is exactly what let a day of traffic go untraced.
+        print("\n".join(("!" * 72,
+                         "[tracing] langfuse OFF -- answers are NOT being recorded",
+                         f"[tracing] {st['reason']}",
+                         "[tracing] put real keys in .env; a leftover shell",
+                         "[tracing] export no longer overrides them",
+                         "!" * 72)))
     yield
     # Short-lived events would otherwise die with the process.
     tracing.flush()
@@ -240,7 +252,32 @@ def examples() -> dict:
                 "expected_chunk_id": g.get("expected_chunk_id"),
             })
     return {"examples": out, "sampled": _sampled_examples(),
-            "replay": _replay_example()}
+            "replay": _replay_example(), "week6": _week6_examples(),
+            "week7": _week7_examples()}
+
+
+def _week6_examples() -> list[dict]:
+    """The 27 Week 6 eval cases, as askable questions. [] if not run."""
+    try:
+        labels = _week6_json("labels_25.json")["labels"]
+        return [{"id": c["case_id"], "question": c["ticket"]["question"],
+                 "product_area": c["ticket"]["product_area"] or "",
+                 "mode": c["mode"], "replay_verbatim": c["replay_verbatim"],
+                 "human": labels.get(c["case_id"], {}).get("label")}
+                for c in _week6_lines("eval_set.jsonl")]
+    except (OSError, ValueError, KeyError):
+        return []
+
+
+def _week7_examples() -> list[dict]:
+    """The 10 Week 7 race tickets, as askable customer messages."""
+    try:
+        _week7()
+        from store import EXPECTED, TICKET_IDS, TICKETS
+        return [{"id": t, "question": TICKETS[t]["message"],
+                 "cls": EXPECTED[t]["cls"]} for t in TICKET_IDS]
+    except Exception:
+        return []
 
 
 def _replay_example() -> dict | None:
@@ -326,6 +363,545 @@ def error_analysis() -> dict:
     except (OSError, ValueError):
         return {"modes": [], "traces": [], "seed": None,
                 "population": 0, "sample_size": 0}
+
+
+WEEK6 = os.path.join(os.path.dirname(__file__), "..", "..", "week6")
+
+
+def _week6_json(name: str):
+    with open(os.path.join(WEEK6, name)) as fh:
+        return json.load(fh)
+
+
+def _week6_lines(name: str) -> list[dict]:
+    with open(os.path.join(WEEK6, name)) as fh:
+        return [json.loads(l) for l in fh if l.strip()]
+
+
+GRADERS = {"judge_v1": "Judge v1", "judge_v2": "Judge v2", "human": "Human labels"}
+
+
+@app.get("/api/eval_week6")
+def eval_week6(grader: str = "judge_v2") -> dict:
+    """Week 6's judge validation, served to the UI.
+
+    Everything here is read from the files week6/run_week6.py writes -- the
+    eval set, the drafted replies, the hand labels, both judge runs and both
+    agreement reports. Nothing is recomputed except the assertions, which are
+    run through week6/assertions.py itself rather than reimplemented, so the
+    table in the browser and the table in the terminal cannot disagree.
+
+    Returns an empty payload if Week 6 has not been run, so the endpoint is
+    safe on a checkout without it.
+
+    `grader` picks whose verdict decides pass/fail: judge v1, judge v2 or the
+    human labels. Every number on the page is recomputed against it, and the
+    grading is written to Langfuse as one trace -- an evaluator observation
+    per case, plus pass rate and agreement-with-human as trace scores -- so
+    switching graders in the UI leaves a record of what each one said.
+    """
+    import sys
+    if grader not in GRADERS:
+        raise HTTPException(400, f"grader must be one of {sorted(GRADERS)}")
+    try:
+        if WEEK6 not in sys.path:
+            sys.path.insert(0, WEEK6)
+        import assertions as A
+
+        cases = {c["case_id"]: c for c in _week6_lines("eval_set.jsonl")}
+        replies = _week6_lines("replies.jsonl")
+        labels = _week6_json("labels_25.json")
+        v1 = _week6_json("judge_run_judge_v1.json")
+        v2 = _week6_json("judge_run_judge_v2.json")
+        before = _week6_json("agreement_before.json")
+        after = _week6_json("agreement_after.json")
+        try:
+            ragas = {r["case_id"]: r for r in _week6_json("ragas_report.json")}
+        except (OSError, ValueError):
+            ragas = {}
+    except (OSError, ValueError, KeyError, ImportError):
+        return {"ok": False, "cases": [], "modes": [], "summary": {},
+                "assertions": [], "ragas": []}
+
+    out, per_mode = [], {}
+    astats = {name: {"PASS": 0, "FAIL": 0, "n/a": 0} for name, _ in A.ASSERTIONS}
+    for r in replies:
+        case = cases[r["case_id"]]
+        checks = A.run(r["reply"], r["ticket"])
+        for name, c in checks["checks"].items():
+            astats[name][c["status"]] += 1
+        hv1 = v1["verdicts"].get(r["case_id"], {})
+        hv2 = v2["verdicts"].get(r["case_id"], {})
+        human = labels["labels"].get(r["case_id"], {})
+        chosen = {"judge_v1": hv1.get("verdict"), "judge_v2": hv2.get("verdict"),
+                  "human": human.get("label")}[grader]
+        # An unjudged case has no verdict from anyone and passes on the
+        # assertions alone, whichever grader is selected.
+        passed = checks["passed"] and (chosen or "RESOLVED") == "RESOLVED"
+        slot = per_mode.setdefault(r["mode"], {"mode": r["mode"], "pass": 0, "n": 0})
+        slot["n"] += 1
+        slot["pass"] += passed
+        out.append({
+            "case_id": r["case_id"], "mode": r["mode"],
+            "question": r["ticket"]["question"],
+            "ticket_id": r["ticket"]["ticket_id"],
+            "tier": r["ticket"]["tier"],
+            "product_area": r["ticket"]["product_area"],
+            "days_since_purchase": r["ticket"]["days_since_purchase"],
+            "refund_requested": r["ticket"]["refund_requested"],
+            "refund_amount_usd": r["ticket"]["refund_amount_usd"],
+            "source_trace": case["source_trace"],
+            "replay_verbatim": case["replay_verbatim"],
+            "judged": case["judged"],
+            "not_judged_because": case.get("not_judged_because", ""),
+            "answered": r["answered"],
+            "reply": r["reply"],
+            "checks": checks["checks"], "failed": checks["failed"],
+            "judge_v1": hv1.get("verdict"), "judge_v1_why": hv1.get("reasoning"),
+            "judge_v2": hv2.get("verdict"), "judge_v2_why": hv2.get("reasoning"),
+            "human": human.get("label"), "human_why": human.get("reason"),
+            "agree_v1": bool(human) and human.get("label") == hv1.get("verdict"),
+            "agree_v2": bool(human) and human.get("label") == hv2.get("verdict"),
+            "ragas": ragas.get(r["case_id"]),
+            "grader_verdict": chosen,
+            "passed": passed,
+        })
+
+    order = ["mode_1", "mode_2", "mode_3", "mode_4", "mode_5", "no_failure"]
+    modes = sorted(per_mode.values(), key=lambda m: order.index(m["mode"]))
+    labelled = [c for c in out if c["human"]]
+    agree = (sum(c["grader_verdict"] == c["human"] for c in labelled)
+             / len(labelled) * 100) if labelled else None
+    trace_url = _trace_week6_grading(grader, out, agree)
+    return {
+        "ok": True,
+        "grader": grader,
+        "graders": GRADERS,
+        "grader_agreement": round(agree, 1) if agree is not None else None,
+        "grader_resolved": sum(c["grader_verdict"] == "RESOLVED" for c in out),
+        "trace_url": trace_url,
+        "cases": out,
+        "modes": modes,
+        "assertions": [{"name": n, **astats[n]} for n, _ in A.ASSERTIONS],
+        "summary": {
+            "n_cases": len(out),
+            "n_judged": sum(c["judged"] for c in out),
+            "n_verbatim": sum(c["replay_verbatim"] for c in out),
+            "pass_total": sum(c["passed"] for c in out),
+            "agreement_before": before["agreement_pct"],
+            "agreement_after": after["agreement_pct"],
+            "kappa_before": before["cohens_kappa"],
+            "kappa_after": after["cohens_kappa"],
+            "engine": v2["engine"],
+            "judge_model": v2["model"],
+            "n_assertions": len(A.ASSERTIONS),
+            "n_judged_criteria": 1,
+            "labelled_at": labels["labelled_at"],
+            "disagreements_before": before["disagreements"],
+            "disagreements_after": after["disagreements"],
+            "human_resolved_rate": before["human_resolved_rate"],
+            "judge_resolved_rate_before": before["judge_resolved_rate"],
+            "judge_resolved_rate_after": after["judge_resolved_rate"],
+        },
+    }
+
+
+def _trace_week6_grading(grader: str, cases: list[dict],
+                         agreement: float | None) -> str | None:
+    """One Langfuse trace per grader switch: what that grader decided.
+
+    Each case is an `evaluator` observation carrying the grader's verdict and
+    the human label beside it; the trace carries pass rate and agreement as
+    scores, so the three graders can be compared side by side in Langfuse.
+    """
+    passed = sum(c["passed"] for c in cases)
+    with tracing.observe("grade-week6-eval", as_type="chain",
+                         input={"grader": grader, "n_cases": len(cases)}) as root, \
+            tracing.trace_attributes(tags=["week6", f"grader:{grader}"]):
+        for c in cases:
+            with tracing.observe(f"grade-{c['case_id']}", as_type="evaluator",
+                                 input={"question": c["question"],
+                                        "reply": c["reply"]}) as ev:
+                ev.update(output={"verdict": c["grader_verdict"],
+                                  "passed": c["passed"],
+                                  "assertions_failed": c["failed"]},
+                          metadata={"grader": grader, "mode": c["mode"],
+                                    "human": c["human"],
+                                    "judge_v1": c["judge_v1"],
+                                    "judge_v2": c["judge_v2"]})
+        # Readable IO on the root observation: it is what the trace table
+        # shows. The numbers stay structured in metadata.
+        root.update(input=f"Grade Week 6 eval with {GRADERS[grader]}",
+                    output=f"{passed}/{len(cases)} passing",
+                    metadata={"grader": grader, "passed": passed,
+                              "n": len(cases),
+                              "agreement_with_human_pct": agreement})
+        tracing.score("pass_rate", passed / len(cases), GRADERS[grader])
+        if agreement is not None:
+            tracing.score("agreement_with_human", agreement / 100, GRADERS[grader])
+        url = tracing.trace_url()
+    tracing.flush()
+    return url
+
+
+# ------------------------------------------------------------------ week 7
+
+WEEK7 = os.path.join(os.path.dirname(__file__), "..", "..", "week7")
+
+
+def _week7():
+    """Import the week7 modules. They use flat imports (store, tools, model),
+    so their directory goes on sys.path, as when run from the command line."""
+    import sys
+    for p in (os.path.abspath(WEEK7), os.path.abspath(WEEK6)):
+        if p not in sys.path:
+            sys.path.insert(0, p)
+    import agent, budget_demo, race, tools, workflow  # noqa: E401
+    try:
+        import bonus
+    except ImportError:
+        bonus = None
+    return agent, workflow, race, budget_demo, tools, bonus
+
+
+def _tool_diff(tools) -> list[dict]:
+    """Before/after of every tool definition, as unified diff lines."""
+    import difflib
+    before = {t["name"]: t for t in tools.TOOLS_BEFORE}
+    out = []
+    for t in tools.TOOLS:
+        old = before.get(t["name"])
+        a = json.dumps(old, indent=2).splitlines() if old else []
+        b = json.dumps(t, indent=2).splitlines()
+        diff = list(difflib.unified_diff(a, b, lineterm="", n=50))[2:]
+        out.append({"name": t["name"], "status": "changed" if old else "added",
+                    "before": old, "after": t,
+                    "diff": diff or ["  " + l for l in b]})
+    return out
+
+
+class Week7Run(BaseModel):
+    ticket_id: str
+    system: str = "agent"
+
+
+class Week7Budget(BaseModel):
+    ticket_id: str = "TCK-7009"
+    budget: str = "max_tokens"
+    limit: float = 2500
+    save: bool = False
+
+
+@app.get("/api/week7")
+def week7() -> dict:
+    """Everything the Week 7 page shows, read from the files the CLI writes."""
+    agent, _, _, budget_demo, tools, bonus = _week7()
+    try:
+        results = json.load(open(os.path.join(WEEK7, "race.json")))
+    except (OSError, ValueError):
+        results = None
+    try:
+        log = open(budget_demo.LOG).read()
+    except OSError:
+        log = ""
+    bonus_data = None
+    try:
+        bonus_data = json.load(open(os.path.join(WEEK7, "bonus_results.json")))
+    except (OSError, ValueError):
+        pass
+    src = {}
+    for name in ("agent.py", "react.py", "workflow.py", "tools.py", "model.py", "store.py", "bonus.py", "memory.py", "mem0_demo.py", "graph.py"):
+        p = os.path.join(WEEK7, name)
+        if os.path.exists(p):
+            with open(p) as fh:
+                src[name] = fh.read()
+    return {"ok": results is not None, "race": results, "budget_log": log,
+            "tool_diff": _tool_diff(tools),
+            "enums": {"order_status": tools.ORDER_STATUS,
+                      "customer_tier": tools.CUSTOMER_TIER,
+                      "request_type": tools.REQUEST_TYPE,
+                      "decision": tools.DECISION},
+            "default_budgets": vars(agent.Budgets()),
+            "bonus": bonus_data,
+            "source": src}
+
+
+@app.post("/api/week7/race")
+def week7_race() -> dict:
+    """Re-run the whole race (both systems, 10 tickets, ~25s) and return it."""
+    _, _, race, _, _, _ = _week7()
+    race.main()
+    return week7()
+
+
+@app.post("/api/week7/run")
+def week7_run(req: Week7Run) -> dict:
+    """One ticket through one system, graded, with its step trace."""
+    agent, workflow, race, _, _, _ = _week7()
+    from store import TICKETS
+    if req.ticket_id not in TICKETS:
+        raise HTTPException(404, f"unknown ticket {req.ticket_id!r}")
+    if req.system not in ("agent", "workflow"):
+        raise HTTPException(400, "system must be 'agent' or 'workflow'")
+    fn = agent.run_agent if req.system == "agent" else workflow.run_workflow
+    r = fn(req.ticket_id)
+    r["grade"] = race.grade(req.ticket_id, r["output"])
+    tracing.flush()
+    return r
+
+
+@app.post("/api/week7/budget")
+def week7_budget(req: Week7Budget) -> dict:
+    """Run one ticket under a chosen budget. `save` overwrites the log file."""
+    _, _, _, budget_demo, _, _ = _week7()
+    if req.budget not in budget_demo.KINDS:
+        raise HTTPException(400, f"budget must be one of {list(budget_demo.KINDS)}")
+    r = budget_demo.run_demo(req.ticket_id, req.budget, req.limit,
+                             write=req.save)
+    tracing.flush()
+    return r
+
+
+@app.post("/api/week7/bonus")
+def week7_bonus() -> dict:
+    """Re-run the bonus challenge across 3 long threads with sliding window and persistent tier memory."""
+    _, _, _, _, _, bonus = _week7()
+    if bonus is None:
+        raise HTTPException(500, "bonus module not found")
+    return bonus.run_bonus_race()
+
+
+class Week7ReactRequest(BaseModel):
+    ticket_id: str = "TCK-7009"
+
+
+@app.api_route("/api/week7/react", methods=["GET", "POST"])
+def week7_react(req: Week7ReactRequest = Week7ReactRequest()) -> dict:
+    """Run ReAct loop showing Thought -> Action -> Observation step by step."""
+    import sys
+    if os.path.abspath(WEEK7) not in sys.path:
+        sys.path.insert(0, os.path.abspath(WEEK7))
+    import react
+    return react.run_react(req.ticket_id, verbose=False)
+
+
+@app.api_route("/api/week7/memory", methods=["GET", "POST"])
+def week7_memory() -> dict:
+    """Run short vs vector memory comparison across the 3 long threads."""
+    import sys
+    if os.path.abspath(WEEK7) not in sys.path:
+        sys.path.insert(0, os.path.abspath(WEEK7))
+    import memory
+    from bonus import LONG_THREADS
+    mem = memory.VectorMemory()
+    results = {}
+    for tid, thread in LONG_THREADS.items():
+        results[tid] = {
+            "title": thread.get("title", tid),
+            "customer_id": thread["customer_id"],
+            "modes": {}
+        }
+        for mode in memory.MODES:
+            r = memory.resolve(thread, mode, mem)
+            results[tid]["modes"][mode] = {
+                "decision": r.get("decision"),
+                "passed": r.get("passed", False),
+                "tokens": r.get("context_tokens", 0),
+                "waiver_recalled": bool(r.get("recalled")),
+                "recalled_items": r.get("recalled", [])
+            }
+    return {
+        "ok": True,
+        "loaded_from_disk": mem.loaded_from_disk,
+        "results": results
+    }
+
+
+class Mem0RecallReq(BaseModel):
+    user_id: str = "CUST-903"
+    query: str = "manager authorization or waiver code approving the refund"
+
+
+@app.api_route("/api/week7/mem0", methods=["GET", "POST"])
+def week7_mem0(req: Mem0RecallReq = Mem0RecallReq()) -> dict:
+    """Query mem0 for user-scoped memories."""
+    import sys
+    if os.path.abspath(WEEK7) not in sys.path:
+        sys.path.insert(0, os.path.abspath(WEEK7))
+    import mem0_demo
+    if not os.path.exists(mem0_demo.DATA):
+        mem0_demo.write()
+    m = mem0_demo.memory()
+    res = m.search(req.query, filters={"user_id": req.user_id}, top_k=3)
+    return {"ok": True, "query": req.query, "user_id": req.user_id, "results": res.get("results", [])}
+
+
+class Week7GraphReq(BaseModel):
+    ticket_id: str = "TCK-7009"
+
+
+@app.api_route("/api/week7/graph", methods=["GET", "POST"])
+def week7_graph(req: Week7GraphReq = Week7GraphReq()) -> dict:
+    """Run LangGraph agent & workflow and return checkpoints & mermaid diagrams."""
+    import sys
+    if os.path.abspath(WEEK7) not in sys.path:
+        sys.path.insert(0, os.path.abspath(WEEK7))
+    import graph
+    from langgraph.checkpoint.memory import InMemorySaver
+    r_agent = graph.run_graph_agent(req.ticket_id, checkpointer=InMemorySaver())
+    r_workflow = graph.run_graph_workflow(req.ticket_id)
+    m_agent = graph.build_agent_graph(graph.Meter("m", "-"), graph.Budgets()).get_graph().draw_mermaid()
+    m_workflow = graph.build_workflow_graph(graph.Meter("m", "-")).get_graph().draw_mermaid()
+    
+    history = []
+    if "app" in r_agent and "config" in r_agent:
+        for snap in r_agent["app"].get_state_history(r_agent["config"]):
+            last = snap.values["messages"][-1] if snap.values.get("messages") else None
+            what = (type(last).__name__ + (f" tool_calls={[c['name'] for c in last.tool_calls]}"
+                    if hasattr(last, 'tool_calls') and last.tool_calls else "")) if last else "-"
+            history.append({
+                "step": snap.metadata.get("step"),
+                "next": list(snap.next) or ["END"],
+                "last_message": what
+            })
+    return {
+        "ticket_id": req.ticket_id,
+        "agent": {"output": r_agent["output"], "path": r_agent["path"], "llm_calls": r_agent["llm_calls"]},
+        "workflow": {"output": r_workflow["output"], "path": r_workflow["path"], "llm_calls": r_workflow["llm_calls"]},
+        "checkpoints": history,
+        "mermaid": {"agent": m_agent, "workflow": m_workflow}
+    }
+
+
+# ------------------------------------------------ chat: week 6 and week 7
+
+JUDGES = {"judge_v1": "judge_v1.txt", "judge_v2": "judge_v2.txt"}
+_W6: dict = {}
+
+
+def _week6_live():
+    """draft, judge and assertions modules plus the corpus+policy index the
+    Week 6 drafter answers from. Built once, on first use: indexing the policy
+    article next to the corpus takes a few seconds."""
+    import sys
+    if not _W6:
+        if os.path.abspath(WEEK6) not in sys.path:
+            sys.path.insert(0, os.path.abspath(WEEK6))
+        import assertions
+        import draft
+        import judge
+        _W6.update(draft=draft, judge=judge, assertions=assertions,
+                   index=draft.build_index_with_policy(),
+                   cases={c["case_id"]: c
+                          for c in _week6_lines("eval_set.jsonl")},
+                   labels=_week6_json("labels_25.json")["labels"])
+    return _W6
+
+
+class Week6Ask(BaseModel):
+    question: str
+    judge: str = "judge_v2"
+    product_area: str | None = None
+    session_id: str | None = None
+    # Sent by the question picker. Two eval cases can share a question, so
+    # the id, not the text, is what reproduces a specific case.
+    case_id: str | None = None
+
+
+class Week7Ask(BaseModel):
+    question: str
+    system: str = "agent"
+    session_id: str | None = None
+
+
+@app.post("/api/ask_week6")
+def ask_week6(req: Week6Ask) -> dict:
+    """Week 6 in the chat: draft a ticket reply, then grade it.
+
+    A question from the Week 6 eval set is drafted exactly as week6/draft.py
+    drafts it -- with that case's ticket, area filter and, for the three
+    regression cases, the frozen verbatim reply -- so the chat reproduces the
+    eval. Any other question gets a plain Standard-tier ticket with no refund.
+    The reply then goes through the four SP-001 assertions and the chosen
+    judge prompt, and the human label is shown when the case has one.
+    """
+    if req.judge not in JUDGES:
+        raise HTTPException(400, f"judge must be one of {sorted(JUDGES)}")
+    w = _week6_live()
+    q = req.question.strip()
+    case = w["cases"].get(req.case_id or "")
+    if case is None or case["ticket"]["question"].strip() != q:
+        case = next((c for c in w["cases"].values()
+                     if c["ticket"]["question"].strip() == q), None)
+    if case is None:
+        case = {"case_id": "live", "mode": None, "replay_verbatim": False,
+                "ticket": {"ticket_id": "TCK-LIVE", "tier": "Standard",
+                           "days_since_purchase": 0, "refund_requested": False,
+                           "refund_amount_usd": None, "question": q,
+                           "product_area": req.product_area}}
+    ticket = case["ticket"]
+
+    with tracing.observe("answer-week6", as_type="chain") as root, \
+            tracing.trace_attributes(session_id=req.session_id,
+                                     tags=["week6", f"judge:{req.judge}"]):
+        drafted = w["draft"].draft_one(case, w["index"])
+        checks = w["assertions"].run(drafted["reply"], ticket)
+        prompt = open(os.path.join(WEEK6, JUDGES[req.judge])).read()
+        with tracing.observe(f"judge-{req.judge}", as_type="evaluator",
+                             input={"question": q,
+                                    "reply": drafted["reply"]}) as ev:
+            if os.environ.get("ANTHROPIC_API_KEY"):
+                engine = "anthropic"
+                verdict, why = w["judge"].anthropic_verdict(prompt, ticket,
+                                                            drafted["reply"])
+            else:
+                engine = "offline"
+                verdict, why = w["judge"].offline_verdict(
+                    drafted["reply"], ticket["ticket_id"],
+                    w["judge"].parse_prompt(prompt), q)
+            ev.update(output={"verdict": verdict, "reasoning": why},
+                      metadata={"engine": engine, "prompt": JUDGES[req.judge]})
+        human = w["labels"].get(case["case_id"], {})
+        passed = checks["passed"] and verdict == "RESOLVED"
+        root.update(input=q, output=drafted["reply"], metadata={
+            "case_id": case["case_id"], "judge": req.judge,
+            "verdict": verdict, "assertions_failed": checks["failed"],
+            "human": human.get("label")})
+        tracing.score("judge_verdict", verdict, why)
+        tracing.score("passed", 1.0 if passed else 0.0)
+        url = tracing.trace_url()
+    tracing.flush()
+    return {
+        "question": q, "judge": req.judge, "judge_engine": engine,
+        "case_id": case["case_id"], "case_mode": case.get("mode"),
+        "replay_verbatim": case["replay_verbatim"], "ticket": ticket,
+        "reply": drafted["reply"], "answered": drafted["answered"],
+        "claims": drafted["claims"], "refusal": drafted["refusal"],
+        "verdict": verdict, "reasoning": why,
+        "checks": checks["checks"], "assertions_failed": checks["failed"],
+        "human": human.get("label"), "human_why": human.get("reason"),
+        "passed": passed, "trace_url": url,
+    }
+
+
+@app.post("/api/ask_week7")
+def ask_week7(req: Week7Ask) -> dict:
+    """Week 7 in the chat: one message through the agent or the workflow.
+
+    A ticket id or one of the 10 race tickets is run as that ticket and graded
+    against its answer key. Any other message is filed as a new ticket (see
+    week7/store.resolve_ticket) and run ungraded.
+    """
+    if req.system not in ("agent", "workflow"):
+        raise HTTPException(400, "system must be 'agent' or 'workflow'")
+    agent, workflow, race, *_ = _week7()
+    from store import TICKETS, resolve_ticket
+    tid, known = resolve_ticket(req.question)
+    fn = agent.run_agent if req.system == "agent" else workflow.run_workflow
+    r = fn(tid, session_id=req.session_id)
+    r["grade"] = race.grade(tid, r["output"]) if known else None
+    tracing.flush()
+    return {**r, "known": known, "ticket": {"ticket_id": tid, **TICKETS[tid]}}
 
 
 @app.post("/api/search")

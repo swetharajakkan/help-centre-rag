@@ -139,6 +139,9 @@ def verify(raw: dict, hits: list[dict]) -> dict:
             "chunk_id": c["chunk_id"],
             "supporting_quote": c["supporting_quote"],
             "article_id": chunk["meta"].get("article_id"),
+            # Carried on the claim so severity can tell an answer that stayed
+            # inside the area the caller asked for from one that wandered.
+            "product_area": chunk["meta"].get("product_area"),
             "source_file": chunk["meta"].get("source_file"),
             "section": chunk["meta"].get("section", ""),
         })
@@ -749,14 +752,16 @@ def _record(span, question: str, k: int, area: str | None,
             use_rerank: bool | None, fallback: bool, result: dict) -> None:
     """Close the root observation: readable IO, detail in metadata, scores.
 
-    Trace input/output is what the Langfuse trace table shows and what
-    evaluators read, so it is the question and the answer as a person would
-    read them -- not a JSON dump. Everything structured goes to metadata.
+    The root observation's input/output is what the Langfuse trace table
+    shows and what evaluators read (v4 has no separate trace-level IO), so it
+    is the question and the answer as a person would read them -- not a JSON
+    dump. Everything structured goes to metadata.
     """
     from . import tracing
 
     engine = "claude-opus-5" if api_key_present() else "extractive-deterministic"
     fired = bool(result.get("filter_fallback", {}).get("fired"))
+    level, why = tracing.severity(result, area)
     answer_text = ("\n\n".join(c["claim"] for c in result["claims"])
                    if result["answered"] else result.get("refusal", ""))
     span.update(
@@ -770,9 +775,9 @@ def _record(span, question: str, k: int, area: str | None,
                   "n_claims": len(result.get("claims", [])),
                   "cited_chunk_ids": [c["chunk_id"] for c in result.get("claims", [])],
                   "retrieved_chunk_ids": result.get("retrieved", []),
-                  "filter_fallback": result.get("filter_fallback")},
+                  "filter_fallback": result.get("filter_fallback"),
+                  "severity": level, "severity_reason": why},
     )
-    tracing.set_trace_io(span, input=question, output=answer_text)
     # Outcomes are scores, not tags: they are only known now, and these are
     # what a later sample filters on. "Every refusal that had an area filter
     # set" is the Week 5 top failure mode, as a query.
@@ -781,6 +786,13 @@ def _record(span, question: str, k: int, area: str | None,
     if fallback:
         tracing.score("filter_fallback_fired", 1.0 if fired else 0.0,
                       f"dropped {area}" if fired else None)
+    # Both forms on purpose. The categorical one is what a human filters the
+    # trace table by ("show me every high"); the numeric one is the only form
+    # a Langfuse chart can average or threshold an alert on, and a string
+    # score cannot be plotted.
+    tracing.score("severity", level, why)
+    tracing.score("severity_rank",
+                  float(tracing.SEVERITY_LEVELS.index(level)), why)
 
 
 def answer_auto(index, question: str, k: int = 3, where: dict | None = None,

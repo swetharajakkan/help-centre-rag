@@ -1,6 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import Sidebar from './Sidebar.jsx'
 import Chat from './Chat.jsx'
+import EvalView from './EvalView.jsx'
+import Week7View from './Week7View.jsx'
 import { streamSSE } from './sse'
 
 const BACKEND_HINT =
@@ -26,11 +28,47 @@ async function getJSON(url) {
   return data
 }
 
-const MODES = [
-  { value: 'week5', label: 'Week 5 — filter fallback' },
-  { value: 'week4', label: 'Week 4 — reranked' },
-  { value: 'week3', label: 'Week 3 — baseline' },
+// The filter bar. Weeks 3-5 are retrieval arms of the streamed RAG answer;
+// Week 6 drafts a ticket reply and grades it with a judge; Week 7 runs the
+// refund-chase ticket through the agent or the fixed workflow.
+const WEEKS = [
+  { value: 'week3', short: 'Week 3', label: 'Week 3 — baseline retrieval' },
+  { value: 'week4', short: 'Week 4', label: 'Week 4 — reranked' },
+  { value: 'week5', short: 'Week 5', label: 'Week 5 — area-filter fallback' },
+  { value: 'week6', short: 'Week 6', label: 'Week 6 — ticket reply + judge' },
+  { value: 'week7', short: 'Week 7', label: 'Week 7 — agent vs workflow' },
 ]
+const JUDGES = [['judge_v1', 'Judge v1'], ['judge_v2', 'Judge v2']]
+const SYSTEMS = [['agent', 'Agent'], ['workflow', 'Fixed workflow']]
+// Week 6's drafter uses Week 4 retrieval, and Week 7 retrieves nothing, so
+// the chunk comparison runs on the Week 4 arm for both.
+const RETRIEVAL_ARM = { week3: 'week3', week4: 'week4', week5: 'week5',
+                        week6: 'week4', week7: 'week4' }
+
+const VIEWS = [
+  ['chat', 'Chat'], ['chunks', 'Chunks'], ['eval', 'Eval'],
+  ['agent', 'Agent'], ['documents', 'Documents'],
+]
+// Links shared before the views were renamed keep working.
+const OLD_HASH = { compare: 'chunks', errors: 'eval', evals: 'eval', week7: 'agent' }
+
+function filterLabel(week, judge, system) {
+  const w = WEEKS.find((x) => x.value === week)
+  if (week === 'week6') return `${w.short} · ${JUDGES.find((j) => j[0] === judge)[1]}`
+  if (week === 'week7') return `${w.short} · ${SYSTEMS.find((x) => x[0] === system)[1]}`
+  return w.label
+}
+
+function Seg({ options, value, onChange, label }) {
+  return (
+    <div className="seg" role="radiogroup" aria-label={label}>
+      {options.map(([v, text]) => (
+        <button key={v} type="button" role="radio" aria-checked={value === v}
+          data-on={value === v ? 1 : 0} onClick={() => onChange(v)}>{text}</button>
+      ))}
+    </div>
+  )
+}
 
 /** One exception below must not take the whole page down with it. */
 class ErrorBoundary extends React.Component {
@@ -72,8 +110,8 @@ function DocumentsView({ documents }) {
                 <td>
                   {d.extracted_by
                     ? <span className="ocr-tag" title={`Read from ${d.original_file}`}>
-                        {d.extracted_by}
-                      </span>
+                      {d.extracted_by}
+                    </span>
                     : <span className="faint">typed</span>}
                 </td>
                 <td className="num">{d.chunks}</td>
@@ -86,7 +124,11 @@ function DocumentsView({ documents }) {
   )
 }
 
-function CompareView({ compare }) {
+function CompareView({ compare, week }) {
+  const note = RETRIEVAL_ARM[week] !== week
+    ? <p className="filter-note">{week === 'week7' ? 'Week 7 calls tools instead of retrieving chunks'
+        : 'Week 6 drafts from Week 4 retrieval'}, so chunks are compared on the Week 4 arm.</p>
+    : null
   if (!compare) {
     return (
       <div className="view">
@@ -96,12 +138,14 @@ function CompareView({ compare }) {
             Ask a question below to run it through both chunking strategies at
             once, with the retriever and every other variable held constant.
           </p>
+          {note}
         </div>
       </div>
     )
   }
   return (
     <div className="view">
+      {note}
       <div className="cols">
         {['fixed_window', 'structure_aware'].map((s) => (
           <div key={s}>
@@ -175,12 +219,12 @@ function ErrorAnalysisView({ analysis, onAsk }) {
       <div className="ea-modes">
         {modes.map((m) => (
           <div key={m.id}
-               className={`ea-mode ${SEV_CLASS[m.severity]} ${picked === m.id ? 'on' : ''}`}>
+            className={`ea-mode ${SEV_CLASS[m.severity]} ${picked === m.id ? 'on' : ''}`}>
             {/* The row is a div, not a button: the trace-id chips below are
                 themselves buttons, and nesting a button inside one is invalid. */}
             <button type="button" className="ea-mode-hit"
-                    aria-pressed={picked === m.id}
-                    onClick={() => setPicked(picked === m.id ? null : m.id)}>
+              aria-pressed={picked === m.id}
+              onClick={() => setPicked(picked === m.id ? null : m.id)}>
               <span className="ea-rank">{m.id === 0 ? '—' : m.id}</span>
               <span className="ea-mode-body">
                 {/* The class is the engineering name for the fault (which stage
@@ -209,9 +253,9 @@ function ErrorAnalysisView({ analysis, onAsk }) {
               </span>
               {m.trace_ids.map((id) => (
                 <button key={id} type="button"
-                        className={`ea-id ${onlyTrace === id ? 'on' : ''}`}
-                        title={`Show ${id} on its own`}
-                        onClick={() => setOnlyTrace(onlyTrace === id ? null : id)}>
+                  className={`ea-id ${onlyTrace === id ? 'on' : ''}`}
+                  title={`Show ${id} on its own`}
+                  onClick={() => setOnlyTrace(onlyTrace === id ? null : id)}>
                   {id}
                 </button>
               ))}
@@ -228,7 +272,7 @@ function ErrorAnalysisView({ analysis, onAsk }) {
         </span>
         {(picked !== null || onlyTrace) && (
           <button type="button" className="ea-clear"
-                  onClick={() => { setPicked(null); setOnlyTrace(null) }}>
+            onClick={() => { setPicked(null); setOnlyTrace(null) }}>
             show all {size}
           </button>
         )}
@@ -249,7 +293,7 @@ function ErrorAnalysisView({ analysis, onAsk }) {
                   {t.coverage != null ? ` · coverage ${t.coverage}` : ''}
                 </span>
                 <button type="button" className="ea-ask"
-                        onClick={() => onAsk(t.question, t.product_area || '')}>
+                  onClick={() => onAsk(t.question, t.product_area || '')}>
                   re-run
                 </button>
               </div>
@@ -263,36 +307,70 @@ function ErrorAnalysisView({ analysis, onAsk }) {
   )
 }
 
+/** Eval: Week 6 judge validation, with Week 5's error analysis one click away. */
+function EvalPage({ analysis, onAsk }) {
+  const [which, setWhich] = useState('week6')
+  return (
+    <div className="eval-page">
+      <div className="subbar">
+        <Seg label="Evaluation" value={which} onChange={setWhich}
+          options={[['week6', 'Week 6 · judges vs human'], ['week5', 'Week 5 · error analysis']]} />
+      </div>
+      {which === 'week6'
+        ? <EvalView onAsk={onAsk} />
+        : <ErrorAnalysisView analysis={analysis} onAsk={onAsk} />}
+    </div>
+  )
+}
+
+async function postJSON(url, body, signal) {
+  let res
+  try {
+    res = await fetch(url, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body), signal,
+    })
+  } catch (e) {
+    if (e.name === 'AbortError') throw e
+    throw new Error(BACKEND_HINT)
+  }
+  const raw = await res.text()
+  let data
+  try { data = JSON.parse(raw) } catch { throw new Error(`HTTP ${res.status}: ${raw.slice(0, 200)}`) }
+  if (!res.ok) throw new Error(typeof data.detail === 'string' ? data.detail : `HTTP ${res.status}`)
+  return data
+}
+
 export default function App() {
-  // Hash routing so a view is linkable: #errors opens the error analysis
-  // straight away, which is what you want when demoing from a pasted link.
-  const VIEWS = ['chat', 'compare', 'errors', 'documents']
-  const [view, setView] = useState(() => {
+  // Hash routing so a view is linkable: #eval opens the evaluation straight
+  // away, which is what you want when demoing from a pasted link.
+  const viewFromHash = () => {
     const h = window.location.hash.replace('#', '')
-    return VIEWS.includes(h) ? h : 'chat'
-  })
+    const v = OLD_HASH[h] || h
+    return VIEWS.some(([k]) => k === v) ? v : null
+  }
+  const [view, setView] = useState(() => viewFromHash() || 'chat')
   useEffect(() => {
-    const onHash = () => {
-      const h = window.location.hash.replace('#', '')
-      if (VIEWS.includes(h)) setView(h)
-    }
+    const onHash = () => { const v = viewFromHash(); if (v) setView(v) }
     window.addEventListener('hashchange', onHash)
     return () => window.removeEventListener('hashchange', onHash)
   }, [])
   useEffect(() => { window.location.hash = view }, [view])
+
   const [health, setHealth] = useState(null)
   const [healthErr, setHealthErr] = useState(null)
   const [documents, setDocuments] = useState([])
-  const [examples, setExamples] = useState([])
-  const [sampled, setSampled] = useState([])
-  const [replay, setReplay] = useState(null)
+  const [sets, setSets] = useState({ golden: [], week5: [], week6: [], week7: [] })
   const [analysis, setAnalysis] = useState(null)
   const [areas, setAreas] = useState([])
 
   const [messages, setMessages] = useState([])
   const [compare, setCompare] = useState(null)
   const [q, setQ] = useState('')
-  const [mode, setMode] = useState('week4')
+  // The filter bar.
+  const [week, setWeek] = useState('week4')
+  const [judge, setJudge] = useState('judge_v2')
+  const [system, setSystem] = useState('agent')
   const [k, setK] = useState(3)
   const [area, setArea] = useState('')
   const [busy, setBusy] = useState(false)
@@ -302,21 +380,37 @@ export default function App() {
   // instead of showing them as unrelated traces. Reset by "Clear chat session".
   const [sessionId, setSessionId] = useState(() => crypto.randomUUID())
 
+
   const refresh = useCallback(() => {
     getJSON('/api/health').then((d) => { setHealth(d); setHealthErr(null) })
       .catch((e) => setHealthErr(e.message))
-    getJSON('/api/documents').then((d) => setDocuments(d.documents)).catch(() => {})
-    getJSON('/api/product_areas').then((d) => setAreas(d.product_areas)).catch(() => {})
+    getJSON('/api/documents').then((d) => setDocuments(d.documents)).catch(() => { })
+    getJSON('/api/product_areas').then((d) => setAreas(d.product_areas)).catch(() => { })
     getJSON('/api/error_analysis').then(setAnalysis).catch(() => setAnalysis(null))
     // A backend too old to serve this returns a 404 with a JSON body, which
     // parses fine -- so the array shape, not the parse, is what is checked.
     getJSON('/api/examples')
       .then((d) => {
-        setExamples(Array.isArray(d.examples) ? d.examples : [])
-        setSampled(Array.isArray(d.sampled) ? d.sampled : [])
-        setReplay(d.replay || null)
+        const arr = (x) => (Array.isArray(x) ? x : [])
+        setSets({
+          golden: arr(d.examples).map((e) => ({ ...e, product_area: undefined })),
+          week5: [
+            ...(d.replay ? [{ ...d.replay, product_area: d.replay.product_area || '',
+              badge: 'replay proof', badgeCls: 'accent' }] : []),
+            // A sampled trace carries the product-area filter it originally
+            // ran with; asking without it would not reproduce the trace.
+            ...arr(d.sampled).map((e) => ({ ...e, product_area: e.product_area || '',
+              badge: e.answered ? 'answered' : 'refused', badgeCls: e.answered ? 'ok' : 'bad' })),
+          ],
+          week6: arr(d.week6).map((e) => ({ ...e,
+            badge: e.replay_verbatim ? 'regression' : (e.human ? (e.human === 'RESOLVED' ? 'human: resolved' : 'human: not resolved') : 'unlabelled'),
+            badgeCls: e.replay_verbatim ? 'accent' : (e.human === 'RESOLVED' ? 'ok' : '') })),
+          week7: arr(d.week7).map((e) => ({ ...e, product_area: undefined,
+            badge: e.cls === 'multi_order' ? 'multi-order' : e.cls,
+            badgeCls: e.cls === 'multi_order' ? 'bad' : e.cls === 'branch' ? 'warn' : '' })),
+        })
       })
-      .catch(() => { setExamples([]); setSampled([]); setReplay(null) })
+      .catch(() => setSets({ golden: [], week5: [], week6: [], week7: [] }))
   }, [])
 
   useEffect(refresh, [refresh])
@@ -329,65 +423,80 @@ export default function App() {
       return next
     })
 
-  const ask = async (text, forceArea) => {
+  // Weeks 3-5: the streamed, grounded RAG answer.
+  const streamAnswer = async (question, useArea, controller) => {
+    const body = { question, k: Number(k), mode: week, session_id: sessionId }
+    if (useArea) body.product_area = useArea
+    await streamSSE('/api/chat', body, (event, data) => {
+      if (event === 'meta') patch((m) => ({ ...m, meta: data }))
+      else if (event === 'status') patch((m) => ({ ...m, stage: data.stage }))
+      else if (event === 'retrieval') patch((m) => ({ ...m, retrieval: data }))
+      // Week 5: the area filter came back empty-handed and the search was
+      // rerun across every article. A second 'retrieval' event has already
+      // replaced the evidence above; this records why.
+      else if (event === 'fallback') patch((m) => ({ ...m, fallback: data }))
+      else if (event === 'claim_start')
+        patch((m) => ({ ...m, claims: [...m.claims, { ...data, text: '' }] }))
+      else if (event === 'delta')
+        patch((m) => {
+          // Deltas before the first claim_start belong to a refusal.
+          if (m.stage === 'refusing' || !m.claims.length)
+            return { ...m, refusal: m.refusal + data.text }
+          const claims = m.claims.slice()
+          const last = claims[claims.length - 1]
+          claims[claims.length - 1] = { ...last, text: last.text + data.text }
+          return { ...m, claims }
+        })
+      else if (event === 'claim_end')
+        patch((m) => {
+          const claims = m.claims.slice()
+          if (claims[data.index])
+            claims[data.index] = { ...claims[data.index], supporting_quote: data.supporting_quote }
+          return { ...m, claims }
+        })
+      else if (event === 'done') patch((m) => ({ ...m, done: data, streaming: false }))
+      else if (event === 'error') patch((m) => ({ ...m, error: data.message, streaming: false }))
+    }, controller.signal)
+  }
+
+  const ask = async (text, opts = {}) => {
     const question = (text ?? q).trim()
     if (!question || busy) return
-    // A sampled trace is only reproducible with the filter it originally ran
-    // under, so picking one from the menu sets the AREA dropdown to match.
-    const useArea = forceArea === undefined ? area : forceArea
-    if (forceArea !== undefined) setArea(forceArea)
+    // A question picked from a list may carry the area filter it was recorded
+    // under; the AREA dropdown is moved to match so the filter stays honest.
+    const useArea = opts.area === undefined ? area : opts.area
+    if (opts.area !== undefined) setArea(opts.area)
     setView('chat')
     setQ('')
     setErr(null)
     setBusy(true)
+    const kind = week === 'week6' ? 'week6' : week === 'week7' ? 'week7' : 'rag'
     setMessages((ms) => [...ms,
-      { role: 'user', text: question },
-      { role: 'bot', streaming: true, stage: 'retrieving', claims: [], refusal: '',
-        meta: null, retrieval: null, done: null, error: null, stopped: false },
+      { role: 'user', text: question, filter: filterLabel(week, judge, system) },
+      { role: 'bot', kind, filter: filterLabel(week, judge, system),
+        streaming: true, stage: kind === 'rag' ? 'retrieving' : kind,
+        claims: [], refusal: '', meta: null, retrieval: null, done: null,
+        data: null, error: null, stopped: false },
     ])
-
-    const body = { question, k: Number(k), mode, session_id: sessionId }
-    if (useArea) body.product_area = useArea
     const controller = new AbortController()
     setAbort(controller)
-
     try {
-      await streamSSE('/api/chat', body, (event, data) => {
-        if (event === 'meta') patch((m) => ({ ...m, meta: data }))
-        else if (event === 'status') patch((m) => ({ ...m, stage: data.stage }))
-        else if (event === 'retrieval') patch((m) => ({ ...m, retrieval: data }))
-        // Week 5: the area filter came back empty-handed and the search was
-        // rerun across every article. A second 'retrieval' event has already
-        // replaced the evidence above; this records why.
-        else if (event === 'fallback') patch((m) => ({ ...m, fallback: data }))
-        else if (event === 'claim_start')
-          patch((m) => ({ ...m, claims: [...m.claims, { ...data, text: '' }] }))
-        else if (event === 'delta')
-          patch((m) => {
-            // Deltas before the first claim_start belong to a refusal.
-            if (m.stage === 'refusing' || !m.claims.length)
-              return { ...m, refusal: m.refusal + data.text }
-            const claims = m.claims.slice()
-            const last = claims[claims.length - 1]
-            claims[claims.length - 1] = { ...last, text: last.text + data.text }
-            return { ...m, claims }
-          })
-        else if (event === 'claim_end')
-          patch((m) => {
-            const claims = m.claims.slice()
-            if (claims[data.index])
-              claims[data.index] = { ...claims[data.index],
-                                     supporting_quote: data.supporting_quote }
-            return { ...m, claims }
-          })
-        else if (event === 'done') patch((m) => ({ ...m, done: data, streaming: false }))
-        else if (event === 'error')
-          patch((m) => ({ ...m, error: data.message, streaming: false }))
-      }, controller.signal)
+      if (kind === 'rag') {
+        await streamAnswer(question, useArea, controller)
+      } else if (kind === 'week6') {
+        const body = { question, judge, session_id: sessionId,
+                       case_id: opts.caseId || null }
+        if (useArea) body.product_area = useArea
+        const data = await postJSON('/api/ask_week6', body, controller.signal)
+        patch((m) => ({ ...m, data, streaming: false }))
+      } else {
+        const data = await postJSON('/api/ask_week7',
+          { question, system, session_id: sessionId }, controller.signal)
+        patch((m) => ({ ...m, data, streaming: false }))
+      }
     } catch (e) {
       const stopped = e.name === 'AbortError'
-      patch((m) => ({ ...m, error: stopped ? null : e.message, stopped,
-                      streaming: false }))
+      patch((m) => ({ ...m, error: stopped ? null : e.message, stopped, streaming: false }))
     } finally {
       setAbort(null)
       setBusy(false)
@@ -401,16 +510,9 @@ export default function App() {
     setBusy(true)
     setErr(null)
     try {
-      const body = { query, k: Number(k), mode }
+      const body = { query, k: Number(k), mode: RETRIEVAL_ARM[week] }
       if (area) body.product_area = area
-      const res = await fetch('/api/compare', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
-      })
-      const data = await res.json()
-      if (!res.ok) throw new Error(data.detail || `HTTP ${res.status}`)
-      setCompare(data)
+      setCompare(await postJSON('/api/compare', body))
     } catch (e) {
       setErr(e.message)
     } finally {
@@ -418,12 +520,12 @@ export default function App() {
     }
   }
 
-  const submit = () => (view === 'compare' ? runCompare() : ask())
+  const submit = () => (view === 'chunks' ? runCompare() : ask())
 
   const removeDocument = async (name) => {
     try {
       const res = await fetch(`/api/documents/${encodeURIComponent(name)}`,
-                              { method: 'DELETE' })
+        { method: 'DELETE' })
       if (!res.ok) throw new Error((await res.json()).detail || `HTTP ${res.status}`)
       refresh()
     } catch (e) {
@@ -431,11 +533,14 @@ export default function App() {
     }
   }
 
+  const showFilters = view === 'chat' || view === 'chunks'
+  const retrieves = week !== 'week7'
+
   return (
     <div className="shell">
       <Sidebar
-        documents={documents} examples={examples} sampled={sampled}
-        replay={replay} onAsk={ask}
+        documents={documents} sets={sets} week={week}
+        answerWith={filterLabel(week, judge, system)} onAsk={ask}
         onUploaded={refresh} onDelete={removeDocument}
         onClear={() => { setMessages([]); setCompare(null); setSessionId(crypto.randomUUID()) }}
         ocrEngines={health ? (health.ocr_engines || []) : null}
@@ -443,28 +548,16 @@ export default function App() {
 
       <main className="main">
         <div className="topbar">
-          <nav className="nav">
-            <button data-on={view === 'chat' ? 1 : 0} onClick={() => setView('chat')}>
-              Chat
-            </button>
-            <button data-on={view === 'compare' ? 1 : 0}
-                    onClick={() => setView('compare')}>
-              Compare chunkers
-            </button>
-            <button data-on={view === 'errors' ? 1 : 0}
-                    onClick={() => setView('errors')}>
-              Error analysis
-            </button>
-            <button data-on={view === 'documents' ? 1 : 0}
-                    onClick={() => setView('documents')}>
-              Documents
-            </button>
+          <nav className="nav" aria-label="View">
+            {VIEWS.map(([v, label]) => (
+              <button key={v} data-on={view === v ? 1 : 0} onClick={() => setView(v)}>{label}</button>
+            ))}
           </nav>
 
           <span className="spacer" />
 
           <span className={`health ${healthErr ? 'off' : ''}`}
-                title={healthErr || 'Backend online'}>
+            title={healthErr || 'Backend online'}>
             <i className="led" />
             {healthErr ? 'offline' : `${health?.indexed_chunks ?? '—'} chunks`}
           </span>
@@ -474,39 +567,59 @@ export default function App() {
           {health?.tracing ? (
             health.tracing.enabled ? (
               <a className="health trace-on" href={health.tracing.host}
-                 target="_blank" rel="noreferrer"
-                 title={`Every answer is traced to ${health.tracing.host} · prompt ${health.tracing.prompt_version}`}>
+                target="_blank" rel="noreferrer"
+                title={`Every answer is traced to ${health.tracing.host} · prompt ${health.tracing.prompt_version}`}>
                 <i className="led" />traced
               </a>
             ) : (
               <span className="health off"
-                    title={`Answers are NOT being recorded — ${health.tracing.reason}`}>
+                title={`Answers are NOT being recorded — ${health.tracing.reason}`}>
                 <i className="led" />not traced
               </span>
             )
           ) : null}
-
-          <label className="control">
-            <span>retrieval</span>
-            <select value={mode} onChange={(e) => setMode(e.target.value)}>
-              {MODES.map((m) => <option key={m.value} value={m.value}>{m.label}</option>)}
-            </select>
-          </label>
-          <label className="control">
-            <span>top k</span>
-            <select value={k} onChange={(e) => setK(e.target.value)}>
-              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) =>
-                <option key={n} value={n}>{n}</option>)}
-            </select>
-          </label>
-          <label className="control">
-            <span>area</span>
-            <select value={area} onChange={(e) => setArea(e.target.value)}>
-              <option value="">all</option>
-              {areas.map((a) => <option key={a} value={a}>{a}</option>)}
-            </select>
-          </label>
         </div>
+
+        {showFilters && (
+          <div className="filterbar">
+            <div className="fgroup">
+              <span className="flabel">Answer with</span>
+              <Seg label="Week" value={week} onChange={setWeek}
+                options={WEEKS.map((w) => [w.value, w.short])} />
+            </div>
+            {week === 'week6' && (
+              <div className="fgroup">
+                <span className="flabel">Judge</span>
+                <Seg label="Judge" value={judge} onChange={setJudge} options={JUDGES} />
+              </div>
+            )}
+            {week === 'week7' && (
+              <div className="fgroup">
+                <span className="flabel">System</span>
+                <Seg label="System" value={system} onChange={setSystem} options={SYSTEMS} />
+              </div>
+            )}
+            {retrieves && (
+              <>
+                <label className="control">
+                  <span>top k</span>
+                  <select value={k} onChange={(e) => setK(e.target.value)}>
+                    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) =>
+                      <option key={n} value={n}>{n}</option>)}
+                  </select>
+                </label>
+                <label className="control">
+                  <span>area</span>
+                  <select value={area} onChange={(e) => setArea(e.target.value)}>
+                    <option value="">all</option>
+                    {areas.map((a) => <option key={a} value={a}>{a}</option>)}
+                  </select>
+                </label>
+              </>
+            )}
+            <span className="fdesc">{WEEKS.find((w) => w.value === week).label}</span>
+          </div>
+        )}
 
         {(err || healthErr) && (
           <div style={{ padding: '14px 20px 0' }}>
@@ -518,22 +631,27 @@ export default function App() {
         )}
 
         <ErrorBoundary>
-          {view === 'chat' && <Chat messages={messages} health={health} />}
-          {view === 'compare' && <CompareView compare={compare} />}
-          {view === 'errors' && <ErrorAnalysisView analysis={analysis} onAsk={ask} />}
+          {view === 'chat' && <Chat messages={messages} health={health} week={week} />}
+          {view === 'chunks' && <CompareView compare={compare} week={week} />}
+          {view === 'eval' && <EvalPage analysis={analysis} onAsk={ask} />}
+          {view === 'agent' && <Week7View />}
           {view === 'documents' && <DocumentsView documents={documents} />}
         </ErrorBoundary>
 
-        {view !== 'documents' && (
+        {showFilters && (
           <div className="composer">
             <div className="composer-inner">
               <input
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && submit()}
-                placeholder={view === 'compare'
+                placeholder={view === 'chunks'
                   ? 'Query to run through both chunkers…'
-                  : 'Ask about the billing migration, or your uploaded documents…'}
+                  : week === 'week7'
+                    ? 'Type a customer message (e.g. “Refund ORD-5101 please”) or a ticket id like TCK-7004…'
+                    : week === 'week6'
+                      ? 'Ask a customer question — a ticket reply is drafted and judged…'
+                      : 'Ask about the billing migration, or your uploaded documents…'}
               />
               {busy && view === 'chat' && abort ? (
                 <button className="send stop" onClick={() => abort.abort()}>Stop</button>

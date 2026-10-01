@@ -45,6 +45,26 @@ from typing import Any, Iterator
 PROMPT_VERSION = "extractive-v1"
 
 
+def unset(key: str, value: str | None) -> bool:
+    """True when `value` is not a usable setting for `key`.
+
+    Empty is unset, and so is a placeholder copied out of .env.example: the
+    documented stand-in is a prefix followed by an ellipsis. A placeholder is
+    worse than nothing, because it is a non-empty string, so `enabled()` goes
+    true, the client constructs, /api/health reports tracing live, and every
+    batch is then rejected 401 on a background thread nobody reads.
+
+    A real Langfuse key is a prefix plus a UUID, so anything short is a
+    stand-in too. Only the keys get the length rule; a self-hosted host URL is
+    legitimately short.
+    """
+    if not value:
+        return True
+    if value.endswith("..."):
+        return True
+    return key.endswith("_KEY") and len(value) < 20
+
+
 def load_dotenv(path: str | None = None) -> None:
     """Read a .env file into os.environ, without adding a dependency.
 
@@ -52,8 +72,12 @@ def load_dotenv(path: str | None = None) -> None:
     into .env would be ignored and tracing would silently stay off -- the
     worst failure mode for telemetry, because it looks like it is working.
 
-    Existing environment variables always win, so an explicit `export` still
-    overrides the file.
+    A real value already in the environment still wins, so an explicit
+    `export` overrides the file. A placeholder in the environment does not:
+    `export LANGFUSE_PUBLIC_KEY=pk-lf-...` used to beat the real key in this
+    file and turn tracing off for the whole process while health still
+    reported it on. Tracing has to come up whenever .env holds real keys, and
+    a leftover export in someone's shell is not a decision to disable it.
     """
     if path is None:
         path = os.path.join(os.path.dirname(__file__), "..", "..", ".env")
@@ -68,8 +92,9 @@ def load_dotenv(path: str | None = None) -> None:
             continue
         key, _, value = line.partition("=")
         key, value = key.strip(), value.strip().strip("'\"")
-        # A placeholder left in from .env.example is not a credential.
-        if key and key not in os.environ and value and not value.endswith("..."):
+        if not key or unset(key, value):
+            continue
+        if unset(key, os.environ.get(key)):
             os.environ[key] = value
 
 
@@ -80,8 +105,10 @@ def enabled() -> bool:
     installed as a transitive dependency must not silently start shipping
     customer questions to a third party.
     """
-    return bool(os.environ.get("LANGFUSE_PUBLIC_KEY")
-                and os.environ.get("LANGFUSE_SECRET_KEY"))
+    return not (unset("LANGFUSE_PUBLIC_KEY",
+                      os.environ.get("LANGFUSE_PUBLIC_KEY"))
+                or unset("LANGFUSE_SECRET_KEY",
+                         os.environ.get("LANGFUSE_SECRET_KEY")))
 
 
 # Support tickets carry customer data. These land in trace input, so they are
@@ -132,11 +159,17 @@ def _client():
     try:
         from langfuse import Langfuse
 
+        # `base_url`, not `host`: `host` is deprecated in SDK v4. The release
+        # is the git commit, so Langfuse can group and compare traces by the
+        # code that produced them. Environment is left to the SDK's own
+        # LANGFUSE_TRACING_ENVIRONMENT, so a test run can be kept apart from
+        # production traffic without a code change.
         return Langfuse(
             public_key=os.environ["LANGFUSE_PUBLIC_KEY"],
             secret_key=os.environ["LANGFUSE_SECRET_KEY"],
-            host=os.environ.get("LANGFUSE_BASE_URL",
-                                "https://cloud.langfuse.com"),
+            base_url=os.environ.get("LANGFUSE_BASE_URL",
+                                    "https://cloud.langfuse.com"),
+            release=_code_version(),
             mask=mask,
         )
     except Exception:
@@ -252,19 +285,91 @@ def observe(name: str, as_type: str = "span", **attrs: Any) -> Iterator[Any]:
         yield _NullSpan()
 
 
-def score(name: str, value: float, comment: str | None = None) -> None:
+# Ordered least to most damaging, so index() is the numeric rank.
+SEVERITY_LEVELS = ("low", "medium", "high")
+
+
+def severity(result: dict, area: str | None = None) -> tuple[str, str]:
+    """Rank one answer by how much damage it can do, as (level, why).
+
+    The levels are the two-way split from week5/taxonomy.md turned into three,
+    because "embarrasses the client" and "annoys the user" are what the
+    account manager actually escalates on and a clean answer needs a name too:
+
+        high    something wrong went OUT. The answer shipped and its claims
+                are not confined to one article, or one cites outside the
+                product area the caller asked for. That is taxonomy modes 2
+                and 5 -- the right fix followed by rows for error codes the
+                customer never reported -- which is the family the client
+                sees, and the reason mode 2 survived a month of review.
+        medium  nothing wrong left the room, but the agent is blocked or was
+                only rescued. A refusal while a product-area filter was set is
+                the unrescued mode 1; the filter fallback firing is the same
+                failure caught in flight, and is still worth counting because
+                without Week 5 it would have been a refusal.
+        low     a single-article answer, or a refusal on a question the corpus
+                genuinely does not cover. Correct behaviour, named so that
+                "everything is fine" is a filter and not the absence of one.
+
+    Only what a live trace can actually observe is used. Hallucination
+    (mode 4) is deliberately absent: an answer of real sentences about the
+    wrong subject is invisible from inside the pipeline and needs a judge, so
+    claiming to detect it here would make `low` mean less than it does.
+
+    Rules are ordered, first match wins, and the reason is returned so the
+    score carries its own justification into the Langfuse UI.
+    """
+    try:
+        if not result.get("answered"):
+            if area:
+                return "medium", f"refused with the {area} filter set"
+            return "low", "refused, no product-area filter was set"
+
+        claims = result.get("claims") or []
+        fired = bool((result.get("filter_fallback") or {}).get("fired"))
+        articles = {c.get("article_id") for c in claims if c.get("article_id")}
+
+        if len(articles) > 1:
+            return "high", ("answer mixes " + str(len(articles)) + " articles: "
+                            + ", ".join(sorted(a for a in articles if a)))
+        # When the fallback fired the filter was dropped on purpose, so
+        # answering from outside the area is the fix working, not a leak.
+        if area and not fired:
+            outside = sorted({c.get("product_area") for c in claims
+                              if c.get("product_area")
+                              and c.get("product_area") != area})
+            if outside:
+                return "high", (f"asked for {area}, cited "
+                                + ", ".join(outside))
+        if fired:
+            return "medium", ("answered only after dropping the "
+                              + str((result.get("filter_fallback") or {})
+                                    .get("dropped_filter")) + " filter")
+        return "low", "single-article answer, no filter retry"
+    except Exception:
+        # A severity that throws must not take the trace, or the request,
+        # with it. An unknown level is better than a lost answer.
+        return "low", "severity could not be determined"
+
+
+def score(name: str, value: float | str, comment: str | None = None) -> None:
     """Attach a score to the current trace.
 
     Outcomes belong here rather than in tags: Langfuse tags are set at
     creation and describe what was known upfront, while whether the answer
     was refused is only known at the end. Scores are also what the eval and
     dashboard views filter on.
+
+    A string value is sent as a CATEGORICAL score. Langfuse infers NUMERIC
+    otherwise and would reject "high", so severity has to declare its type.
     """
     client = _client()
     if client is None:
         return
     try:
-        client.score_current_trace(name=name, value=value, comment=comment)
+        client.score_current_trace(
+            name=name, value=value, comment=comment,
+            data_type="CATEGORICAL" if isinstance(value, str) else "NUMERIC")
     except Exception:
         pass
 
@@ -296,12 +401,19 @@ def trace_attributes(**attrs: Any) -> Iterator[None]:
         yield
 
 
-def set_trace_io(span: Any, input: Any = None, output: Any = None) -> None:
-    """Set what the trace table shows, which is not the same as the span's IO."""
+def trace_url() -> str | None:
+    """Link to the trace the current observation belongs to, for the UI.
+
+    None when tracing is off, so the UI can show "not traced" instead of a
+    dead link.
+    """
+    client = _client()
+    if client is None:
+        return None
     try:
-        span.set_trace_io(input=input, output=output)
+        return client.get_trace_url(trace_id=client.get_current_trace_id())
     except Exception:
-        pass
+        return None
 
 
 def flush() -> None:
@@ -315,14 +427,49 @@ def flush() -> None:
         pass
 
 
+@functools.lru_cache(maxsize=1)
+def authenticated() -> bool | None:
+    """Whether the keys are actually accepted by the host.
+
+    True accepted, False rejected, None the check could not be made.
+
+    One call per process, cached, because constructing a client proves
+    nothing: it does not touch the network, so wrong keys look identical to
+    right ones until the first batch is dropped in a background thread. That
+    is how a day of traffic went untraced while /api/health said tracing was
+    live. Reporting "on" now requires the host to agree.
+    """
+    client = _client()
+    if client is None:
+        return False
+    try:
+        return bool(client.auth_check())
+    except Exception as exc:
+        # A rejection is an answer worth reporting. No network, DNS, a proxy
+        # in the way -- those are not evidence the keys are wrong, so they
+        # stay unknown rather than being blamed on the credentials.
+        if "401" in str(exc) or "Unauthorized" in type(exc).__name__:
+            return False
+        return None
+
+
 def status() -> dict:
     """What /api/health reports, so the UI can show whether tracing is live."""
+    host = os.environ.get("LANGFUSE_BASE_URL", "https://cloud.langfuse.com")
     if not enabled():
-        return {"enabled": False, "reason": "LANGFUSE_* keys not set"}
+        return {"enabled": False,
+                "reason": "LANGFUSE_PUBLIC_KEY / LANGFUSE_SECRET_KEY are "
+                          "missing or still placeholders"}
     if _client() is None:
         return {"enabled": False, "reason": "langfuse package not importable"}
+    if authenticated() is False:
+        return {"enabled": False, "host": host,
+                "reason": f"{host} rejected the LANGFUSE_* keys (401)"}
     return {
         "enabled": True,
-        "host": os.environ.get("LANGFUSE_BASE_URL", "https://cloud.langfuse.com"),
+        "host": host,
         "prompt_version": PROMPT_VERSION,
+        # False means the host could not be reached to confirm the keys, so
+        # spans are being buffered on trust rather than on an answer.
+        "verified": authenticated() is True,
     }

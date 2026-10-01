@@ -23,7 +23,11 @@ import sys
 # make replies.jsonl differ byte-for-byte between runs. Pinned so the committed
 # artifact is reproducible; the underlying tie-break is Week-5 code and is left
 # alone rather than silently rewritten here.
-if os.environ.get("PYTHONHASHSEED") != "0":
+#
+# The re-exec only happens when this file is run as a script: the web server
+# imports draft_one() to draft replies live, and an import must never replace
+# the importing process.
+if __name__ == "__main__" and os.environ.get("PYTHONHASHSEED") != "0":
     os.execve(sys.executable, [sys.executable, *sys.argv],
               {**os.environ, "PYTHONHASHSEED": "0"})
 

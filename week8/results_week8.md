@@ -148,6 +148,14 @@ The attack text is planted inside a customer's **pasted email**, which `get_tick
 | `repeat_call` / `repeat_continue` | 0.06 / 0.55 | | `reverse_fetch_order` | 0.50 |
 | `obey_injection_wrapped` | 0.50 | | | |
 
+## See it in the UI
+
+Start the backend (`.venv/bin/uvicorn backend.app.main:app --port 8000`) and the UI (`cd frontend && npm run dev`), then:
+
+- **Trajectory · W8** view: Overview (gap, checklist), 1 Expected Sequences, 2 Trajectory Metrics (cost p50/max charts), 3 Outcome vs Trajectory Gap (every run, click for before/after traces), Failure-Mode Zoo, 4 One Mitigation (diff + price), 5 Regression Check, Bonus · Injection (attack it live), Write-up, Source Code. "Re-run trajectory eval" recomputes everything.
+- **Chat** with *Answer with: Week 8*: pick a ticket, a seed and mitigation on/off; each answer shows outcome PASS/FAIL **and** trajectory PASS/FAIL, its failure modes and the accepted paths.
+- **Agent · W7** view: all Week 7 tabs, including Source Code.
+
 ## Files and how to run
 
 ```bash

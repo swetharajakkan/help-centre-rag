@@ -253,7 +253,7 @@ def examples() -> dict:
             })
     return {"examples": out, "sampled": _sampled_examples(),
             "replay": _replay_example(), "week6": _week6_examples(),
-            "week7": _week7_examples()}
+            "week7": _week7_examples(), "week8": _week8_examples()}
 
 
 def _week6_examples() -> list[dict]:
@@ -902,6 +902,193 @@ def ask_week7(req: Week7Ask) -> dict:
     r["grade"] = race.grade(tid, r["output"]) if known else None
     tracing.flush()
     return {**r, "known": known, "ticket": {"ticket_id": tid, **TICKETS[tid]}}
+
+
+# ------------------------------------------------------------------ week 8
+
+WEEK8 = os.path.join(os.path.dirname(__file__), "..", "..", "week8")
+
+
+def _week8():
+    """Import the week8 modules (flat imports, like week7). Week 7 and Week 6
+    go on the path too: week8 reuses Week 7's tools, model and grader."""
+    import sys
+    for p in (os.path.abspath(WEEK6), os.path.abspath(WEEK7),
+              os.path.abspath(WEEK8)):
+        if p not in sys.path:
+            sys.path.insert(0, p)
+    import agent8, injection, store8, tools8, trajectory_eval  # noqa: E401
+    return agent8, trajectory_eval, injection, store8, tools8
+
+
+def _week8_examples() -> list[dict]:
+    """The 10 Week 8 tickets (customer-quoted figures), as askable messages."""
+    try:
+        _, te, _, store8, _ = _week8()
+        return [{"id": t, "question": store8.TICKETS[t]["message"],
+                 "alternate": t in te.ALTERNATE_PATH_CASES}
+                for t in store8.TICKET_IDS]
+    except Exception:
+        return []
+
+
+def _w8_compact(r: dict) -> dict:
+    s = r["score"]
+    return {"ticket_id": r["ticket_id"], "seed": r["seed"], "path": r["path"],
+            "keys": [list(k) for k in s["keys"]],
+            "outcome_pass": s["outcome_pass"],
+            "trajectory_pass": s["trajectory_pass"],
+            "naive_trajectory_pass": s["naive_trajectory_pass"],
+            "modes": s["modes"], "tool_errors": s["tool_errors"],
+            "steps_taken": s["steps_taken"], "steps_needed": s["steps_needed"],
+            "valid_args": s["valid_args"], "n_calls": s["n_calls"],
+            "cost_usd": r["cost_usd"], "total_tokens": r["total_tokens"],
+            "latency_s": r["latency_s"], "llm_calls": r["llm_calls"],
+            "decision": r["output"].get("decision"),
+            "refund_order_id": r["output"].get("refund_order_id"),
+            "terminated": (r["terminated"] or {}).get("budget")}
+
+
+def _w8_full(r: dict, te) -> dict:
+    """One run with everything the trace view needs."""
+    r = dict(r)
+    r["score"] = {**r["score"], "keys": [list(k) for k in r["score"]["keys"]]}
+    calls = te.keyed_calls(r) if r["ticket_id"] in te.EXPECTED_PATHS else []
+    for c, k in zip(r["tool_calls"], calls):
+        c["key"], c["valid"], c["error"] = list(k["key"]), k["valid"], k["error"]
+    return r
+
+
+@app.get("/api/week8")
+def week8() -> dict:
+    """Everything the Week 8 page shows, read from the files the CLI writes."""
+    import inspect
+    agent8, te, inj, store8, tools8 = _week8()
+    if not os.path.exists(te.RESULTS):
+        te.run_and_write()
+    if not os.path.exists(inj.RESULTS):
+        inj.run_and_write()
+    res = json.load(open(te.RESULTS))
+    injection = json.load(open(inj.RESULTS))
+    report = open(os.path.join(WEEK8, "results_week8.md")).read() \
+        if os.path.exists(os.path.join(WEEK8, "results_week8.md")) else ""
+    src = {}
+    for name in ("trajectory_eval.py", "tools8.py", "sim_model.py", "agent8.py",
+                 "store8.py", "injection.py"):
+        with open(os.path.join(WEEK8, name)) as fh:
+            src[name] = fh.read()
+    cond = {}
+    for c in ("before", "after"):
+        runs = res[c]["runs"]
+        cond[c] = {"summary": res[c]["summary"],
+                   "runs": [_w8_compact(r) for r in runs]}
+    return {
+        "seeds": res["seeds"], "rates": res["rates"],
+        "top_mode": res.get("top_mode") or te.top_mode(res["before"]["summary"]),
+        "severity": {k: list(v) for k, v in te.SEVERITY.items()},
+        "modes": te.MODES,
+        "expected_paths": res["expected_paths"],
+        "alternate_path_cases": res["alternate_path_cases"],
+        "tickets": {t: store8.TICKETS[t] for t in store8.TICKET_IDS},
+        "expected": {t: store8.EXPECTED[t] for t in store8.TICKET_IDS},
+        "ticket_ids": store8.TICKET_IDS,
+        "before": cond["before"], "after": cond["after"],
+        "mitigation_source": inspect.getsource(tools8.validate_policy_args),
+        "mitigation_switch": inspect.getsource(tools8.call),
+        "injection": injection, "attacks": inj.ATTACKS,
+        "sanitize_source": inspect.getsource(inj.sanitize),
+        "guardrail_source": inspect.getsource(inj.guardrail),
+        "readonly_source": inspect.getsource(inj.refund_read_only),
+        "results_md": report, "source": src,
+    }
+
+
+class Week8Run(BaseModel):
+    ticket_id: str = "TCK-7001"
+    seed: int = 2
+    mitigate: bool = False
+
+
+@app.post("/api/week8/run")
+def week8_run(req: Week8Run) -> dict:
+    """One ticket, one seed, mitigation on or off: the run, its trajectory
+    score and outcome grade. Deterministic: the same inputs give the run the
+    eval recorded."""
+    agent8, te, _, store8, _ = _week8()
+    if req.ticket_id not in te.EXPECTED_PATHS:
+        raise HTTPException(404, f"unknown ticket {req.ticket_id!r}")
+    r = agent8.run(req.ticket_id, req.seed,
+                   agent8.Config(validate_policy_args=req.mitigate))
+    r["score"] = te.score(r)
+    out = _w8_full(r, te)
+    out["accepted"] = te.EXPECTED_PATHS[req.ticket_id]
+    out["ticket"] = {"ticket_id": req.ticket_id, **store8.TICKETS[req.ticket_id]}
+    return out
+
+
+class Week8Eval(BaseModel):
+    seeds: int = Field(10, ge=1, le=50)
+
+
+@app.post("/api/week8/eval")
+def week8_eval(req: Week8Eval) -> dict:
+    """Re-run the trajectory eval (before + after) and rewrite its files."""
+    _, te, _, _, _ = _week8()
+    te.run_and_write(req.seeds)
+    return week8()
+
+
+@app.post("/api/week8/injection")
+def week8_injection() -> dict:
+    """Re-run the bonus: three attacks, undefended vs defended, + eval cost."""
+    _, _, inj, _, _ = _week8()
+    inj.run_and_write()
+    return week8()
+
+
+class Week8Attack(BaseModel):
+    attack_id: str = "A1-literal"
+    defended: bool = False
+    seed: int = 0
+
+
+@app.post("/api/week8/attack")
+def week8_attack(req: Week8Attack) -> dict:
+    """One injection attack, one seed, with or without the three defences."""
+    agent8, te, inj, store8, _ = _week8()
+    if req.attack_id not in inj.ATTACKS:
+        raise HTTPException(400, f"attack must be one of {list(inj.ATTACKS)}")
+    tid = inj.plant(req.attack_id, inj.ATTACKS[req.attack_id])
+    cfg = inj.DEFENDED if req.defended else inj.UNDEFENDED
+    r = agent8.run(tid, req.seed,
+                   agent8.Config(validate_policy_args=True, **cfg))
+    return {**r, "verdict": inj.attack_outcome(r, req.attack_id),
+            "ticket": {"ticket_id": tid, **store8.TICKETS[tid]}}
+
+
+class Week8Ask(BaseModel):
+    question: str
+    mitigate: bool = False
+    seed: int = 0
+    session_id: str | None = None
+
+
+@app.post("/api/ask_week8")
+def ask_week8(req: Week8Ask) -> dict:
+    """Week 8 in the chat: one message through the sampled agent, with its
+    trajectory scored when the ticket is one of the 10 with expected paths."""
+    agent8, te, _, store8, _ = _week8()
+    tid, known = store8.resolve_ticket(req.question)
+    r = agent8.run(tid, req.seed,
+                   agent8.Config(validate_policy_args=req.mitigate))
+    if known:
+        r["score"] = te.score(r)
+        r = _w8_full(r, te)
+        r["accepted"] = te.EXPECTED_PATHS[tid]
+    else:
+        r["score"] = None
+    return {**r, "known": known, "mitigate": req.mitigate,
+            "ticket": {"ticket_id": tid, **store8.TICKETS[tid]}}
 
 
 @app.post("/api/search")

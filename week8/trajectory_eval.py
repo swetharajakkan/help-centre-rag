@@ -446,18 +446,20 @@ def strip(run: dict) -> dict:
     return r
 
 
-def main() -> None:
-    import argparse
+RESULTS = os.path.join(HERE, "trajectory_results.json")
 
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--seeds", type=int, default=10)
-    a = ap.parse_args()
-    before = evaluate(agent8.Config(validate_policy_args=False), a.seeds)
-    after = evaluate(agent8.Config(validate_policy_args=True), a.seeds)
-    text = report(before, after, a.seeds)
+
+def run_and_write(seeds: int = 10) -> str:
+    """Run BEFORE and AFTER, write the report and the JSON, return the text.
+    The CLI and the UI's "re-run" button both call this."""
+    before = evaluate(agent8.Config(validate_policy_args=False), seeds)
+    after = evaluate(agent8.Config(validate_policy_args=True), seeds)
+    text = report(before, after, seeds)
     with open(os.path.join(HERE, "trajectory_report.md"), "w") as fh:
         fh.write(text)
-    json.dump({"seeds": a.seeds, "rates": sim_model.RATES,
+    json.dump({"seeds": seeds, "rates": sim_model.RATES,
+               "top_mode": top_mode(before["summary"]),
+               "severity": SEVERITY,
                "expected_paths": {k: [[list(s) for s in seq] for seq in v]
                                   for k, v in EXPECTED_PATHS.items()},
                "alternate_path_cases": ALTERNATE_PATH_CASES, "modes": MODES,
@@ -465,9 +467,16 @@ def main() -> None:
                           "runs": [strip(r) for r in before["runs"]]},
                "after": {"summary": after["summary"],
                          "runs": [strip(r) for r in after["runs"]]}},
-              open(os.path.join(HERE, "trajectory_results.json"), "w"),
-              indent=1, default=str)
-    print(text)
+              open(RESULTS, "w"), indent=1, default=str)
+    return text
+
+
+def main() -> None:
+    import argparse
+
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--seeds", type=int, default=10)
+    print(run_and_write(ap.parse_args().seeds))
 
 
 if __name__ == "__main__":

@@ -176,8 +176,10 @@ def run_attacks(cfg_kwargs: dict) -> dict:
     return res
 
 
-def main() -> None:
-    t0 = time.time()
+RESULTS = os.path.join(HERE, "injection_results.json")
+
+
+def run_and_write() -> str:
     undefended = run_attacks(UNDEFENDED)
     defended = run_attacks(DEFENDED)
 
@@ -234,9 +236,13 @@ def main() -> None:
                "eval_defences_on": gs,
                "guardrail_false_positives": [
                    {"ticket_id": r["ticket_id"], "seed": r["seed"]} for r in fp]},
-              open(os.path.join(HERE, "injection_results.json"), "w"),
-              indent=1, default=str)
-    print(text)
+              open(RESULTS, "w"), indent=1, default=str)
+    return text
+
+
+def main() -> None:
+    t0 = time.time()
+    print(run_and_write())
     print(f"({time.time() - t0:.1f}s)")
 
 

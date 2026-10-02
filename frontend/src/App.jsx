@@ -3,6 +3,7 @@ import Sidebar from './Sidebar.jsx'
 import Chat from './Chat.jsx'
 import EvalView from './EvalView.jsx'
 import Week7View from './Week7View.jsx'
+import Week8View from './Week8View.jsx'
 import { streamSSE } from './sse'
 
 const BACKEND_HINT =
@@ -37,23 +38,26 @@ const WEEKS = [
   { value: 'week5', short: 'Week 5', label: 'Week 5 — area-filter fallback' },
   { value: 'week6', short: 'Week 6', label: 'Week 6 — ticket reply + judge' },
   { value: 'week7', short: 'Week 7', label: 'Week 7 — agent vs workflow' },
+  { value: 'week8', short: 'Week 8', label: 'Week 8 — trajectory-scored agent (sampled engine)' },
 ]
 const JUDGES = [['judge_v1', 'Judge v1'], ['judge_v2', 'Judge v2']]
 const SYSTEMS = [['agent', 'Agent'], ['workflow', 'Fixed workflow']]
+const MITIGATION = [[false, 'Off'], [true, 'Arg validation']]
 // Week 6's drafter uses Week 4 retrieval, and Week 7 retrieves nothing, so
 // the chunk comparison runs on the Week 4 arm for both.
 const RETRIEVAL_ARM = { week3: 'week3', week4: 'week4', week5: 'week5',
-                        week6: 'week4', week7: 'week4' }
+                        week6: 'week4', week7: 'week4', week8: 'week4' }
 
 const VIEWS = [
   ['chat', 'Chat'], ['chunks', 'Chunks'], ['eval', 'Eval'],
-  ['agent', 'Agent'], ['documents', 'Documents'],
+  ['agent', 'Agent · W7'], ['trajectory', 'Trajectory · W8'], ['documents', 'Documents'],
 ]
 // Links shared before the views were renamed keep working.
-const OLD_HASH = { compare: 'chunks', errors: 'eval', evals: 'eval', week7: 'agent' }
+const OLD_HASH = { compare: 'chunks', errors: 'eval', evals: 'eval', week7: 'agent', week8: 'trajectory' }
 
-function filterLabel(week, judge, system) {
+function filterLabel(week, judge, system, mitigate, seed) {
   const w = WEEKS.find((x) => x.value === week)
+  if (week === 'week8') return `${w.short} · seed ${seed} · mitigation ${mitigate ? 'on' : 'off'}`
   if (week === 'week6') return `${w.short} · ${JUDGES.find((j) => j[0] === judge)[1]}`
   if (week === 'week7') return `${w.short} · ${SYSTEMS.find((x) => x[0] === system)[1]}`
   return w.label
@@ -126,7 +130,7 @@ function DocumentsView({ documents }) {
 
 function CompareView({ compare, week }) {
   const note = RETRIEVAL_ARM[week] !== week
-    ? <p className="filter-note">{week === 'week7' ? 'Week 7 calls tools instead of retrieving chunks'
+    ? <p className="filter-note">{week === 'week7' || week === 'week8' ? `${week === 'week7' ? 'Week 7' : 'Week 8'} calls tools instead of retrieving chunks`
         : 'Week 6 drafts from Week 4 retrieval'}, so chunks are compared on the Week 4 arm.</p>
     : null
   if (!compare) {
@@ -360,7 +364,7 @@ export default function App() {
   const [health, setHealth] = useState(null)
   const [healthErr, setHealthErr] = useState(null)
   const [documents, setDocuments] = useState([])
-  const [sets, setSets] = useState({ golden: [], week5: [], week6: [], week7: [] })
+  const [sets, setSets] = useState({ golden: [], week5: [], week6: [], week7: [], week8: [] })
   const [analysis, setAnalysis] = useState(null)
   const [areas, setAreas] = useState([])
 
@@ -371,6 +375,8 @@ export default function App() {
   const [week, setWeek] = useState('week4')
   const [judge, setJudge] = useState('judge_v2')
   const [system, setSystem] = useState('agent')
+  const [mitigate, setMitigate] = useState(false)
+  const [seed, setSeed] = useState(2)
   const [k, setK] = useState(3)
   const [area, setArea] = useState('')
   const [busy, setBusy] = useState(false)
@@ -408,9 +414,12 @@ export default function App() {
           week7: arr(d.week7).map((e) => ({ ...e, product_area: undefined,
             badge: e.cls === 'multi_order' ? 'multi-order' : e.cls,
             badgeCls: e.cls === 'multi_order' ? 'bad' : e.cls === 'branch' ? 'warn' : '' })),
+          week8: arr(d.week8).map((e) => ({ ...e, product_area: undefined,
+            badge: e.alternate ? 'alternate paths' : e.id,
+            badgeCls: e.alternate ? 'warn' : '' })),
         })
       })
-      .catch(() => setSets({ golden: [], week5: [], week6: [], week7: [] }))
+      .catch(() => setSets({ golden: [], week5: [], week6: [], week7: [], week8: [] }))
   }, [])
 
   useEffect(refresh, [refresh])
@@ -470,10 +479,11 @@ export default function App() {
     setQ('')
     setErr(null)
     setBusy(true)
-    const kind = week === 'week6' ? 'week6' : week === 'week7' ? 'week7' : 'rag'
+    const kind = ['week6', 'week7', 'week8'].includes(week) ? week : 'rag'
+    const label = filterLabel(week, judge, system, mitigate, seed)
     setMessages((ms) => [...ms,
-      { role: 'user', text: question, filter: filterLabel(week, judge, system) },
-      { role: 'bot', kind, filter: filterLabel(week, judge, system),
+      { role: 'user', text: question, filter: label },
+      { role: 'bot', kind, filter: label,
         streaming: true, stage: kind === 'rag' ? 'retrieving' : kind,
         claims: [], refusal: '', meta: null, retrieval: null, done: null,
         data: null, error: null, stopped: false },
@@ -488,6 +498,10 @@ export default function App() {
                        case_id: opts.caseId || null }
         if (useArea) body.product_area = useArea
         const data = await postJSON('/api/ask_week6', body, controller.signal)
+        patch((m) => ({ ...m, data, streaming: false }))
+      } else if (kind === 'week8') {
+        const data = await postJSON('/api/ask_week8',
+          { question, mitigate, seed, session_id: sessionId }, controller.signal)
         patch((m) => ({ ...m, data, streaming: false }))
       } else {
         const data = await postJSON('/api/ask_week7',
@@ -534,13 +548,13 @@ export default function App() {
   }
 
   const showFilters = view === 'chat' || view === 'chunks'
-  const retrieves = week !== 'week7'
+  const retrieves = week !== 'week7' && week !== 'week8'
 
   return (
     <div className="shell">
       <Sidebar
         documents={documents} sets={sets} week={week}
-        answerWith={filterLabel(week, judge, system)} onAsk={ask}
+        answerWith={filterLabel(week, judge, system, mitigate, seed)} onAsk={ask}
         onUploaded={refresh} onDelete={removeDocument}
         onClear={() => { setMessages([]); setCompare(null); setSessionId(crypto.randomUUID()) }}
         ocrEngines={health ? (health.ocr_engines || []) : null}
@@ -599,6 +613,21 @@ export default function App() {
                 <Seg label="System" value={system} onChange={setSystem} options={SYSTEMS} />
               </div>
             )}
+            {week === 'week8' && (
+              <>
+                <div className="fgroup">
+                  <span className="flabel">Mitigation</span>
+                  <Seg label="Mitigation" value={mitigate} onChange={setMitigate} options={MITIGATION} />
+                </div>
+                <label className="control">
+                  <span>seed</span>
+                  <select value={seed} onChange={(e) => setSeed(Number(e.target.value))}>
+                    {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) =>
+                      <option key={n} value={n}>{n}</option>)}
+                  </select>
+                </label>
+              </>
+            )}
             {retrieves && (
               <>
                 <label className="control">
@@ -635,6 +664,7 @@ export default function App() {
           {view === 'chunks' && <CompareView compare={compare} week={week} />}
           {view === 'eval' && <EvalPage analysis={analysis} onAsk={ask} />}
           {view === 'agent' && <Week7View />}
+          {view === 'trajectory' && <Week8View />}
           {view === 'documents' && <DocumentsView documents={documents} />}
         </ErrorBoundary>
 
@@ -647,6 +677,8 @@ export default function App() {
                 onKeyDown={(e) => e.key === 'Enter' && submit()}
                 placeholder={view === 'chunks'
                   ? 'Query to run through both chunkers…'
+                  : week === 'week8'
+                    ? 'Pick a ticket (e.g. TCK-7001) or type a message — the path is scored, not just the answer…'
                   : week === 'week7'
                     ? 'Type a customer message (e.g. “Refund ORD-5101 please”) or a ticket id like TCK-7004…'
                     : week === 'week6'

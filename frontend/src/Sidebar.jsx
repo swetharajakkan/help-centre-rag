@@ -108,10 +108,11 @@ const QUESTION_GROUPS = [
   ['week5', 'Week 5 — sampled traces'],
   ['week6', 'Week 6 — eval tickets'],
   ['week7', 'Week 7 — refund tickets'],
+  ['week8', 'Week 8 — trajectory-scored tickets'],
 ]
 // Which question set goes with the week picked in the filter bar.
 const GROUP_FOR_WEEK = { week3: 'golden', week4: 'golden', week5: 'week5',
-                         week6: 'week6', week7: 'week7' }
+                         week6: 'week6', week7: 'week7', week8: 'week8' }
 
 const trim = (q) => (q.length > 60 ? `${q.slice(0, 60)}…` : q)
 

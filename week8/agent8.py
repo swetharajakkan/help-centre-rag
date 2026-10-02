@@ -54,7 +54,9 @@ class Config:
 class Meter:
     def __init__(self):
         self.tokens_in = self.tokens_out = self.llm_calls = 0
-        self.cost = self.latency = self.guard_s = 0.0
+        # latency is simulated (repeatable); overhead_s is the real time spent
+        # in our own code -- validator, sanitiser, guardrail -- kept apart.
+        self.cost = self.latency = self.overhead_s = 0.0
         self.steps: list[dict] = []
 
     @property
@@ -123,8 +125,8 @@ def run(ticket_id: str, seed: int, config: Config | None = None,
                             cfg.validate_policy_args)
             if cfg.sanitize:
                 r = cfg.sanitize(block["name"], r)
-            overhead = time.perf_counter() - t0
-            m.latency += tools8.TOOL_LATENCY_S + overhead
+            m.overhead_s += time.perf_counter() - t0
+            m.latency += tools8.TOOL_LATENCY_S
             m.steps.append({"kind": "tool", "name": block["name"],
                             "args": block["input"], "result": r})
             results.append({"type": "tool_result", "tool_use_id": block["id"],
@@ -137,8 +139,7 @@ def run(ticket_id: str, seed: int, config: Config | None = None,
     if cfg.guardrail:
         t0 = time.perf_counter()
         output, guarded = cfg.guardrail(output, state, m.steps)
-        m.guard_s = time.perf_counter() - t0
-        m.latency += m.guard_s
+        m.overhead_s += time.perf_counter() - t0
 
     tool_steps = [s for s in m.steps if s["kind"] == "tool"]
     return {"ticket_id": ticket_id, "seed": seed, "output": output,
@@ -146,7 +147,7 @@ def run(ticket_id: str, seed: int, config: Config | None = None,
             "budgets": asdict(b), "llm_calls": m.llm_calls,
             "total_tokens": m.tokens, "tokens_in": m.tokens_in,
             "tokens_out": m.tokens_out, "cost_usd": m.cost,
-            "latency_s": m.latency, "tool_calls": tool_steps,
+            "latency_s": m.latency, "overhead_s": m.overhead_s, "tool_calls": tool_steps,
             "path": [s["name"] for s in tool_steps],
             "side_effects": state["side_effects"]}
 

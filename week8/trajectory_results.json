@@ -13,6 +13,37 @@
   "reverse_fetch_order": 0.5,
   "obey_injection_wrapped": 0.5
  },
+ "top_mode": "skipped_order_record",
+ "severity": {
+  "skipped_order_record": [
+   3,
+   "decision on unverified facts"
+  ],
+  "invented_id": [
+   3,
+   "decision on a fabricated id"
+  ],
+  "premature_decision": [
+   3,
+   "decision on partial facts"
+  ],
+  "budget_exhausted": [
+   2,
+   "no decision; human picks it up"
+  ],
+  "redundant_loop": [
+   1,
+   "cost only"
+  ],
+  "error_retry_loop": [
+   1,
+   "cost only"
+  ],
+  "unneeded_tool": [
+   1,
+   "cost only"
+  ]
+ },
  "expected_paths": {
   "TCK-7001": [
    [
@@ -300,9 +331,9 @@
    "tokens_p50": 3173.0,
    "tokens_max": 8352,
    "tokens_mean": 3632.83,
-   "latency_p50": 1.293386750007742,
-   "latency_max": 2.330353747994672,
-   "latency_mean": 1.391480657027722,
+   "latency_p50": 1.29338,
+   "latency_max": 2.3303400000000005,
+   "latency_mean": 1.3914692000000002,
    "modes": {
     "skipped_order_record": 18,
     "invented_id": 5,
@@ -390,7 +421,8 @@
     "tokens_in": 2994,
     "tokens_out": 205,
     "cost_usd": 0.020095000000000002,
-    "latency_s": 1.2749045840055868,
+    "latency_s": 1.27488,
+    "overhead_s": 2.370899892412126e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -501,7 +533,8 @@
     "tokens_in": 2994,
     "tokens_out": 205,
     "cost_usd": 0.020095000000000002,
-    "latency_s": 1.274895166006051,
+    "latency_s": 1.27488,
+    "overhead_s": 1.5958008589223027e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -612,7 +645,8 @@
     "tokens_in": 2094,
     "tokens_out": 182,
     "cost_usd": 0.015020000000000002,
-    "latency_s": 1.0278882090118668,
+    "latency_s": 1.0278800000000001,
+    "overhead_s": 7.95800588093698e-06,
     "tool_calls": [
      {
       "kind": "tool",
@@ -705,7 +739,8 @@
     "tokens_in": 2094,
     "tokens_out": 182,
     "cost_usd": 0.015020000000000002,
-    "latency_s": 1.027887459006156,
+    "latency_s": 1.0278800000000001,
+    "overhead_s": 7.332972018048167e-06,
     "tool_calls": [
      {
       "kind": "tool",
@@ -798,7 +833,8 @@
     "tokens_in": 2994,
     "tokens_out": 205,
     "cost_usd": 0.020095000000000002,
-    "latency_s": 1.2748916670125863,
+    "latency_s": 1.27488,
+    "overhead_s": 1.2540986062958837e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -909,7 +945,8 @@
     "tokens_in": 2094,
     "tokens_out": 182,
     "cost_usd": 0.015020000000000002,
-    "latency_s": 1.0278864999912867,
+    "latency_s": 1.0278800000000001,
+    "overhead_s": 7.207971066236496e-06,
     "tool_calls": [
      {
       "kind": "tool",
@@ -1002,7 +1039,8 @@
     "tokens_in": 2994,
     "tokens_out": 205,
     "cost_usd": 0.020095000000000002,
-    "latency_s": 1.2748906260122266,
+    "latency_s": 1.27488,
+    "overhead_s": 1.1541997082531452e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -1113,7 +1151,8 @@
     "tokens_in": 2094,
     "tokens_out": 182,
     "cost_usd": 0.015020000000000002,
-    "latency_s": 1.0278866239881563,
+    "latency_s": 1.0278800000000001,
+    "overhead_s": 6.95799826644361e-06,
     "tool_calls": [
      {
       "kind": "tool",
@@ -1206,7 +1245,8 @@
     "tokens_in": 3032,
     "tokens_out": 234,
     "cost_usd": 0.02101,
-    "latency_s": 1.3626474159906945,
+    "latency_s": 1.36264,
+    "overhead_s": 8.251023245975375e-06,
     "tool_calls": [
      {
       "kind": "tool",
@@ -1322,7 +1362,8 @@
     "tokens_in": 2094,
     "tokens_out": 182,
     "cost_usd": 0.015020000000000002,
-    "latency_s": 1.027886709014997,
+    "latency_s": 1.0278800000000001,
+    "overhead_s": 6.250018486753106e-06,
     "tool_calls": [
      {
       "kind": "tool",
@@ -1415,7 +1456,8 @@
     "tokens_in": 5104,
     "tokens_out": 300,
     "cost_usd": 0.03302,
-    "latency_s": 1.9220950419800775,
+    "latency_s": 1.92208,
+    "overhead_s": 1.3790966477245092e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -1572,7 +1614,8 @@
     "tokens_in": 2941,
     "tokens_out": 196,
     "cost_usd": 0.019605,
-    "latency_s": 1.2468309590037028,
+    "latency_s": 1.24682,
+    "overhead_s": 1.1540978448465466e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -1683,7 +1726,8 @@
     "tokens_in": 2941,
     "tokens_out": 196,
     "cost_usd": 0.019605,
-    "latency_s": 1.24683054200402,
+    "latency_s": 1.24682,
+    "overhead_s": 1.1500000255182385e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -1794,7 +1838,8 @@
     "tokens_in": 2941,
     "tokens_out": 196,
     "cost_usd": 0.019605,
-    "latency_s": 1.2468301670011646,
+    "latency_s": 1.24682,
+    "overhead_s": 1.0790972737595439e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -1905,7 +1950,8 @@
     "tokens_in": 2941,
     "tokens_out": 196,
     "cost_usd": 0.019605,
-    "latency_s": 1.2468304169739644,
+    "latency_s": 1.24682,
+    "overhead_s": 1.0916992323473096e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -2016,7 +2062,8 @@
     "tokens_in": 2941,
     "tokens_out": 196,
     "cost_usd": 0.019605,
-    "latency_s": 1.2468304990031105,
+    "latency_s": 1.24682,
+    "overhead_s": 1.1707976227626204e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -2127,7 +2174,8 @@
     "tokens_in": 2941,
     "tokens_out": 196,
     "cost_usd": 0.019605,
-    "latency_s": 1.2468303750062408,
+    "latency_s": 1.24682,
+    "overhead_s": 1.0791991371661425e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -2238,7 +2286,8 @@
     "tokens_in": 5104,
     "tokens_out": 300,
     "cost_usd": 0.03302,
-    "latency_s": 1.922093623997802,
+    "latency_s": 1.92208,
+    "overhead_s": 1.2792006600648165e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -2395,7 +2444,8 @@
     "tokens_in": 2941,
     "tokens_out": 196,
     "cost_usd": 0.019605,
-    "latency_s": 1.2468307510131784,
+    "latency_s": 1.24682,
+    "overhead_s": 1.037601032294333e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -2506,7 +2556,8 @@
     "tokens_in": 2941,
     "tokens_out": 196,
     "cost_usd": 0.019605,
-    "latency_s": 1.2468311240078696,
+    "latency_s": 1.24682,
+    "overhead_s": 1.0207993909716606e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -2617,7 +2668,8 @@
     "tokens_in": 2083,
     "tokens_out": 186,
     "cost_usd": 0.015064999999999999,
-    "latency_s": 1.0396667079963628,
+    "latency_s": 1.03966,
+    "overhead_s": 6.665999535471201e-06,
     "tool_calls": [
      {
       "kind": "tool",
@@ -2710,7 +2762,8 @@
     "tokens_in": 2970,
     "tokens_out": 208,
     "cost_usd": 0.02005,
-    "latency_s": 1.2834104579958134,
+    "latency_s": 1.2834,
+    "overhead_s": 1.1041993275284767e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -2821,7 +2874,8 @@
     "tokens_in": 2083,
     "tokens_out": 186,
     "cost_usd": 0.015064999999999999,
-    "latency_s": 1.039666375994417,
+    "latency_s": 1.03966,
+    "overhead_s": 6.583984941244125e-06,
     "tool_calls": [
      {
       "kind": "tool",
@@ -2914,7 +2968,8 @@
     "tokens_in": 2083,
     "tokens_out": 186,
     "cost_usd": 0.015064999999999999,
-    "latency_s": 1.0396657909928728,
+    "latency_s": 1.03966,
+    "overhead_s": 6.207992555573583e-06,
     "tool_calls": [
      {
       "kind": "tool",
@@ -3007,7 +3062,8 @@
     "tokens_in": 6225,
     "tokens_out": 280,
     "cost_usd": 0.038125000000000006,
-    "latency_s": 2.0445218330242207,
+    "latency_s": 2.0445,
+    "overhead_s": 2.1957996068522334e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -3180,7 +3236,8 @@
     "tokens_in": 2970,
     "tokens_out": 208,
     "cost_usd": 0.02005,
-    "latency_s": 1.283410873991414,
+    "latency_s": 1.2834,
+    "overhead_s": 1.0832998668774962e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -3291,7 +3348,8 @@
     "tokens_in": 2970,
     "tokens_out": 208,
     "cost_usd": 0.02005,
-    "latency_s": 1.28341020898344,
+    "latency_s": 1.2834,
+    "overhead_s": 1.0666029993444681e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -3402,7 +3460,8 @@
     "tokens_in": 2083,
     "tokens_out": 186,
     "cost_usd": 0.015064999999999999,
-    "latency_s": 1.0396664999912866,
+    "latency_s": 1.03966,
+    "overhead_s": 6.333022611215711e-06,
     "tool_calls": [
      {
       "kind": "tool",
@@ -3495,7 +3554,8 @@
     "tokens_in": 3897,
     "tokens_out": 233,
     "cost_usd": 0.02531,
-    "latency_s": 1.5369531259876072,
+    "latency_s": 1.5369400000000002,
+    "overhead_s": 1.2416974641382694e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -3624,7 +3684,8 @@
     "tokens_in": 2083,
     "tokens_out": 186,
     "cost_usd": 0.015064999999999999,
-    "latency_s": 1.0396664579944592,
+    "latency_s": 1.03966,
+    "overhead_s": 6.374990334734321e-06,
     "tool_calls": [
      {
       "kind": "tool",
@@ -3717,7 +3778,8 @@
     "tokens_in": 4949,
     "tokens_out": 262,
     "cost_usd": 0.031295,
-    "latency_s": 1.8049959569899552,
+    "latency_s": 1.80498,
+    "overhead_s": 1.5081983292475343e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -3870,7 +3932,8 @@
     "tokens_in": 3840,
     "tokens_out": 237,
     "cost_usd": 0.025125,
-    "latency_s": 1.54781112598693,
+    "latency_s": 1.5478,
+    "overhead_s": 1.0916002793237567e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -3999,7 +4062,8 @@
     "tokens_in": 2888,
     "tokens_out": 212,
     "cost_usd": 0.01974,
-    "latency_s": 1.293767458002074,
+    "latency_s": 1.2937600000000002,
+    "overhead_s": 7.210008334368467e-06,
     "tool_calls": [
      {
       "kind": "tool",
@@ -4106,7 +4170,8 @@
     "tokens_in": 5841,
     "tokens_out": 285,
     "cost_usd": 0.03633,
-    "latency_s": 2.0518333339926835,
+    "latency_s": 2.05182,
+    "overhead_s": 1.2501986930146813e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -4269,7 +4334,8 @@
     "tokens_in": 2888,
     "tokens_out": 212,
     "cost_usd": 0.01974,
-    "latency_s": 1.2937673339906524,
+    "latency_s": 1.2937600000000002,
+    "overhead_s": 7.249036571010947e-06,
     "tool_calls": [
      {
       "kind": "tool",
@@ -4376,7 +4442,8 @@
     "tokens_in": 3840,
     "tokens_out": 237,
     "cost_usd": 0.025125,
-    "latency_s": 1.5478112079869724,
+    "latency_s": 1.5478,
+    "overhead_s": 1.0751013178378344e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -4505,7 +4572,8 @@
     "tokens_in": 2888,
     "tokens_out": 212,
     "cost_usd": 0.01974,
-    "latency_s": 1.2937673340052043,
+    "latency_s": 1.2937600000000002,
+    "overhead_s": 7.082970114424825e-06,
     "tool_calls": [
      {
       "kind": "tool",
@@ -4612,7 +4680,8 @@
     "tokens_in": 4804,
     "tokens_out": 261,
     "cost_usd": 0.030545,
-    "latency_s": 1.7990917509771371,
+    "latency_s": 1.79908,
+    "overhead_s": 1.1625030310824513e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -4759,7 +4828,8 @@
     "tokens_in": 3869,
     "tokens_out": 237,
     "cost_usd": 0.02527,
-    "latency_s": 1.548390249001207,
+    "latency_s": 1.54838,
+    "overhead_s": 1.0373973054811358e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -4888,7 +4958,8 @@
     "tokens_in": 4804,
     "tokens_out": 261,
     "cost_usd": 0.030545,
-    "latency_s": 1.799091958007235,
+    "latency_s": 1.79908,
+    "overhead_s": 1.1333031579852104e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -5035,7 +5106,8 @@
     "tokens_in": 2084,
     "tokens_out": 182,
     "cost_usd": 0.01497,
-    "latency_s": 1.0276863750048868,
+    "latency_s": 1.0276800000000001,
+    "overhead_s": 6.332964403554797e-06,
     "tool_calls": [
      {
       "kind": "tool",
@@ -5148,7 +5220,8 @@
     "tokens_in": 7538,
     "tokens_out": 193,
     "cost_usd": 0.042515,
-    "latency_s": 2.009793958989661,
+    "latency_s": 2.00976,
+    "overhead_s": 3.091595135629177e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -5373,7 +5446,8 @@
     "tokens_in": 2979,
     "tokens_out": 209,
     "cost_usd": 0.02012,
-    "latency_s": 1.2865907499945444,
+    "latency_s": 1.28658,
+    "overhead_s": 1.0165967978537083e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -5484,7 +5558,8 @@
     "tokens_in": 2084,
     "tokens_out": 182,
     "cost_usd": 0.01497,
-    "latency_s": 1.0276866669890659,
+    "latency_s": 1.0276800000000001,
+    "overhead_s": 6.291986210271716e-06,
     "tool_calls": [
      {
       "kind": "tool",
@@ -5593,7 +5668,8 @@
     "tokens_in": 2979,
     "tokens_out": 209,
     "cost_usd": 0.02012,
-    "latency_s": 1.2865907509986265,
+    "latency_s": 1.28658,
+    "overhead_s": 1.066701952368021e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -5704,7 +5780,8 @@
     "tokens_in": 3967,
     "tokens_out": 234,
     "cost_usd": 0.025685,
-    "latency_s": 1.5413544160003403,
+    "latency_s": 1.5413400000000002,
+    "overhead_s": 1.3541983207687736e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -5837,7 +5914,8 @@
     "tokens_in": 3967,
     "tokens_out": 234,
     "cost_usd": 0.025685,
-    "latency_s": 1.5413537060123963,
+    "latency_s": 1.5413400000000002,
+    "overhead_s": 1.3584009138867259e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -5970,7 +6048,8 @@
     "tokens_in": 2084,
     "tokens_out": 182,
     "cost_usd": 0.01497,
-    "latency_s": 1.027686415997632,
+    "latency_s": 1.0276800000000001,
+    "overhead_s": 6.417016265913844e-06,
     "tool_calls": [
      {
       "kind": "tool",
@@ -6079,7 +6158,8 @@
     "tokens_in": 2084,
     "tokens_out": 182,
     "cost_usd": 0.01497,
-    "latency_s": 1.0276865410131357,
+    "latency_s": 1.0276800000000001,
+    "overhead_s": 6.458023563027382e-06,
     "tool_calls": [
      {
       "kind": "tool",
@@ -6188,7 +6268,8 @@
     "tokens_in": 2979,
     "tokens_out": 209,
     "cost_usd": 0.02012,
-    "latency_s": 1.286590500982171,
+    "latency_s": 1.28658,
+    "overhead_s": 1.0249990737065673e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -6299,7 +6380,8 @@
     "tokens_in": 2956,
     "tokens_out": 212,
     "cost_usd": 0.02008,
-    "latency_s": 1.2951306249935925,
+    "latency_s": 1.29512,
+    "overhead_s": 1.0291027138009667e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -6410,7 +6492,8 @@
     "tokens_in": 2956,
     "tokens_out": 212,
     "cost_usd": 0.02008,
-    "latency_s": 1.29513054200402,
+    "latency_s": 1.29512,
+    "overhead_s": 1.045700628310442e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -6521,7 +6604,8 @@
     "tokens_in": 2956,
     "tokens_out": 212,
     "cost_usd": 0.02008,
-    "latency_s": 1.2951304589998955,
+    "latency_s": 1.29512,
+    "overhead_s": 1.0207993909716606e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -6632,7 +6716,8 @@
     "tokens_in": 2956,
     "tokens_out": 212,
     "cost_usd": 0.02008,
-    "latency_s": 1.295130540985386,
+    "latency_s": 1.29512,
+    "overhead_s": 1.0040996130555868e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -6743,7 +6828,8 @@
     "tokens_in": 2956,
     "tokens_out": 212,
     "cost_usd": 0.02008,
-    "latency_s": 1.2951298739837995,
+    "latency_s": 1.29512,
+    "overhead_s": 1.0124989785254002e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -6854,7 +6940,8 @@
     "tokens_in": 3976,
     "tokens_out": 236,
     "cost_usd": 0.025779999999999997,
-    "latency_s": 1.5475335819864229,
+    "latency_s": 1.5475200000000002,
+    "overhead_s": 1.3999990187585354e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -6989,7 +7076,8 @@
     "tokens_in": 6417,
     "tokens_out": 374,
     "cost_usd": 0.041435,
-    "latency_s": 2.330353747994672,
+    "latency_s": 2.3303400000000005,
+    "overhead_s": 1.3667013263329864e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -7168,7 +7256,8 @@
     "tokens_in": 2956,
     "tokens_out": 212,
     "cost_usd": 0.02008,
-    "latency_s": 1.29513054200402,
+    "latency_s": 1.29512,
+    "overhead_s": 1.0957999620586634e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -7279,7 +7368,8 @@
     "tokens_in": 2956,
     "tokens_out": 212,
     "cost_usd": 0.02008,
-    "latency_s": 1.2951302490157588,
+    "latency_s": 1.29512,
+    "overhead_s": 1.0917021427303553e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -7390,7 +7480,8 @@
     "tokens_in": 3987,
     "tokens_out": 266,
     "cost_usd": 0.026584999999999998,
-    "latency_s": 1.6377511669942273,
+    "latency_s": 1.6377400000000002,
+    "overhead_s": 1.229101326316595e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -7525,7 +7616,8 @@
     "tokens_in": 2959,
     "tokens_out": 207,
     "cost_usd": 0.019969999999999998,
-    "latency_s": 1.2801905000071927,
+    "latency_s": 1.28018,
+    "overhead_s": 1.0791001841425896e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -7636,7 +7728,8 @@
     "tokens_in": 2959,
     "tokens_out": 207,
     "cost_usd": 0.019969999999999998,
-    "latency_s": 1.280190500996723,
+    "latency_s": 1.28018,
+    "overhead_s": 1.0749034117907286e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -7747,7 +7840,8 @@
     "tokens_in": 3986,
     "tokens_out": 259,
     "cost_usd": 0.026405,
-    "latency_s": 1.6167315409930005,
+    "latency_s": 1.6167200000000002,
+    "overhead_s": 1.1166994227096438e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -7882,7 +7976,8 @@
     "tokens_in": 6243,
     "tokens_out": 279,
     "cost_usd": 0.03819,
-    "latency_s": 2.0418822079979724,
+    "latency_s": 2.0418600000000002,
+    "overhead_s": 2.170898369513452e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -8055,7 +8150,8 @@
     "tokens_in": 2959,
     "tokens_out": 207,
     "cost_usd": 0.019969999999999998,
-    "latency_s": 1.2801904170030682,
+    "latency_s": 1.28018,
+    "overhead_s": 1.066701952368021e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -8166,7 +8262,8 @@
     "tokens_in": 2959,
     "tokens_out": 207,
     "cost_usd": 0.019969999999999998,
-    "latency_s": 1.2801904579958134,
+    "latency_s": 1.28018,
+    "overhead_s": 1.0043004294857383e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -8277,7 +8374,8 @@
     "tokens_in": 3987,
     "tokens_out": 231,
     "cost_usd": 0.02571,
-    "latency_s": 1.5327543739889609,
+    "latency_s": 1.53274,
+    "overhead_s": 1.5083001926541328e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -8416,7 +8514,8 @@
     "tokens_in": 7524,
     "tokens_out": 192,
     "cost_usd": 0.04242,
-    "latency_s": 2.0065104170098387,
+    "latency_s": 2.00648,
+    "overhead_s": 2.891701296903193e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -8649,7 +8748,8 @@
     "tokens_in": 5047,
     "tokens_out": 255,
     "cost_usd": 0.03161,
-    "latency_s": 1.7859567079997483,
+    "latency_s": 1.78594,
+    "overhead_s": 1.6833015251904726e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -8802,7 +8902,8 @@
     "tokens_in": 2959,
     "tokens_out": 207,
     "cost_usd": 0.019969999999999998,
-    "latency_s": 1.2801903750062409,
+    "latency_s": 1.28018,
+    "overhead_s": 1.0000017937272787e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -8913,7 +9014,8 @@
     "tokens_in": 5194,
     "tokens_out": 327,
     "cost_usd": 0.034145,
-    "latency_s": 2.0048935830050567,
+    "latency_s": 2.00488,
+    "overhead_s": 1.3374985428526998e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -9070,7 +9172,8 @@
     "tokens_in": 5091,
     "tokens_out": 271,
     "cost_usd": 0.032229999999999995,
-    "latency_s": 1.8348388759877348,
+    "latency_s": 1.8348200000000001,
+    "overhead_s": 1.8999038729816675e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -9223,7 +9326,8 @@
     "tokens_in": 2988,
     "tokens_out": 223,
     "cost_usd": 0.020515000000000002,
-    "latency_s": 1.328770999981896,
+    "latency_s": 1.32876,
+    "overhead_s": 1.904097734950483e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -9334,7 +9438,8 @@
     "tokens_in": 2088,
     "tokens_out": 199,
     "cost_usd": 0.015415000000000002,
-    "latency_s": 1.078766709000445,
+    "latency_s": 1.07876,
+    "overhead_s": 1.0917021427303553e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -9427,7 +9532,8 @@
     "tokens_in": 2088,
     "tokens_out": 199,
     "cost_usd": 0.015415000000000002,
-    "latency_s": 1.0787663329935073,
+    "latency_s": 1.07876,
+    "overhead_s": 1.0292016668245196e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -9520,7 +9626,8 @@
     "tokens_in": 5091,
     "tokens_out": 271,
     "cost_usd": 0.032229999999999995,
-    "latency_s": 1.8348385419776245,
+    "latency_s": 1.8348200000000001,
+    "overhead_s": 2.4331966415047646e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -9673,7 +9780,8 @@
     "tokens_in": 5194,
     "tokens_out": 327,
     "cost_usd": 0.034145,
-    "latency_s": 2.0048929570107674,
+    "latency_s": 2.00488,
+    "overhead_s": 1.5667988918721676e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -9830,7 +9938,8 @@
     "tokens_in": 2988,
     "tokens_out": 223,
     "cost_usd": 0.020515000000000002,
-    "latency_s": 1.3287705840008472,
+    "latency_s": 1.32876,
+    "overhead_s": 1.1541007552295923e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -9941,7 +10050,8 @@
     "tokens_in": 2988,
     "tokens_out": 223,
     "cost_usd": 0.020515000000000002,
-    "latency_s": 1.3287742929930006,
+    "latency_s": 1.32876,
+    "overhead_s": 1.212599454447627e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -10052,7 +10162,8 @@
     "tokens_in": 2088,
     "tokens_out": 199,
     "cost_usd": 0.015415000000000002,
-    "latency_s": 1.0787687910011643,
+    "latency_s": 1.07876,
+    "overhead_s": 9.25001222640276e-06,
     "tool_calls": [
      {
       "kind": "tool",
@@ -10145,7 +10256,8 @@
     "tokens_in": 3001,
     "tokens_out": 207,
     "cost_usd": 0.02018,
-    "latency_s": 1.2810319999895106,
+    "latency_s": 1.28102,
+    "overhead_s": 1.2542033800855279e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -10263,7 +10375,8 @@
     "tokens_in": 8130,
     "tokens_out": 222,
     "cost_usd": 0.0462,
-    "latency_s": 2.108629249975342,
+    "latency_s": 2.1086000000000005,
+    "overhead_s": 3.0167982913553715e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -10515,7 +10628,8 @@
     "tokens_in": 4000,
     "tokens_out": 231,
     "cost_usd": 0.025775,
-    "latency_s": 1.533015750003513,
+    "latency_s": 1.5330000000000001,
+    "overhead_s": 1.5332945622503757e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -10647,7 +10761,8 @@
     "tokens_in": 4000,
     "tokens_out": 231,
     "cost_usd": 0.025775,
-    "latency_s": 1.5330150830164786,
+    "latency_s": 1.5330000000000001,
+    "overhead_s": 1.4958030078560114e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -10785,7 +10900,8 @@
     "tokens_in": 3001,
     "tokens_out": 207,
     "cost_usd": 0.02018,
-    "latency_s": 1.2810317089948617,
+    "latency_s": 1.28102,
+    "overhead_s": 1.0999967344105244e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -10905,7 +11021,8 @@
     "tokens_in": 4000,
     "tokens_out": 231,
     "cost_usd": 0.025775,
-    "latency_s": 1.5330140399934027,
+    "latency_s": 1.5330000000000001,
+    "overhead_s": 1.433398574590683e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -11043,7 +11160,8 @@
     "tokens_in": 4000,
     "tokens_out": 231,
     "cost_usd": 0.025775,
-    "latency_s": 1.5330146250094987,
+    "latency_s": 1.5330000000000001,
+    "overhead_s": 1.491600414738059e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -11175,7 +11293,8 @@
     "tokens_in": 5099,
     "tokens_out": 255,
     "cost_usd": 0.03187,
-    "latency_s": 1.7869982099902304,
+    "latency_s": 1.78698,
+    "overhead_s": 1.791800605133176e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -11335,7 +11454,8 @@
     "tokens_in": 3001,
     "tokens_out": 207,
     "cost_usd": 0.02018,
-    "latency_s": 1.2810306259976747,
+    "latency_s": 1.28102,
+    "overhead_s": 1.0581978131085634e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -11455,7 +11575,8 @@
     "tokens_in": 4000,
     "tokens_out": 231,
     "cost_usd": 0.025775,
-    "latency_s": 1.5330149569968927,
+    "latency_s": 1.5330000000000001,
+    "overhead_s": 1.4541990822181106e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -11587,7 +11708,8 @@
     "tokens_in": 2050,
     "tokens_out": 194,
     "cost_usd": 0.0151,
-    "latency_s": 1.0630065839994933,
+    "latency_s": 1.0630000000000002,
+    "overhead_s": 6.584014045074582e-06,
     "tool_calls": [
      {
       "kind": "tool",
@@ -11676,7 +11798,8 @@
     "tokens_in": 2050,
     "tokens_out": 194,
     "cost_usd": 0.0151,
-    "latency_s": 1.0630062909821283,
+    "latency_s": 1.0630000000000002,
+    "overhead_s": 5.916983354836702e-06,
     "tool_calls": [
      {
       "kind": "tool",
@@ -11765,7 +11888,8 @@
     "tokens_in": 2050,
     "tokens_out": 194,
     "cost_usd": 0.0151,
-    "latency_s": 1.0630062079925557,
+    "latency_s": 1.0630000000000002,
+    "overhead_s": 5.707988748326898e-06,
     "tool_calls": [
      {
       "kind": "tool",
@@ -11854,7 +11978,8 @@
     "tokens_in": 2869,
     "tokens_out": 212,
     "cost_usd": 0.019645000000000003,
-    "latency_s": 1.2933870000096457,
+    "latency_s": 1.29338,
+    "overhead_s": 7.166992872953415e-06,
     "tool_calls": [
      {
       "kind": "tool",
@@ -11961,7 +12086,8 @@
     "tokens_in": 2869,
     "tokens_out": 212,
     "cost_usd": 0.019645000000000003,
-    "latency_s": 1.2933866659995354,
+    "latency_s": 1.29338,
+    "overhead_s": 7.041991921141744e-06,
     "tool_calls": [
      {
       "kind": "tool",
@@ -12068,7 +12194,8 @@
     "tokens_in": 2869,
     "tokens_out": 212,
     "cost_usd": 0.019645000000000003,
-    "latency_s": 1.2933868329973146,
+    "latency_s": 1.29338,
+    "overhead_s": 6.833026418462396e-06,
     "tool_calls": [
      {
       "kind": "tool",
@@ -12175,7 +12302,8 @@
     "tokens_in": 2869,
     "tokens_out": 212,
     "cost_usd": 0.019645000000000003,
-    "latency_s": 1.2933867080109147,
+    "latency_s": 1.29338,
+    "overhead_s": 9.499024599790573e-06,
     "tool_calls": [
      {
       "kind": "tool",
@@ -12282,7 +12410,8 @@
     "tokens_in": 2050,
     "tokens_out": 194,
     "cost_usd": 0.0151,
-    "latency_s": 1.0630058329897003,
+    "latency_s": 1.0630000000000002,
+    "overhead_s": 5.874986527487636e-06,
     "tool_calls": [
      {
       "kind": "tool",
@@ -12371,7 +12500,8 @@
     "tokens_in": 2050,
     "tokens_out": 194,
     "cost_usd": 0.0151,
-    "latency_s": 1.0630054580013968,
+    "latency_s": 1.0630000000000002,
+    "overhead_s": 6.499001756310463e-06,
     "tool_calls": [
      {
       "kind": "tool",
@@ -12460,7 +12590,8 @@
     "tokens_in": 2869,
     "tokens_out": 212,
     "cost_usd": 0.019645000000000003,
-    "latency_s": 1.2933867920045694,
+    "latency_s": 1.29338,
+    "overhead_s": 7.333030225709081e-06,
     "tool_calls": [
      {
       "kind": "tool",
@@ -12566,9 +12697,9 @@
    "tokens_p50": 4077.0,
    "tokens_max": 8499,
    "tokens_mean": 4180.55,
-   "latency_p50": 1.532884604491298,
-   "latency_max": 2.6556372500003835,
-   "latency_mean": 1.537516428738535,
+   "latency_p50": 1.53287,
+   "latency_max": 2.6556200000000008,
+   "latency_mean": 1.5375032000000002,
    "modes": {
     "skipped_order_record": 0,
     "invented_id": 5,
@@ -12656,7 +12787,8 @@
     "tokens_in": 2994,
     "tokens_out": 205,
     "cost_usd": 0.020095000000000002,
-    "latency_s": 1.2748941670170706,
+    "latency_s": 1.27488,
+    "overhead_s": 1.4751014532521367e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -12767,7 +12899,8 @@
     "tokens_in": 2994,
     "tokens_out": 205,
     "cost_usd": 0.020095000000000002,
-    "latency_s": 1.2748916659939522,
+    "latency_s": 1.27488,
+    "overhead_s": 1.258301199413836e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -12878,7 +13011,8 @@
     "tokens_in": 4091,
     "tokens_out": 257,
     "cost_usd": 0.02688,
-    "latency_s": 1.612833917015167,
+    "latency_s": 1.6128200000000001,
+    "overhead_s": 1.4416000340133905e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -13008,7 +13142,8 @@
     "tokens_in": 4091,
     "tokens_out": 257,
     "cost_usd": 0.02688,
-    "latency_s": 1.6128338340110426,
+    "latency_s": 1.6128200000000001,
+    "overhead_s": 1.4707940863445401e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -13138,7 +13273,8 @@
     "tokens_in": 2994,
     "tokens_out": 205,
     "cost_usd": 0.020095000000000002,
-    "latency_s": 1.2748911250119517,
+    "latency_s": 1.27488,
+    "overhead_s": 1.1876050848513842e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -13249,7 +13385,8 @@
     "tokens_in": 4091,
     "tokens_out": 257,
     "cost_usd": 0.02688,
-    "latency_s": 1.6128330839907798,
+    "latency_s": 1.6128200000000001,
+    "overhead_s": 1.3707001926377416e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -13379,7 +13516,8 @@
     "tokens_in": 2994,
     "tokens_out": 205,
     "cost_usd": 0.020095000000000002,
-    "latency_s": 1.2748905419749161,
+    "latency_s": 1.27488,
+    "overhead_s": 1.1333031579852104e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -13490,7 +13628,8 @@
     "tokens_in": 5321,
     "tokens_out": 309,
     "cost_usd": 0.03433,
-    "latency_s": 1.9534341240016095,
+    "latency_s": 1.9534200000000004,
+    "overhead_s": 1.4626042684540153e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -13641,7 +13780,8 @@
     "tokens_in": 4091,
     "tokens_out": 257,
     "cost_usd": 0.02688,
-    "latency_s": 1.6128325419901453,
+    "latency_s": 1.6128200000000001,
+    "overhead_s": 1.2792006600648165e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -13771,7 +13911,8 @@
     "tokens_in": 4091,
     "tokens_out": 257,
     "cost_usd": 0.02688,
-    "latency_s": 1.6128327079983942,
+    "latency_s": 1.6128200000000001,
+    "overhead_s": 1.304197940044105e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -13901,7 +14042,8 @@
     "tokens_in": 5104,
     "tokens_out": 300,
     "cost_usd": 0.03302,
-    "latency_s": 1.9220949999832502,
+    "latency_s": 1.92208,
+    "overhead_s": 1.4957011444494128e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -14058,7 +14200,8 @@
     "tokens_in": 2941,
     "tokens_out": 196,
     "cost_usd": 0.019605,
-    "latency_s": 1.2468311250119517,
+    "latency_s": 1.24682,
+    "overhead_s": 1.1126016033813357e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -14169,7 +14312,8 @@
     "tokens_in": 2941,
     "tokens_out": 196,
     "cost_usd": 0.019605,
-    "latency_s": 1.2468313339920063,
+    "latency_s": 1.24682,
+    "overhead_s": 1.1249969247728586e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -14280,7 +14424,8 @@
     "tokens_in": 2941,
     "tokens_out": 196,
     "cost_usd": 0.019605,
-    "latency_s": 1.2468311249973998,
+    "latency_s": 1.24682,
+    "overhead_s": 1.129199517890811e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -14391,7 +14536,8 @@
     "tokens_in": 2941,
     "tokens_out": 196,
     "cost_usd": 0.019605,
-    "latency_s": 1.2468315000148071,
+    "latency_s": 1.24682,
+    "overhead_s": 1.087499549612403e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -14502,7 +14648,8 @@
     "tokens_in": 2941,
     "tokens_out": 196,
     "cost_usd": 0.019605,
-    "latency_s": 1.2468311679837574,
+    "latency_s": 1.24682,
+    "overhead_s": 1.1083000572398305e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -14613,7 +14760,8 @@
     "tokens_in": 2941,
     "tokens_out": 196,
     "cost_usd": 0.019605,
-    "latency_s": 1.246831331983842,
+    "latency_s": 1.24682,
+    "overhead_s": 1.1250958777964115e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -14724,7 +14872,8 @@
     "tokens_in": 5104,
     "tokens_out": 300,
     "cost_usd": 0.03302,
-    "latency_s": 1.9220948750114022,
+    "latency_s": 1.92208,
+    "overhead_s": 1.4582998119294643e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -14881,7 +15030,8 @@
     "tokens_in": 2941,
     "tokens_out": 196,
     "cost_usd": 0.019605,
-    "latency_s": 1.2468314569847938,
+    "latency_s": 1.24682,
+    "overhead_s": 1.129100564867258e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -14992,7 +15142,8 @@
     "tokens_in": 2941,
     "tokens_out": 196,
     "cost_usd": 0.019605,
-    "latency_s": 1.2468317089948617,
+    "latency_s": 1.24682,
+    "overhead_s": 1.1374999303370714e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -15103,7 +15254,8 @@
     "tokens_in": 4057,
     "tokens_out": 260,
     "cost_usd": 0.026785,
-    "latency_s": 1.6211573339940375,
+    "latency_s": 1.62114,
+    "overhead_s": 1.3042008504271507e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -15233,7 +15385,8 @@
     "tokens_in": 2970,
     "tokens_out": 208,
     "cost_usd": 0.02005,
-    "latency_s": 1.2834122499914142,
+    "latency_s": 1.2834,
+    "overhead_s": 1.1582975275814533e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -15344,7 +15497,8 @@
     "tokens_in": 4057,
     "tokens_out": 260,
     "cost_usd": 0.026785,
-    "latency_s": 1.6211535429872899,
+    "latency_s": 1.62114,
+    "overhead_s": 1.2623990187421441e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -15474,7 +15628,8 @@
     "tokens_in": 5276,
     "tokens_out": 312,
     "cost_usd": 0.03418,
-    "latency_s": 1.961534333985746,
+    "latency_s": 1.9615200000000002,
+    "overhead_s": 1.4165998436510563e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -15625,7 +15780,8 @@
     "tokens_in": 6225,
     "tokens_out": 280,
     "cost_usd": 0.038125000000000006,
-    "latency_s": 2.0445231659942076,
+    "latency_s": 2.0445,
+    "overhead_s": 2.2208027075976133e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -15798,7 +15954,8 @@
     "tokens_in": 2970,
     "tokens_out": 208,
     "cost_usd": 0.02005,
-    "latency_s": 1.283411418000213,
+    "latency_s": 1.2834,
+    "overhead_s": 1.1208991054445505e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -15909,7 +16066,8 @@
     "tokens_in": 2970,
     "tokens_out": 208,
     "cost_usd": 0.02005,
-    "latency_s": 1.2834110830005725,
+    "latency_s": 1.2834,
+    "overhead_s": 1.1957978131249547e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -16020,7 +16178,8 @@
     "tokens_in": 8010,
     "tokens_out": 388,
     "cost_usd": 0.04975,
-    "latency_s": 2.5642187069817917,
+    "latency_s": 2.5642000000000005,
+    "overhead_s": 1.8665014067664742e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -16211,7 +16370,8 @@
     "tokens_in": 3897,
     "tokens_out": 233,
     "cost_usd": 0.02531,
-    "latency_s": 1.5369527920066008,
+    "latency_s": 1.5369400000000002,
+    "overhead_s": 1.3083015801385045e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -16340,7 +16500,8 @@
     "tokens_in": 7708,
     "tokens_out": 332,
     "cost_usd": 0.04684,
-    "latency_s": 2.3901837490021394,
+    "latency_s": 2.3901600000000003,
+    "overhead_s": 2.3499014787375927e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -16532,7 +16693,8 @@
     "tokens_in": 4949,
     "tokens_out": 262,
     "cost_usd": 0.031295,
-    "latency_s": 1.804995623998479,
+    "latency_s": 1.80498,
+    "overhead_s": 1.562500256113708e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -16685,7 +16847,8 @@
     "tokens_in": 3840,
     "tokens_out": 237,
     "cost_usd": 0.025125,
-    "latency_s": 1.547811457988876,
+    "latency_s": 1.5478,
+    "overhead_s": 1.18750031106174e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -16814,7 +16977,8 @@
     "tokens_in": 2888,
     "tokens_out": 212,
     "cost_usd": 0.01974,
-    "latency_s": 1.2937680419995359,
+    "latency_s": 1.2937600000000002,
+    "overhead_s": 8.083006832748652e-06,
     "tool_calls": [
      {
       "kind": "tool",
@@ -16921,7 +17085,8 @@
     "tokens_in": 5841,
     "tokens_out": 285,
     "cost_usd": 0.03633,
-    "latency_s": 2.0518333340072354,
+    "latency_s": 2.05182,
+    "overhead_s": 1.3499025953933597e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -17084,7 +17249,8 @@
     "tokens_in": 2888,
     "tokens_out": 212,
     "cost_usd": 0.01974,
-    "latency_s": 1.2937679579913293,
+    "latency_s": 1.2937600000000002,
+    "overhead_s": 7.999013178050518e-06,
     "tool_calls": [
      {
       "kind": "tool",
@@ -17191,7 +17357,8 @@
     "tokens_in": 3840,
     "tokens_out": 237,
     "cost_usd": 0.025125,
-    "latency_s": 1.5478115419970826,
+    "latency_s": 1.5478,
+    "overhead_s": 1.1999014532193542e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -17320,7 +17487,8 @@
     "tokens_in": 2888,
     "tokens_out": 212,
     "cost_usd": 0.01974,
-    "latency_s": 1.2937678339944596,
+    "latency_s": 1.2937600000000002,
+    "overhead_s": 7.831986295059323e-06,
     "tool_calls": [
      {
       "kind": "tool",
@@ -17427,7 +17595,8 @@
     "tokens_in": 4804,
     "tokens_out": 261,
     "cost_usd": 0.030545,
-    "latency_s": 1.799092708012946,
+    "latency_s": 1.79908,
+    "overhead_s": 1.216601231135428e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -17574,7 +17743,8 @@
     "tokens_in": 3869,
     "tokens_out": 237,
     "cost_usd": 0.02527,
-    "latency_s": 1.5483910419932754,
+    "latency_s": 1.54838,
+    "overhead_s": 1.1416996130719781e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -17703,7 +17873,8 @@
     "tokens_in": 4804,
     "tokens_out": 261,
     "cost_usd": 0.030545,
-    "latency_s": 1.7990919589967653,
+    "latency_s": 1.79908,
+    "overhead_s": 1.2125034118071198e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -17850,7 +18021,8 @@
     "tokens_in": 4072,
     "tokens_out": 261,
     "cost_usd": 0.026885,
-    "latency_s": 1.6244530819971674,
+    "latency_s": 1.62444,
+    "overhead_s": 1.3209006283432245e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -17984,7 +18156,8 @@
     "tokens_in": 7538,
     "tokens_out": 193,
     "cost_usd": 0.042515,
-    "latency_s": 2.009790499009881,
+    "latency_s": 2.00976,
+    "overhead_s": 3.0583032639697194e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -18209,7 +18382,8 @@
     "tokens_in": 2979,
     "tokens_out": 209,
     "cost_usd": 0.02012,
-    "latency_s": 1.2865912509878819,
+    "latency_s": 1.28658,
+    "overhead_s": 1.1292024282738566e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -18320,7 +18494,8 @@
     "tokens_in": 8038,
     "tokens_out": 390,
     "cost_usd": 0.04994,
-    "latency_s": 2.570779041981432,
+    "latency_s": 2.5707600000000004,
+    "overhead_s": 1.8999999156221747e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -18512,7 +18687,8 @@
     "tokens_in": 2979,
     "tokens_out": 209,
     "cost_usd": 0.02012,
-    "latency_s": 1.2865912080015243,
+    "latency_s": 1.28658,
+    "overhead_s": 1.1209980584681034e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -18623,7 +18799,8 @@
     "tokens_in": 3967,
     "tokens_out": 234,
     "cost_usd": 0.025685,
-    "latency_s": 1.541354666002244,
+    "latency_s": 1.5413400000000002,
+    "overhead_s": 1.4458986697718501e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -18756,7 +18933,8 @@
     "tokens_in": 3967,
     "tokens_out": 234,
     "cost_usd": 0.025685,
-    "latency_s": 1.5413542500066433,
+    "latency_s": 1.5413400000000002,
+    "overhead_s": 1.4582998119294643e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -18889,7 +19067,8 @@
     "tokens_in": 4072,
     "tokens_out": 261,
     "cost_usd": 0.026885,
-    "latency_s": 1.6244530010012073,
+    "latency_s": 1.62444,
+    "overhead_s": 1.2666045222431421e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -19019,7 +19198,8 @@
     "tokens_in": 8081,
     "tokens_out": 418,
     "cost_usd": 0.050855,
-    "latency_s": 2.6556372500003835,
+    "latency_s": 2.6556200000000008,
+    "overhead_s": 1.7210026271641254e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -19212,7 +19392,8 @@
     "tokens_in": 2979,
     "tokens_out": 209,
     "cost_usd": 0.02012,
-    "latency_s": 1.2865915830043797,
+    "latency_s": 1.28658,
+    "overhead_s": 1.18750031106174e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -19323,7 +19504,8 @@
     "tokens_in": 2956,
     "tokens_out": 212,
     "cost_usd": 0.02008,
-    "latency_s": 1.295131625015759,
+    "latency_s": 1.29512,
+    "overhead_s": 1.1625030310824513e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -19434,7 +19616,8 @@
     "tokens_in": 2956,
     "tokens_out": 212,
     "cost_usd": 0.02008,
-    "latency_s": 1.295131293013813,
+    "latency_s": 1.29512,
+    "overhead_s": 1.0707997716963291e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -19545,7 +19728,8 @@
     "tokens_in": 2956,
     "tokens_out": 212,
     "cost_usd": 0.02008,
-    "latency_s": 1.295130999981896,
+    "latency_s": 1.29512,
+    "overhead_s": 1.200000406242907e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -19656,7 +19840,8 @@
     "tokens_in": 2956,
     "tokens_out": 212,
     "cost_usd": 0.02008,
-    "latency_s": 1.2951308749809443,
+    "latency_s": 1.29512,
+    "overhead_s": 1.1707015801221132e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -19767,7 +19952,8 @@
     "tokens_in": 2956,
     "tokens_out": 212,
     "cost_usd": 0.02008,
-    "latency_s": 1.2951310829860205,
+    "latency_s": 1.29512,
+    "overhead_s": 1.0874035069718957e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -19878,7 +20064,8 @@
     "tokens_in": 3976,
     "tokens_out": 236,
     "cost_usd": 0.025779999999999997,
-    "latency_s": 1.5475344159857884,
+    "latency_s": 1.5475200000000002,
+    "overhead_s": 1.4500983525067568e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -20013,7 +20200,8 @@
     "tokens_in": 6417,
     "tokens_out": 374,
     "cost_usd": 0.041435,
-    "latency_s": 2.33035629300823,
+    "latency_s": 2.3303400000000005,
+    "overhead_s": 1.6333971871063113e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -20192,7 +20380,8 @@
     "tokens_in": 2956,
     "tokens_out": 212,
     "cost_usd": 0.02008,
-    "latency_s": 1.2951310429973575,
+    "latency_s": 1.29512,
+    "overhead_s": 1.0873976862058043e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -20303,7 +20492,8 @@
     "tokens_in": 2956,
     "tokens_out": 212,
     "cost_usd": 0.02008,
-    "latency_s": 1.2951310420223792,
+    "latency_s": 1.29512,
+    "overhead_s": 1.1207011993974447e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -20414,7 +20604,8 @@
     "tokens_in": 3987,
     "tokens_out": 266,
     "cost_usd": 0.026584999999999998,
-    "latency_s": 1.6377552489956237,
+    "latency_s": 1.6377400000000002,
+    "overhead_s": 1.3457000022754073e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -20549,7 +20740,8 @@
     "tokens_in": 2959,
     "tokens_out": 207,
     "cost_usd": 0.019969999999999998,
-    "latency_s": 1.2801919169853861,
+    "latency_s": 1.28018,
+    "overhead_s": 1.2167030945420265e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -20660,7 +20852,8 @@
     "tokens_in": 2959,
     "tokens_out": 207,
     "cost_usd": 0.019969999999999998,
-    "latency_s": 1.280191165990145,
+    "latency_s": 1.28018,
+    "overhead_s": 1.116600469686091e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -20771,7 +20964,8 @@
     "tokens_in": 3986,
     "tokens_out": 259,
     "cost_usd": 0.026405,
-    "latency_s": 1.6167328340034282,
+    "latency_s": 1.6167200000000002,
+    "overhead_s": 1.3499957276508212e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -20906,7 +21100,8 @@
     "tokens_in": 6243,
     "tokens_out": 279,
     "cost_usd": 0.03819,
-    "latency_s": 2.0418823349925366,
+    "latency_s": 2.0418600000000002,
+    "overhead_s": 2.2168009309098125e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -21079,7 +21274,8 @@
     "tokens_in": 2959,
     "tokens_out": 207,
     "cost_usd": 0.019969999999999998,
-    "latency_s": 1.2801913330024761,
+    "latency_s": 1.28018,
+    "overhead_s": 1.1249969247728586e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -21190,7 +21386,8 @@
     "tokens_in": 2959,
     "tokens_out": 207,
     "cost_usd": 0.019969999999999998,
-    "latency_s": 1.2801915819857457,
+    "latency_s": 1.28018,
+    "overhead_s": 1.095802872441709e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -21301,7 +21498,8 @@
     "tokens_in": 3987,
     "tokens_out": 231,
     "cost_usd": 0.02571,
-    "latency_s": 1.5327543329671118,
+    "latency_s": 1.53274,
+    "overhead_s": 1.7540936823934317e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -21440,7 +21638,8 @@
     "tokens_in": 7524,
     "tokens_out": 192,
     "cost_usd": 0.04242,
-    "latency_s": 2.0065105410067083,
+    "latency_s": 2.00648,
+    "overhead_s": 2.9584014555439353e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -21673,7 +21872,8 @@
     "tokens_in": 5047,
     "tokens_out": 255,
     "cost_usd": 0.03161,
-    "latency_s": 1.7859569570121216,
+    "latency_s": 1.78594,
+    "overhead_s": 1.791701652109623e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -21826,7 +22026,8 @@
     "tokens_in": 2959,
     "tokens_out": 207,
     "cost_usd": 0.019969999999999998,
-    "latency_s": 1.2801909169923236,
+    "latency_s": 1.28018,
+    "overhead_s": 1.0543008102104068e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -21937,7 +22138,8 @@
     "tokens_in": 5194,
     "tokens_out": 327,
     "cost_usd": 0.034145,
-    "latency_s": 2.004894875011402,
+    "latency_s": 2.00488,
+    "overhead_s": 1.4708988601341844e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -22094,7 +22296,8 @@
     "tokens_in": 5091,
     "tokens_out": 271,
     "cost_usd": 0.032229999999999995,
-    "latency_s": 1.8348385009994312,
+    "latency_s": 1.8348200000000001,
+    "overhead_s": 1.8041988369077444e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -22247,7 +22450,8 @@
     "tokens_in": 2988,
     "tokens_out": 223,
     "cost_usd": 0.020515000000000002,
-    "latency_s": 1.3287711250119516,
+    "latency_s": 1.32876,
+    "overhead_s": 1.1125026503577828e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -22358,7 +22562,8 @@
     "tokens_in": 4080,
     "tokens_out": 275,
     "cost_usd": 0.027275,
-    "latency_s": 1.6666127500243253,
+    "latency_s": 1.6666,
+    "overhead_s": 1.3623008271679282e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -22488,7 +22693,8 @@
     "tokens_in": 4080,
     "tokens_out": 275,
     "cost_usd": 0.027275,
-    "latency_s": 1.6666124159851112,
+    "latency_s": 1.6666,
+    "overhead_s": 1.3042008504271507e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -22618,7 +22824,8 @@
     "tokens_in": 5091,
     "tokens_out": 271,
     "cost_usd": 0.032229999999999995,
-    "latency_s": 1.8348388329868253,
+    "latency_s": 1.8348200000000001,
+    "overhead_s": 1.804300700314343e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -22771,7 +22978,8 @@
     "tokens_in": 5194,
     "tokens_out": 327,
     "cost_usd": 0.034145,
-    "latency_s": 2.0048955400048243,
+    "latency_s": 2.00488,
+    "overhead_s": 1.4624965842813253e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -22928,7 +23136,8 @@
     "tokens_in": 2988,
     "tokens_out": 223,
     "cost_usd": 0.020515000000000002,
-    "latency_s": 1.3287720420154416,
+    "latency_s": 1.32876,
+    "overhead_s": 1.1166994227096438e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -23039,7 +23248,8 @@
     "tokens_in": 2988,
     "tokens_out": 223,
     "cost_usd": 0.020515000000000002,
-    "latency_s": 1.3287717500021587,
+    "latency_s": 1.32876,
+    "overhead_s": 1.1125026503577828e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -23150,7 +23360,8 @@
     "tokens_in": 4080,
     "tokens_out": 275,
     "cost_usd": 0.027275,
-    "latency_s": 1.6666132910063258,
+    "latency_s": 1.6666,
+    "overhead_s": 1.2791017070412636e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -23280,7 +23491,8 @@
     "tokens_in": 3001,
     "tokens_out": 207,
     "cost_usd": 0.02018,
-    "latency_s": 1.281031333002476,
+    "latency_s": 1.28102,
+    "overhead_s": 1.1500989785417914e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -23398,7 +23610,8 @@
     "tokens_in": 8130,
     "tokens_out": 222,
     "cost_usd": 0.0462,
-    "latency_s": 2.1086298750092047,
+    "latency_s": 2.1086000000000005,
+    "overhead_s": 3.016696427948773e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -23650,7 +23863,8 @@
     "tokens_in": 4000,
     "tokens_out": 231,
     "cost_usd": 0.025775,
-    "latency_s": 1.5330161250063685,
+    "latency_s": 1.5330000000000001,
+    "overhead_s": 1.5375029761344194e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -23782,7 +23996,8 @@
     "tokens_in": 4000,
     "tokens_out": 231,
     "cost_usd": 0.025775,
-    "latency_s": 1.5330148760154845,
+    "latency_s": 1.5330000000000001,
+    "overhead_s": 1.4999997802078724e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -23920,7 +24135,8 @@
     "tokens_in": 3001,
     "tokens_out": 207,
     "cost_usd": 0.02018,
-    "latency_s": 1.2810315829752759,
+    "latency_s": 1.28102,
+    "overhead_s": 1.158300437964499e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -24040,7 +24256,8 @@
     "tokens_in": 4000,
     "tokens_out": 231,
     "cost_usd": 0.025775,
-    "latency_s": 1.5330149169936778,
+    "latency_s": 1.5330000000000001,
+    "overhead_s": 1.5084020560607314e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -24178,7 +24395,8 @@
     "tokens_in": 4000,
     "tokens_out": 231,
     "cost_usd": 0.025775,
-    "latency_s": 1.5330149999978022,
+    "latency_s": 1.5330000000000001,
+    "overhead_s": 1.4958990504965186e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -24310,7 +24528,8 @@
     "tokens_in": 5099,
     "tokens_out": 255,
     "cost_usd": 0.03187,
-    "latency_s": 1.786998499995349,
+    "latency_s": 1.78698,
+    "overhead_s": 1.870701089501381e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -24470,7 +24689,8 @@
     "tokens_in": 3001,
     "tokens_out": 207,
     "cost_usd": 0.02018,
-    "latency_s": 1.281031206997442,
+    "latency_s": 1.28102,
+    "overhead_s": 1.1375028407201171e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -24590,7 +24810,8 @@
     "tokens_in": 4000,
     "tokens_out": 231,
     "cost_usd": 0.025775,
-    "latency_s": 1.5330151660060511,
+    "latency_s": 1.5330000000000001,
+    "overhead_s": 1.4915014617145061e-05,
     "tool_calls": [
      {
       "kind": "tool",
@@ -24722,7 +24943,8 @@
     "tokens_in": 2050,
     "tokens_out": 194,
     "cost_usd": 0.0151,
-    "latency_s": 1.0630072499969976,
+    "latency_s": 1.0630000000000002,
+    "overhead_s": 7.3740375228226185e-06,
     "tool_calls": [
      {
       "kind": "tool",
@@ -24811,7 +25033,8 @@
     "tokens_in": 2050,
     "tokens_out": 194,
     "cost_usd": 0.0151,
-    "latency_s": 1.0630065409985838,
+    "latency_s": 1.0630000000000002,
+    "overhead_s": 6.999995093792677e-06,
     "tool_calls": [
      {
       "kind": "tool",
@@ -24900,7 +25123,8 @@
     "tokens_in": 2050,
     "tokens_out": 194,
     "cost_usd": 0.0151,
-    "latency_s": 1.063006541988114,
+    "latency_s": 1.0630000000000002,
+    "overhead_s": 6.5820058807730675e-06,
     "tool_calls": [
      {
       "kind": "tool",
@@ -24989,7 +25213,8 @@
     "tokens_in": 2869,
     "tokens_out": 212,
     "cost_usd": 0.019645000000000003,
-    "latency_s": 1.2933877930017141,
+    "latency_s": 1.29338,
+    "overhead_s": 7.708003977313638e-06,
     "tool_calls": [
      {
       "kind": "tool",
@@ -25096,7 +25321,8 @@
     "tokens_in": 2869,
     "tokens_out": 212,
     "cost_usd": 0.019645000000000003,
-    "latency_s": 1.293387626003935,
+    "latency_s": 1.29338,
+    "overhead_s": 7.667025784030557e-06,
     "tool_calls": [
      {
       "kind": "tool",
@@ -25203,7 +25429,8 @@
     "tokens_in": 2869,
     "tokens_out": 212,
     "cost_usd": 0.019645000000000003,
-    "latency_s": 1.2933874170093285,
+    "latency_s": 1.29338,
+    "overhead_s": 7.62502895668149e-06,
     "tool_calls": [
      {
       "kind": "tool",
@@ -25310,7 +25537,8 @@
     "tokens_in": 2869,
     "tokens_out": 212,
     "cost_usd": 0.019645000000000003,
-    "latency_s": 1.2933874580020737,
+    "latency_s": 1.29338,
+    "overhead_s": 7.75101943872869e-06,
     "tool_calls": [
      {
       "kind": "tool",
@@ -25417,7 +25645,8 @@
     "tokens_in": 2050,
     "tokens_out": 194,
     "cost_usd": 0.0151,
-    "latency_s": 1.063006542002666,
+    "latency_s": 1.0630000000000002,
+    "overhead_s": 6.916990969330072e-06,
     "tool_calls": [
      {
       "kind": "tool",
@@ -25506,7 +25735,8 @@
     "tokens_in": 2050,
     "tokens_out": 194,
     "cost_usd": 0.0151,
-    "latency_s": 1.0630066240172602,
+    "latency_s": 1.0630000000000002,
+    "overhead_s": 6.542017217725515e-06,
     "tool_calls": [
      {
       "kind": "tool",
@@ -25595,7 +25825,8 @@
     "tokens_in": 2869,
     "tokens_out": 212,
     "cost_usd": 0.019645000000000003,
-    "latency_s": 1.293387498980267,
+    "latency_s": 1.29338,
+    "overhead_s": 7.2909751906991005e-06,
     "tool_calls": [
      {
       "kind": "tool",

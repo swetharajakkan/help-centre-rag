@@ -172,17 +172,85 @@ function Week7Answer({ m }) {
   )
 }
 
+
+/** Week 8: one ticket through the sampled agent, its PATH scored as well. */
+function Week8Answer({ m }) {
+  const d = m.data
+  const o = d.output
+  const s = d.score
+  const accepted = (d.accepted || []).map((q) => JSON.stringify(q))
+  return (
+    <>
+      <div className="res-head">
+        {s ? (
+          <>
+            <span className={`pf ${s.outcome_pass ? 'ok' : 'bad'}`}>outcome {s.outcome_pass ? 'PASS' : 'FAIL'}</span>
+            <span className={`pf ${s.trajectory_pass ? 'ok' : 'bad'}`}>trajectory {s.trajectory_pass ? 'PASS' : 'FAIL'}</span>
+          </>
+        ) : <span className="pf na">NEW TICKET</span>}
+        <span className="res-meta">
+          {d.ticket.ticket_id} · seed {d.seed} · mitigation {d.mitigate ? 'on' : 'off'}
+          {!d.known ? ' · no expected path, so not scored' : ''}
+        </span>
+      </div>
+      {s && s.outcome_pass && !s.trajectory_pass && (
+        <p className="miss"><span><b>Right answer, wrong path.</b> The outcome eval passes this run; the trajectory eval does not.</span></p>
+      )}
+      {s && (
+        <p className="miss">
+          <span><b>failure modes</b>: {s.modes.length ? s.modes.join(', ') : 'none'}</span>
+          <span><b>steps</b>: {s.steps_taken} taken / {s.steps_needed} needed</span>
+          <span><b>valid args</b>: {s.valid_args}/{s.n_calls}</span>
+        </p>
+      )}
+      <div className="decision">
+        <div><span className="gl">decision</span><b>{o.decision ? o.decision.replaceAll('_', ' ') : 'handed to a human'}</b></div>
+        <div><span className="gl">refund</span><b>{o.refund_amount_usd != null ? `USD ${o.refund_amount_usd.toFixed(2)} · ${o.refund_order_id}` : '—'}</b></div>
+        <div><span className="gl">escalate</span><b className={o.escalate ? 'warn' : ''}>{o.escalate ? 'yes' : 'no'}</b></div>
+      </div>
+      <div className="path">
+        {d.tool_calls.map((c, i) => (
+          <span key={i} className={`step ${c.error ? 'none' : ''}`}
+            title={c.key ? `${c.key[1]} · ${c.error ? 'rejected' : c.valid ? 'valid' : 'NOT grounded'}` : ''}>
+            {c.name}{c.key ? `(${c.key[1]})` : ''}{c.error ? ' ✗' : c.valid === false ? ' ⚠' : ''}
+          </span>
+        ))}
+      </div>
+      {s && (
+        <details className="trace">
+          <summary>accepted path{d.accepted.length > 1 ? `s (${d.accepted.length}, any one is correct)` : ''} — taken path {accepted.includes(JSON.stringify(s.keys)) ? 'matches' : 'matches none'}</summary>
+          <ol className="steps">
+            {d.accepted.map((q, i) => <li key={i}>{q.map((k) => `${k[0]}(${k[1]})`).join(' → ')}</li>)}
+          </ol>
+        </details>
+      )}
+      <pre className="reply-box">{o.reply}</pre>
+      <details className="trace">
+        <summary>{d.tool_calls.length} tool calls · {d.llm_calls} model calls</summary>
+        <ol className="steps">
+          {d.tool_calls.map((c, i) => <li key={i}><b>{c.name}</b> <code>{JSON.stringify(c.args)}</code><br /><span className="res">→ {JSON.stringify(c.result)}</span></li>)}
+        </ol>
+      </details>
+      <div className="foot">
+        {d.total_tokens.toLocaleString()} tokens · {usd(d.cost_usd)} · {d.latency_s.toFixed(2)} s simulated · sampled offline engine
+      </div>
+    </>
+  )
+}
+
 const WAIT = {
   week6: 'drafting the reply and running the judge…',
   week7: 'resolving the ticket…',
+  week8: 'running the ticket and scoring its path…',
 }
 
 function Answer({ m }) {
-  if (m.kind === 'week6' || m.kind === 'week7') {
+  if (m.kind === 'week6' || m.kind === 'week7' || m.kind === 'week8') {
     return (
       <div className={`msg bot ${m.error ? 'failed' : ''}`}>
         <span className="ftag">{m.filter}</span>
-        {m.data && (m.kind === 'week6' ? <Week6Answer m={m} /> : <Week7Answer m={m} />)}
+        {m.data && (m.kind === 'week6' ? <Week6Answer m={m} />
+          : m.kind === 'week8' ? <Week8Answer m={m} /> : <Week7Answer m={m} />)}
         {m.error && (
           <div className="claim">
             <div className="claim-text"><strong>Request failed.</strong></div>
@@ -270,6 +338,8 @@ const EMPTY = {
     'Each question becomes a support-ticket reply, checked by the four SP-001 rules and graded by the judge you picked. Eval-set questions also show the human label, so you can see where Judge v1 and v2 disagree with it.'],
   week7: ['Resolve a refund-chase ticket',
     'Type a customer message or pick a Week 7 ticket. The agent chooses its own tool calls; the fixed workflow always runs the same four steps. Switch between them and ask again to compare.'],
+  week8: ['Score the path, not just the answer',
+    'Pick a Week 8 ticket or type a message. The sampled agent runs it at the chosen seed and both evals score it: the outcome (is the answer right?) and the trajectory (did it get there by an accepted path, with real ids?). Try TCK-7001 at seed 2, then turn on the mitigation. The full analysis is in the Trajectory · W8 view.'],
 }
 
 export default function Chat({ messages, health, week }) {

@@ -65,3 +65,30 @@ PRIOR = {
 # search_tickets a step the eval accepts.
 MENTIONS_PRIOR = re.compile(r"\b(asked (last week|about this before)|before)\b",
                             re.I)
+
+
+# ------------------------------------------------------- live chat tickets
+
+_ORDER_RE = re.compile(r"\bORD-\d{4}\b")
+_DUPLICATE_RE = re.compile(r"\b(twice|double[- ]?charged|duplicate|charged two)\b", re.I)
+_ADHOC = iter(range(9101, 10000))
+
+
+def resolve_ticket(text: str) -> tuple[str, bool]:
+    """A chat message -> (ticket_id, known). A ticket id, or the exact text of
+    one of the 10 tickets, selects it; anything else is filed as a new,
+    ungraded ticket in memory only (never joins TICKET_IDS)."""
+    text = text.strip()
+    m = re.search(r"\bTCK-\d{4}\b", text)
+    if m and m.group(0) in TICKETS:
+        return m.group(0), m.group(0) in EXPECTED
+    for tid in TICKET_IDS:
+        if TICKETS[tid]["message"].strip() == text:
+            return tid, True
+    tid = f"TCK-{next(_ADHOC)}"
+    TICKETS[tid] = {"customer_tier": "standard",
+                    "order_ids": list(dict.fromkeys(_ORDER_RE.findall(text))),
+                    "request_type": ("duplicate_charge" if _DUPLICATE_RE.search(text)
+                                     else "refund"),
+                    "message": text}
+    return tid, False

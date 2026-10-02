@@ -415,8 +415,9 @@ export default function App() {
             badge: e.cls === 'multi_order' ? 'multi-order' : e.cls,
             badgeCls: e.cls === 'multi_order' ? 'bad' : e.cls === 'branch' ? 'warn' : '' })),
           week8: arr(d.week8).map((e) => ({ ...e, product_area: undefined,
-            badge: e.alternate ? 'alternate paths' : e.id,
-            badgeCls: e.alternate ? 'warn' : '' })),
+            badge: e.wording === 'week7' ? 'Week 7 wording'
+              : e.alternate ? 'alternate paths' : '',
+            badgeCls: e.wording === 'week7' ? 'accent' : e.alternate ? 'warn' : '' })),
         })
       })
       .catch(() => setSets({ golden: [], week5: [], week6: [], week7: [], week8: [] }))

@@ -925,9 +925,16 @@ def _week8_examples() -> list[dict]:
     """The 10 Week 8 tickets (customer-quoted figures), as askable messages."""
     try:
         _, te, _, store8, _ = _week8()
-        return [{"id": t, "question": store8.TICKETS[t]["message"],
-                 "alternate": t in te.ALTERNATE_PATH_CASES}
-                for t in store8.TICKET_IDS]
+        out = [{"id": t, "question": store8.TICKETS[t]["message"],
+                "alternate": t in te.ALTERNATE_PATH_CASES, "wording": "week8"}
+               for t in store8.TICKET_IDS]
+        # The Week 7 questions too, as Week 7 wrote them. Where the text is
+        # the same in both weeks it is already listed above.
+        out += [{"id": f"{t} (W7)", "question": store8.S7.TICKETS[t]["message"],
+                 "alternate": t in te.ALTERNATE_PATH_CASES, "wording": "week7"}
+                for t in store8.TICKET_IDS
+                if store8.S7.TICKETS[t]["message"] != store8.TICKETS[t]["message"]]
+        return out
     except Exception:
         return []
 
@@ -1078,17 +1085,26 @@ def ask_week8(req: Week8Ask) -> dict:
     """Week 8 in the chat: one message through the sampled agent, with its
     trajectory scored when the ticket is one of the 10 with expected paths."""
     agent8, te, _, store8, _ = _week8()
-    tid, known = store8.resolve_ticket(req.question)
+    w7 = store8.week7_wording(req.question)
+    if w7:
+        tid, known, message = w7, True, req.question.strip()
+    else:
+        tid, known = store8.resolve_ticket(req.question)
+        message = None
     r = agent8.run(tid, req.seed,
-                   agent8.Config(validate_policy_args=req.mitigate))
+                   agent8.Config(validate_policy_args=req.mitigate,
+                                 ticket_message=message))
     if known:
         r["score"] = te.score(r)
         r = _w8_full(r, te)
         r["accepted"] = te.EXPECTED_PATHS[tid]
     else:
         r["score"] = None
+    ticket = {"ticket_id": tid, **store8.TICKETS[tid]}
+    if message:
+        ticket["message"] = message
     return {**r, "known": known, "mitigate": req.mitigate,
-            "ticket": {"ticket_id": tid, **store8.TICKETS[tid]}}
+            "wording": "week7" if message else "week8", "ticket": ticket}
 
 
 @app.post("/api/search")

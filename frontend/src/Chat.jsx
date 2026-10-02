@@ -190,6 +190,7 @@ function Week8Answer({ m }) {
         ) : <span className="pf na">NEW TICKET</span>}
         <span className="res-meta">
           {d.ticket.ticket_id} · seed {d.seed} · mitigation {d.mitigate ? 'on' : 'off'}
+          {d.wording === 'week7' ? ' · Week 7 wording (no figures quoted)' : ''}
           {!d.known ? ' · no expected path, so not scored' : ''}
         </span>
       </div>

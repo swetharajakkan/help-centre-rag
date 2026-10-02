@@ -44,6 +44,9 @@ class Budgets:
 @dataclass
 class Config:
     validate_policy_args: bool = False     # the Week-8 mitigation
+    # Chat only: run the ticket with different customer wording (e.g. the
+    # Week 7 text, which quotes no figures). Same ticket id, same scoring.
+    ticket_message: str | None = None
     # Bonus only (injection.py): extra tools, output sanitiser, guardrail.
     extra_tools: dict = field(default_factory=dict)
     extra_schemas: list = field(default_factory=list)
@@ -90,7 +93,7 @@ def run(ticket_id: str, seed: int, config: Config | None = None,
     cfg, b, m = config or Config(), budgets or Budgets(), Meter()
     schemas = tools8.TOOLS + cfg.extra_schemas
     state = {"ticket": None, "orders": {}, "extra_tools": cfg.extra_tools,
-             "side_effects": []}
+             "side_effects": [], "message_override": cfg.ticket_message}
     messages = [{"role": "user", "content": f"Resolve support ticket {ticket_id}."}]
     output = terminated = None
 

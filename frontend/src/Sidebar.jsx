@@ -108,7 +108,7 @@ const QUESTION_GROUPS = [
   ['week5', 'Week 5 — sampled traces'],
   ['week6', 'Week 6 — eval tickets'],
   ['week7', 'Week 7 — refund tickets'],
-  ['week8', 'Week 8 — trajectory-scored tickets'],
+  ['week8', 'Week 8 — trajectory tickets (+ Week 7 wording)'],
 ]
 // Which question set goes with the week picked in the filter bar.
 const GROUP_FOR_WEEK = { week3: 'golden', week4: 'golden', week5: 'week5',

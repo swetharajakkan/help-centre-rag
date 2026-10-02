@@ -96,6 +96,8 @@ def call(name: str, args: dict, state: dict, validate: bool) -> dict:
     """Execute one tool call against the run's state."""
     if name == "get_ticket":
         r = get_ticket(**args)
+        if r.get("found") and state.get("message_override"):
+            r["message"] = state["message_override"]
         if r.get("found"):
             state["ticket"] = r
         return r

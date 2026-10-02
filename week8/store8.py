@@ -74,6 +74,17 @@ _DUPLICATE_RE = re.compile(r"\b(twice|double[- ]?charged|duplicate|charged two)\
 _ADHOC = iter(range(9101, 10000))
 
 
+def week7_wording(text: str) -> str | None:
+    """The ticket id whose Week 7 message is exactly this text, if its
+    Week 8 message is worded differently (Week 8 quotes the figures)."""
+    text = text.strip()
+    for tid in TICKET_IDS:
+        w7 = S7.TICKETS[tid]["message"].strip()
+        if w7 == text and w7 != TICKETS[tid]["message"].strip():
+            return tid
+    return None
+
+
 def resolve_ticket(text: str) -> tuple[str, bool]:
     """A chat message -> (ticket_id, known). A ticket id, or the exact text of
     one of the 10 tickets, selects it; anything else is filed as a new,

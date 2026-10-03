@@ -94,13 +94,18 @@ def quoted_facts(message: str) -> tuple[float | None, int | None]:
     return (float(a.group(1)) if a else None, int(d.group(1)) if d else None)
 
 
-def _matching_record(args: dict, fetched: dict) -> dict | None:
-    for r in fetched.values():
-        if (args.get("order_status") == r.get("status")
+def _matching_record(args: dict, fetched: dict, ticket: dict) -> dict | None:
+    """The fetched record the policy facts came from. Duplicate charges have
+    IDENTICAL facts, so several records can match; then the order the
+    decision is about is chosen the same way it was targeted (the later of
+    the duplicate pair), not by whichever was fetched first."""
+    hits = [r for r in fetched.values()
+            if (args.get("order_status") == r.get("status")
                 and args.get("days_since_purchase") == r.get("days_since_purchase")
-                and args.get("amount_usd") == r.get("amount_usd")):
-            return r
-    return None
+                and args.get("amount_usd") == r.get("amount_usd"))]
+    if len(hits) > 1:
+        return M7.pick_target_order(ticket, hits)
+    return hits[0] if hits else None
 
 
 def agent_step(messages: list[dict], seed: int, tool_names: set[str]) -> list[dict]:
@@ -203,7 +208,7 @@ def agent_step(messages: list[dict], seed: int, tool_names: set[str]) -> list[di
 
     # ------------------------------------------------------- final answer
     pargs, policy = policy_ok[-1]
-    order = _matching_record(pargs["input"], fetched) or {
+    order = _matching_record(pargs["input"], fetched, ticket) or {
         "order_id": ids[0] if ids else None, "status": pargs["input"]["order_status"],
         "amount_usd": pargs["input"].get("amount_usd"),
         "days_since_purchase": pargs["input"].get("days_since_purchase"),

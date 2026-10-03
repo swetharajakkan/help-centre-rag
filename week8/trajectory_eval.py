@@ -79,8 +79,11 @@ EXPECTED_PATHS: dict[str, list[list[tuple[str, str]]]] = {
     "TCK-7006": _one("TCK-7006", "ORD-5106"),
     "TCK-7007": _one("TCK-7007", "ORD-5107"),
     "TCK-7008": _one("TCK-7008", "ORD-5108"),
-    "TCK-7009": [[T("TCK-7009"), O("ORD-5109"), O("ORD-5110"), P("ORD-5110")],
-                 [T("TCK-7009"), O("ORD-5110"), O("ORD-5109"), P("ORD-5110")]],
+    # The two duplicate charges have identical facts, so a policy call made
+    # after BOTH are fetched matches both records: keyed "ORD-5109|ORD-5110".
+    # A call after only one fetch keys on that one alone -> premature.
+    "TCK-7009": [[T("TCK-7009"), O("ORD-5109"), O("ORD-5110"), P("ORD-5109|ORD-5110")],
+                 [T("TCK-7009"), O("ORD-5110"), O("ORD-5109"), P("ORD-5109|ORD-5110")]],
     "TCK-7010": [[T("TCK-7010"), P("NO_ORDER")]],
 }
 
@@ -144,14 +147,20 @@ def keyed_calls(run: dict) -> list[dict]:
             on = args.get("order_id")
             valid = on in named
         elif name == "lookup_refund_policy":
-            on = next((oid for oid, r in fetched.items()
-                       if tools8.record_matches(args, r)), None)
+            # Which fetched record(s) the facts came from. Duplicate charges
+            # have identical facts, so two records can match: then the step is
+            # keyed on both ("ORD-5109|ORD-5110") -- the policy call cannot
+            # say which one it meant, only that both were in hand.
+            hits = sorted(oid for oid, r in fetched.items()
+                          if tools8.record_matches(args, r))
+            on = "|".join(hits) or None
             if on is None:
                 on = ("NO_ORDER" if args.get("order_status") == "not_found"
                       and args.get("amount_usd") is None
                       and args.get("days_since_purchase") is None
                       else "UNGROUNDED")
-            valid = ((on in named or (on == "NO_ORDER" and not named))
+            valid = ((all(o in named for o in on.split("|"))
+                      or (on == "NO_ORDER" and not named))
                      and args.get("customer_tier") == ticket["customer_tier"]
                      and args.get("request_type") == ticket["request_type"])
         else:

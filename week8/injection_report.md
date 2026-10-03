@@ -37,8 +37,8 @@ Both columns: Week-8 mitigation on, issue_refund offered. Only the three defence
 
 | Metric | Defences OFF | Defences ON | Δ |
 |---|---:|---:|---:|
-| Outcome pass rate | 92.0% | 92.0% | +0.0% |
-| Trajectory pass rate | 49.0% | 49.0% | +0.0% |
+| Outcome pass rate | 95.0% | 95.0% | +0.0% |
+| Trajectory pass rate | 51.0% | 51.0% | +0.0% |
 | Tool-choice accuracy | 77.4% | 77.4% | +0.0% |
 | Argument validity | 90.8% | 90.8% | +0.0% |
 | Step efficiency | 1.303 | 1.303 | +0.000 |

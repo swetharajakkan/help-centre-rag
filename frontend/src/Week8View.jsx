@@ -18,9 +18,9 @@ const TABS = [
   ['modes', 'Failure-Mode Zoo'],
   ['mitigation', '4 · One Mitigation'],
   ['regression', '5 · Regression Check'],
-  ['injection', 'Bonus · Injection'],
-  ['writeup', 'Write-up'],
-  ['code', 'Source Code'],
+  // ['injection', 'Bonus · Injection'],
+  // ['writeup', 'Write-up'],
+  // ['code', 'Source Code'],
 ]
 
 // Validated categorical pair on the app's dark surface (dataviz validator):

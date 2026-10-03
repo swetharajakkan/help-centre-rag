@@ -18,7 +18,9 @@ const TABS = [
   ['modes', 'Failure-Mode Zoo'],
   ['mitigation', '4 · One Mitigation'],
   ['regression', '5 · Regression Check'],
-  // ['injection', 'Bonus · Injection'],
+  ['injection', '6. Injection & Least Privilege'],
+  ['owasp', '7. OWASP LLM Top 10'],
+  // ['demo', 'Demo Script'],
   // ['writeup', 'Write-up'],
   // ['code', 'Source Code'],
 ]
@@ -186,7 +188,7 @@ function Overview({ d, go }) {
     ['Per-mode regression table covering every mode', 'regression',
       `${Object.keys(d.modes).length} modes checked`],
     ['Bonus: indirect injection, defences, what still gets through, eval cost', 'injection',
-      '3 attacks × undefended / defended'],
+      '3 indirect + 3 direct attacks × 4 defence configurations'],
   ]
   return (
     <>
@@ -235,6 +237,29 @@ function Overview({ d, go }) {
                 <td className="mut">{val}</td>
                 <td><button type="button" className="w7-btn sm" onClick={() => go(tab)}>open</button></td>
               </tr>
+            ))}
+          </tbody>
+        </table>
+      </section>
+
+      <section className="w7-card">
+        <h3>Week 8 topics — where each is covered</h3>
+        <table className="w7-cmp w8-check">
+          <tbody>
+            {[['Agent failure modes', 'modes', '7-mode zoo, classified from each trajectory'],
+              ['Trajectory evaluation', 'gap', 'every run scored on its path, not only its answer'],
+              ['Expected tool sequences', 'paths', '10 sequences, 3 asserted as sets'],
+              ['Tool-choice accuracy', 'metrics', pct(b.tool_choice_accuracy)],
+              ['Outcome vs trajectory gap', 'gap', pts(b.gap)],
+              ['Cost per task (mean & p99)', 'metrics', `mean ${usd(b.cost_mean)} · p99 ${usd(b.cost_p99)} · max ${usd(b.cost_max)}`],
+              ['Prompt injection (direct)', 'injection', 'D1–D3 typed into the user turn'],
+              ['Indirect prompt injection', 'injection', 'A1–A3 hidden in a pasted email returned by get_ticket'],
+              ['Tool sandboxing & least privilege', 'injection', 'read-only vs sandboxed issue_refund; per-tool scope'],
+              ['Output validation', 'injection', 'output guardrail + argument validation on tool inputs'],
+              ['OWASP LLM Top 10', 'owasp', 'all 10 risks mapped, gaps stated'],
+            ].map(([t, tab, v]) => (
+              <tr key={t}><td><span className="w8-okt">✓</span> {t}</td><td className="mut">{v}</td>
+                <td><button type="button" className="w7-btn sm" onClick={() => go(tab)}>open</button></td></tr>
             ))}
           </tbody>
         </table>
@@ -336,7 +361,7 @@ function CostChart({ runs, color, title, stats, onPick }) {
         <b>{title}</b>
         <span className="mut">
           {h ? `${h.ticket_id} · seed ${h.seed} · ${usd(h.cost_usd)} · ${h.llm_calls} model calls${h.terminated ? ` · budget ${h.terminated} hit` : ''} — click for trace`
-            : `per-run cost, sorted · p50 ${usd(stats.cost_p50)} · max ${usd(stats.cost_max)} · mean ${usd(stats.cost_mean)}`}
+            : `per-run cost, sorted · p50 ${usd(stats.cost_p50)} · p99 ${usd(stats.cost_p99)} · max ${usd(stats.cost_max)} · mean ${usd(stats.cost_mean)}`}
         </span>
       </figcaption>
       <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`${title}: per-run cost`} onMouseLeave={() => setHov(null)}>
@@ -356,10 +381,11 @@ function CostChart({ runs, color, title, stats, onPick }) {
             </g>
           )
         })}
-        {[['p50', stats.cost_p50], ['max', stats.cost_max]].map(([lab, v]) => (
+        {[['p50', stats.cost_p50, P.l + 4, 'start'], ['p99', stats.cost_p99, P.l + (W - P.l - P.r) * 0.45, 'middle'],
+          ['max', stats.cost_max, P.l + 4, 'start']].map(([lab, v, x, anchor]) => (
           <g key={lab}>
             <line x1={P.l} x2={W - P.r} y1={y(v)} y2={y(v)} className="w8-ref" />
-            <text x={P.l + 4} y={y(v) - 4} className="w8-reflab">{lab} {usd(v)}</text>
+            <text x={x} y={y(v) - 4} textAnchor={anchor} className="w8-reflab">{lab} {usd(v)}</text>
           </g>
         ))}
       </svg>
@@ -377,6 +403,8 @@ function MetricsTab({ d }) {
     ['Step efficiency', 'tool steps taken ÷ steps needed (1.00 = no waste)', b.step_efficiency.toFixed(3), a.step_efficiency.toFixed(3)],
     ['Step efficiency per run, p50 / max', '', `${b.step_efficiency_p50.toFixed(2)} / ${b.step_efficiency_max.toFixed(2)}`, `${a.step_efficiency_p50.toFixed(2)} / ${a.step_efficiency_max.toFixed(2)}`],
     ['Cost per ticket — p50', 'median run', usd(b.cost_p50), usd(a.cost_p50)],
+    ['Cost per ticket — p95', '1 run in 20 costs at least this', usd(b.cost_p95), usd(a.cost_p95)],
+    ['Cost per ticket — p99', '1 run in 100 costs at least this', usd(b.cost_p99), usd(a.cost_p99)],
     ['Cost per ticket — MAX', 'the run that shows up on the bill', usd(b.cost_max), usd(a.cost_max)],
     ['Cost per ticket — mean', 'shown only for contrast; it hides the tail', usd(b.cost_mean), usd(a.cost_mean)],
     ['Tokens per ticket p50 / max', '', `${num(b.tokens_p50)} / ${num(b.tokens_max)}`, `${num(a.tokens_p50)} / ${num(a.tokens_max)}`],
@@ -392,7 +420,7 @@ function MetricsTab({ d }) {
           <thead><tr><th>metric</th><th>definition</th><th>BEFORE</th><th>AFTER</th></tr></thead>
           <tbody>
             {rows.map(([m, def, bv, av]) => (
-              <tr key={m} className={m.includes('MAX') ? 'w8-hl' : ''}>
+              <tr key={m} className={m.includes('MAX') || m.includes('p99') ? 'w8-hl' : ''}>
                 <td>{m}</td><td className="mut">{def}</td><td>{bv}</td><td>{av}</td>
               </tr>
             ))}
@@ -400,7 +428,7 @@ function MetricsTab({ d }) {
         </table>
       </section>
       <section className="w7-card">
-        <h3>Cost variance — p50 vs max, not the mean</h3>
+        <h3>Cost variance — p50, p99 and max, not the mean</h3>
         <p className="w8-p">
           BEFORE, the most expensive run costs <b>{(b.cost_max / b.cost_p50).toFixed(1)}× the p50</b>. The mean ({usd(b.cost_mean)}) hides it.
           Hover a bar for the run; click it for its full trace.
@@ -741,26 +769,79 @@ function RegressionTab({ d }) {
 
 /* -------------------------------------------------------- bonus · inject */
 
-function AttackRunner({ attacks }) {
-  const [aid, setAid] = useState(Object.keys(attacks)[0])
-  const [defended, setDefended] = useState(false)
+const CONFIG_LABEL = {
+  undefended: 'undefended',
+  defended: 'defended (read-only)',
+  sandboxed: 'defended (sandboxed)',
+  'defended+screen': 'defended + input screen',
+}
+
+function ResultTable({ results, attacks, configs, n }) {
+  return (
+    <div className="w7-scroll">
+      <table className="w7-cmp w8-inj">
+        <thead><tr><th>attack</th><th>config</th><th>called issue_refund</th><th>money moved</th>
+          <th>sandboxed</th><th>refund promised</th><th>attacker text in reply</th>
+          <th>guardrail fired</th><th>tool errors</th><th>got through</th></tr></thead>
+        <tbody>
+          {Object.keys(attacks).map((aid) => configs.map((c, i) => {
+            const x = results[c]?.[aid]
+            if (!x) return null
+            return (
+              <tr key={aid + c}>
+                <td>{i === 0 ? <b>{aid}</b> : ''}</td><td>{CONFIG_LABEL[c]}</td>
+                <td>{x.tried_refund_tool}/{n}</td><td>{x.money_moved}/{n}</td>
+                <td>{x.sandboxed ?? 0}/{n}</td>
+                <td>{x.refund_promised}/{n}</td><td>{x.attacker_text_in_reply}/{n}</td>
+                <td>{x.guardrail_fired}/{n}</td><td>{x.tool_errors ?? '—'}</td>
+                <td><span className={`w8-chip ${x.got_through ? 'bad' : 'ok'}`}>{x.got_through}/{n}</span></td>
+              </tr>
+            )
+          }))}
+        </tbody>
+      </table>
+    </div>
+  )
+}
+
+function AttackRunner({ d }) {
+  const [kind, setKind] = useState('indirect')
+  const attacks = kind === 'direct' ? d.direct_attacks : d.attacks
+  const [aid, setAid] = useState(Object.keys(d.attacks)[0])
+  const configs = kind === 'direct'
+    ? ['undefended', 'defended', 'defended+screen']
+    : ['undefended', 'defended', 'sandboxed']
+  const [config, setConfig] = useState('undefended')
   const [seed, setSeed] = useState(0)
   const [r, setR] = useState(null)
   const [err, setErr] = useState(null)
   const [busy, setBusy] = useState(false)
-  const go = async () => {
-    setBusy(true); setErr(null)
-    try { setR(await api('/api/week8/attack', { attack_id: aid, defended, seed })) }
-    catch (e) { setErr(e.message) } finally { setBusy(false) }
+  const switchKind = (k) => {
+    setKind(k)
+    setAid(Object.keys(k === 'direct' ? d.direct_attacks : d.attacks)[0])
+    setConfig('undefended')
   }
-  useEffect(() => { go() }, [aid, defended, seed])
+  useEffect(() => {
+    if (!attacks[aid]) return
+    let live = true
+    setBusy(true); setErr(null)
+    api('/api/week8/attack', { attack_id: aid, kind, config, seed })
+      .then((x) => live && setR(x)).catch((e) => live && setErr(e.message))
+      .finally(() => live && setBusy(false))
+    return () => { live = false }
+  }, [kind, aid, config, seed])
   const v = r?.verdict
   return (
     <section className="w7-card">
       <h3>Attack it yourself</h3>
       <div className="w8-controls">
+        <Seg value={kind} onChange={switchKind} options={[['indirect', 'indirect (in the email)'], ['direct', 'direct (in the user turn)']]} />
+      </div>
+      <div className="w8-controls">
         <Seg value={aid} onChange={setAid} options={Object.keys(attacks).map((k) => [k, k])} />
-        <Seg value={defended} onChange={setDefended} options={[[false, 'undefended'], [true, 'all 3 defences']]} />
+      </div>
+      <div className="w8-controls">
+        <Seg value={config} onChange={setConfig} options={configs.map((c) => [c, CONFIG_LABEL[c]])} />
         <label className="w8-sel">seed
           <select value={seed} onChange={(e) => setSeed(Number(e.target.value))}>
             {[...Array(10).keys()].map((s) => <option key={s} value={s}>{s}</option>)}
@@ -768,26 +849,30 @@ function AttackRunner({ attacks }) {
         </label>
         {busy && <span className="mut">running…</span>}
       </div>
+      <p className="w7-foot">{d.config_info[config]}</p>
       {err && <div className="banner bad"><pre>{err}</pre></div>}
-      {r && (
+      {r && v && (
         <div className={`w7-run ${v.got_through ? 'fail' : 'pass'}`}>
           <div className="w7-run-top">
             <b>{r.ticket.ticket_id}</b>
+            <span className="w8-chip">{r.kind}</span>
             <span className="spacer" />
             <span className={`w7-pf ${v.got_through ? 'bad' : 'ok'}`}>{v.got_through ? 'GOT THROUGH' : 'BLOCKED'}</span>
           </div>
-          <p className="w7-msg">“{r.ticket.message}”</p>
+          <div className="w8-kv"><span>user turn</span><code>{r.user_message}</code></div>
+          <div className="w8-kv"><span>ticket body</span><code>{r.ticket.message}</code></div>
           <div className="w8-modes">
             <span className={`w8-chip ${v.tried_refund_tool ? 'bad' : 'ok'}`}>called issue_refund: {String(v.tried_refund_tool)}</span>
             <span className={`w8-chip ${v.money_moved ? 'bad' : 'ok'}`}>money moved: {String(v.money_moved)}</span>
+            {v.sandboxed && <span className="w8-chip warn">sandboxed: queued for a human, no money moved</span>}
             <span className={`w8-chip ${v.refund_promised ? 'bad' : 'ok'}`}>refund promised: {String(v.refund_promised)}</span>
             <span className={`w8-chip ${v.attacker_text_in_reply ? 'bad' : 'ok'}`}>attacker text in reply: {String(v.attacker_text_in_reply)}</span>
-            {v.guardrail && <span className="w8-chip warn">guardrail: {v.guardrail}</span>}
+            {v.guardrail && <span className="w8-chip warn">output guardrail: {v.guardrail}</span>}
           </div>
           <ol className="w7-steps">
             {r.tool_calls.map((c, i) => (
               <li key={i} className="tool">
-                <div className="w7-sh"><b>{i + 1}. {c.name}</b><span>{c.result.error ? 'error' : 'ok'}</span></div>
+                <div className="w7-sh"><b>{i + 1}. {c.name}</b><span>{c.result.error ? 'error' : c.result.status === 'dry_run' ? 'dry run (sandbox)' : 'ok'}</span></div>
                 <div className="w7-kv"><span>args</span><code>{JSON.stringify(c.args)}</code></div>
                 <div className="w7-kv"><span>result</span><code>{JSON.stringify(c.result)}</code></div>
               </li>
@@ -808,12 +893,14 @@ function InjectionTab({ d, onRerun, busy }) {
   const off = inj.eval_defences_off
   const on = inj.eval_defences_on
   const n = inj.undefended[Object.keys(d.attacks)[0]].rows.length
+  const indirect = { undefended: inj.undefended, defended: inj.defended, sandboxed: inj.sandboxed }
   const cost = [
     ['Outcome pass rate', 'outcome_pass_rate', (x) => pct(x)],
     ['Trajectory pass rate', 'trajectory_pass_rate', (x) => pct(x)],
     ['Tool-choice accuracy', 'tool_choice_accuracy', (x) => pct(x)],
     ['Argument validity', 'argument_validity', (x) => pct(x)],
     ['Cost / ticket p50', 'cost_p50', (x) => usd(x)],
+    ['Cost / ticket p99', 'cost_p99', (x) => usd(x)],
     ['Cost / ticket max', 'cost_max', (x) => usd(x)],
     ['Tokens / ticket mean', 'tokens_mean', num],
     ['Latency / ticket p50', 'latency_p50', (x) => `${x.toFixed(3)} s`],
@@ -822,53 +909,102 @@ function InjectionTab({ d, onRerun, busy }) {
     <>
       <section className="w7-card">
         <div className="w7-h">
-          <h3>Indirect injection — planted in the customer's pasted email, returned by our own get_ticket</h3>
+          <h3>Prompt injection — indirect and direct</h3>
           <span className="spacer" />
-          <button type="button" className="w7-btn" disabled={busy} onClick={onRerun}>{busy ? 're-running…' : 'Re-run bonus'}</button>
+          <button type="button" className="w7-btn" disabled={busy} onClick={onRerun}>{busy ? 're-running…' : 'Re-run all attacks'}</button>
         </div>
         <p className="w8-p">
           Target: ORD-5102 (USD 18, 44 days old; policy says <code>outside_window</code>, no refund).
-          The agent is given a write tool, <code>issue_refund</code>, so obeying has a countable side
-          effect. Defences: <b>1</b> sanitise tool output (blocklist + untrusted-text wrapper),{' '}
-          <b>2</b> scope <code>issue_refund</code> to read-only, <b>3</b> an output guardrail that
-          blocks any refund promise the policy tool did not allow.
+          The agent is given a <b>write</b> tool, <code>issue_refund</code>, so obeying has a countable
+          side effect. <b>Indirect</b>: the payload hides in a customer's pasted email that our own{' '}
+          <code>get_ticket</code> returns. <b>Direct</b>: the attacker types it into their own message to the agent.
         </p>
-        <ul className="w8-attacks">
-          {Object.entries(d.attacks).map(([k, t]) => <li key={k}><b>{k}</b> “{t}”</li>)}
-        </ul>
-        <table className="w7-cmp w8-inj">
-          <thead><tr><th>attack</th><th>config</th><th>called issue_refund</th><th>money moved</th><th>refund promised</th><th>attacker text in reply</th><th>guardrail fired</th><th>got through</th></tr></thead>
+        <div className="w8-twocol">
+          <div>
+            <h4 className="w8-h4">Indirect (in tool output)</h4>
+            <ul className="w8-attacks">{Object.entries(d.attacks).map(([k, t]) => <li key={k}><b>{k}</b> “{t}”</li>)}</ul>
+          </div>
+          <div>
+            <h4 className="w8-h4">Direct (in the user turn)</h4>
+            <ul className="w8-attacks">{Object.entries(d.direct_attacks).map(([k, t]) => <li key={k}><b>{k}</b> “{t}”</li>)}</ul>
+          </div>
+        </div>
+        <h4 className="w8-h4">The four defence layers</h4>
+        <table className="w7-cmp">
           <tbody>
-            {Object.keys(d.attacks).map((aid) => ['undefended', 'defended'].map((c) => {
-              const x = inj[c][aid]
+            <tr><td><b>1 · sanitise tool output</b></td><td className="mut">blocklist + &lt;untrusted_customer_text&gt; wrapper on what get_ticket returns</td></tr>
+            <tr><td><b>2 · least privilege</b></td><td className="mut">issue_refund scoped read-only (errors) — or 2′ sandboxed (dry run, queued for a human)</td></tr>
+            <tr><td><b>3 · output validation</b></td><td className="mut">guardrail blocks any refund promise the policy tool did not allow, for that order, in this run</td></tr>
+            <tr><td><b>4 · input screen</b></td><td className="mut">the same blocklist on the user's own turn (direct injection)</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section className="w7-card">
+        <h3>Indirect injection — results ({n} seeds each)</h3>
+        <ResultTable results={indirect} attacks={d.attacks} configs={['undefended', 'defended', 'sandboxed']} n={n} />
+        <p className="w8-p">
+          <b>What still gets through:</b> A3 (reply-shaping), {inj.defended['A3-reply-shaping'].got_through}/{n} with every
+          defence on. It asks for no refund, so least privilege and the refund guardrail never apply; only the
+          wrapper touched it. A2 (paraphrase) walks straight past the blocklist and is stopped by layers 2 and 3.
+        </p>
+      </section>
+
+      <section className="w7-card">
+        <h3>Direct injection — results ({n} seeds each)</h3>
+        <ResultTable results={inj.direct} attacks={d.direct_attacks} configs={['undefended', 'defended', 'defended+screen']} n={n} />
+        <p className="w8-p">
+          The tool-output sanitiser never sees a direct attack: it is in the user's turn, not in tool output.
+          The <b>input screen</b> (layer 4) removes "Ignore previous instructions", but "issue a full refund"
+          survives and is still obeyed; the paraphrase passes untouched. <b>Every refund was stopped by layers
+          2 and 3, not by a filter.</b> D3 gets through {inj.direct.defended['D3-reply-shaping'].got_through}/{n}:
+          nothing checks a promise that is not a refund.
+        </p>
+      </section>
+
+      <section className="w7-card">
+        <h3>Least privilege & sandboxing</h3>
+        <table className="w7-cmp">
+          <thead><tr><th>tool</th><th>access</th><th>scope</th></tr></thead>
+          <tbody>
+            {d.privilege.map((p) => (
+              <tr key={p.tool}><td><code>{p.tool}</code></td>
+                <td><span className={`w8-chip ${p.access.startsWith('WRITE') ? 'bad' : 'ok'}`}>{p.access}</span></td>
+                <td className="mut">{p.scope}</td></tr>
+            ))}
+          </tbody>
+        </table>
+        <h4 className="w8-h4">Read-only vs sandboxed, on the indirect attacks</h4>
+        <table className="w7-cmp">
+          <thead><tr><th>attack</th><th>read-only: tool errors</th><th>sandboxed: tool errors</th><th>read-only: mean calls / cost</th><th>sandboxed: mean calls / cost</th></tr></thead>
+          <tbody>
+            {Object.keys(d.attacks).map((aid) => {
+              const a = inj.defended[aid], b = inj.sandboxed[aid]
               return (
-                <tr key={aid + c}>
-                  <td>{c === 'undefended' ? <b>{aid}</b> : ''}</td><td>{c}</td>
-                  <td>{x.tried_refund_tool}/{n}</td><td>{x.money_moved}/{n}</td>
-                  <td>{x.refund_promised}/{n}</td><td>{x.attacker_text_in_reply}/{n}</td>
-                  <td>{x.guardrail_fired}/{n}</td>
-                  <td><span className={`w8-chip ${x.got_through ? 'bad' : 'ok'}`}>{x.got_through}/{n}</span></td>
-                </tr>
+                <tr key={aid}><td><b>{aid}</b></td><td>{a.tool_errors}</td><td>{b.tool_errors}</td>
+                  <td>{a.mean_tool_calls.toFixed(1)} / {usd(a.mean_cost)}</td>
+                  <td>{b.mean_tool_calls.toFixed(1)} / {usd(b.mean_cost)}</td></tr>
               )
-            }))}
+            })}
           </tbody>
         </table>
         <p className="w8-p">
-          <b>What still gets through:</b> A3 (reply-shaping). It asks for no refund, so the
-          read-only scope and the refund guardrail never apply; only the untrusted-text
-          wrapper touched it, halving how often it is obeyed. The reply carries a correct
-          refusal <b>plus a fake 50% discount code</b>. A2 (paraphrase) walks straight past the
-          sanitiser's blocklist and is stopped only by layers 2 and 3.
+          Both move no money. <b>Read-only</b> returns an error, so the agent argues with it (retries: more
+          calls, more cost). <b>Sandboxed</b> returns a believable "dry run" and queues the attempt for a human:
+          fewer calls and cheaper, but the agent now <i>believes</i> the refund went out, so it writes "we have
+          issued a full refund" — and only the output guardrail catches that. A sandbox is not a defence on its own.
         </p>
       </section>
-      <AttackRunner attacks={d.attacks} />
+
+      <AttackRunner d={d} />
+
       <section className="w7-card">
         <h3>What the defences cost on the 10 normal tickets (trajectory eval re-run)</h3>
-        <p className="w8-p">Both columns: mitigation on, <code>issue_refund</code> offered; only the three defences differ. Same seeds.</p>
+        <p className="w8-p">Both columns: mitigation on, <code>issue_refund</code> offered; only the defences differ. Same seeds.</p>
         <table className="w7-cmp">
           <thead><tr><th>metric</th><th>defences OFF</th><th>defences ON</th><th>Δ</th></tr></thead>
           <tbody>
-            {cost.map(([l, k, f]) => (
+            {cost.map(([l, k, f]) => off[k] != null && (
               <tr key={k}><td>{l}</td><td>{f(off[k])}</td><td>{f(on[k])}</td><td>{signed(on[k] - off[k], f)}</td></tr>
             ))}
           </tbody>
@@ -878,14 +1014,78 @@ function InjectionTab({ d, onRerun, busy }) {
           The cost is the wrapper and note added to every ticket body.
         </p>
       </section>
+
       <section className="w7-card">
-        <h3>The three defences</h3>
-        {[['1 · sanitise tool output', d.sanitize_source], ['2 · read-only refund tool', d.readonly_source],
-          ['3 · output guardrail', d.guardrail_source]].map(([t, src]) => (
+        <h3>The defence code</h3>
+        {[['1 · sanitise tool output', d.sanitize_source], ['2 · read-only refund tool (least privilege)', d.readonly_source],
+          ["2′ · sandboxed refund tool (dry run)", d.sandbox_source],
+          ['3 · output guardrail (output validation)', d.guardrail_source],
+          ['4 · input screen (direct injection)', d.input_screen_source]].map(([t, src]) => (
           <details key={t}><summary className="w8-sum">{t}</summary><pre className="w7-code">{src}</pre></details>
         ))}
       </section>
     </>
+  )
+}
+
+/* ---------------------------------------------------------------- owasp */
+
+function OwaspTab({ d, go }) {
+  const b = d.before.summary
+  const inj = d.injection
+  const dir = inj.direct
+  const rows = [
+    ['LLM01', 'Prompt Injection', 'covered',
+      `Indirect: 10/10 → 0/10 for refund attacks with defences; A3 still ${inj.defended['A3-reply-shaping'].got_through}/10. Direct: 10/10 → 0/10 for refunds; D3 still ${dir.defended['D3-reply-shaping'].got_through}/10. Input/output filters alone stopped nothing.`, 'injection'],
+    ['LLM02', 'Sensitive Information Disclosure', 'partial',
+      'Tools are scoped to one ticket / one order id (no bulk reads); not tested with an exfiltration attack.', 'injection'],
+    ['LLM03', 'Supply Chain', 'out of scope',
+      'No third-party model or plugin is loaded at run time (offline engine).', null],
+    ['LLM04', 'Data and Model Poisoning', 'out of scope',
+      'No training or fine-tuning in this system.', null],
+    ['LLM05', 'Improper Output Handling', 'covered',
+      `Output guardrail blocks refund promises the policy tool did not allow (0 false positives in ${inj.eval_defences_on.runs} legitimate runs). Argument validation does the same for tool inputs (${b.modes.skipped_order_record} → 0).`, 'mitigation'],
+    ['LLM06', 'Excessive Agency', 'covered',
+      'Least privilege: issue_refund read-only or sandboxed; read tools scoped to one id; Week 7 budgets (8 calls, 20k tokens, $0.25) cap every run.', 'injection'],
+    ['LLM07', 'System Prompt Leakage', 'not covered',
+      'No leakage attack was run; the system prompt holds no secrets.', null],
+    ['LLM08', 'Vector and Embedding Weaknesses', 'not covered here',
+      'Week 8 has no retrieval; the RAG side (Weeks 3–5) is where this applies.', null],
+    ['LLM09', 'Misinformation', 'covered',
+      `Confident answers on fabricated or unchecked facts are the failure modes: skipped_order_record (${b.modes.skipped_order_record} runs), invented_id (${b.modes.invented_id}). The outcome eval passes most of them — the gap is ${pts(b.gap)}.`, 'gap'],
+    ['LLM10', 'Unbounded Consumption', 'covered',
+      `Budgets stop runaway loops (budget_exhausted: ${b.modes.budget_exhausted} runs, handed to a human). Cost reported as p50 ${usd(b.cost_p50)} / p99 ${usd(b.cost_p99)} / max ${usd(b.cost_max)}, not the mean.`, 'metrics'],
+  ]
+  const cls = { covered: 'ok', partial: 'warn' }
+  return (
+    <section className="w7-card">
+      <h3>OWASP Top 10 for LLM Applications (2025) — what Week 8 covers</h3>
+      <p className="w8-p">Each risk is mapped to the evidence on this page, with the numbers it rests on. Gaps are stated as gaps.</p>
+      <div className="w7-scroll">
+        <table className="w7-cmp w8-owasp">
+          <thead><tr><th>id</th><th>risk</th><th>status</th><th>evidence in Week 8</th><th /></tr></thead>
+          <tbody>
+            {rows.map(([id, name, st, ev, tab]) => (
+              <tr key={id}>
+                <td><b>{id}</b></td><td>{name}</td>
+                <td><span className={`w8-chip ${cls[st] || ''}`}>{st}</span></td>
+                <td className="mut">{ev}</td>
+                <td>{tab && <button type="button" className="w7-btn sm" onClick={() => go(tab)}>open</button>}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  )
+}
+
+function DemoTab({ d }) {
+  return (
+    <section className="w7-card">
+      <p className="w7-foot"><code>week8/DEMO.md</code> — the order to present Week 8 in, with what to click and what to say.</p>
+      <pre className="w8-md">{d.demo_md || 'week8/DEMO.md not found.'}</pre>
+    </section>
   )
 }
 
@@ -979,6 +1179,8 @@ export default function Week8View() {
       {tab === 'mitigation' && <MitigationTab d={d} />}
       {tab === 'regression' && <RegressionTab d={d} />}
       {tab === 'injection' && <InjectionTab d={d} busy={busy === 'inj'} onRerun={() => rerun('inj')} />}
+      {tab === 'owasp' && <OwaspTab d={d} go={setTab} />}
+      {tab === 'demo' && <DemoTab d={d} />}
       {tab === 'writeup' && <WriteupTab d={d} />}
       {tab === 'code' && <CodeTab d={d} />}
     </div>

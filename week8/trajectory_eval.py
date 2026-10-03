@@ -240,6 +240,13 @@ def evaluate(config: agent8.Config, seeds: int) -> dict:
     return {"runs": runs, "summary": summarise(runs)}
 
 
+def pctl(xs: list[float], q: float) -> float:
+    """Nearest-rank percentile: the smallest value with at least q% of runs
+    at or below it. Always an actual run's value, never an interpolation."""
+    s = sorted(xs)
+    return s[max(0, min(len(s) - 1, -(-len(s) * q // 100) - 1))]
+
+
 def summarise(runs: list[dict]) -> dict:
     sc = [r["score"] for r in runs]
     n = len(runs)
@@ -271,6 +278,8 @@ def summarise(runs: list[dict]) -> dict:
         "tool_errors": sum(s["tool_errors"] for s in sc),
         "cost_p50": statistics.median(cost), "cost_max": max(cost),
         "cost_mean": statistics.mean(cost),
+        "cost_p95": pctl(cost, 95), "cost_p99": pctl(cost, 99),
+        "tokens_p99": pctl(tok, 99), "latency_p99": pctl(lat, 99),
         "tokens_p50": statistics.median(tok), "tokens_max": max(tok),
         "tokens_mean": statistics.mean(tok),
         "latency_p50": statistics.median(lat), "latency_max": max(lat),
@@ -359,6 +368,8 @@ def report(before: dict, after: dict, seeds: int) -> str:
             ("Step efficiency p50 / max (per run)", f"{b['step_efficiency_p50']:.2f} / {b['step_efficiency_max']:.2f}",
              f"{a['step_efficiency_p50']:.2f} / {a['step_efficiency_max']:.2f}"),
             ("Cost per ticket p50", f"${b['cost_p50']:.4f}", f"${a['cost_p50']:.4f}"),
+            ("Cost per ticket p95", f"${b['cost_p95']:.4f}", f"${a['cost_p95']:.4f}"),
+            ("Cost per ticket **p99**", f"${b['cost_p99']:.4f}", f"${a['cost_p99']:.4f}"),
             ("Cost per ticket **max**", f"${b['cost_max']:.4f}", f"${a['cost_max']:.4f}"),
             ("Cost per ticket mean (for reference only)", f"${b['cost_mean']:.4f}", f"${a['cost_mean']:.4f}"),
             ("Tokens per ticket p50 / max", f"{b['tokens_p50']:.0f} / {b['tokens_max']}", f"{a['tokens_p50']:.0f} / {a['tokens_max']}"),
@@ -420,6 +431,7 @@ def report(before: dict, after: dict, seeds: int) -> str:
     L.append("| | BEFORE | AFTER | Price |\n|---|---:|---:|---:|")
     L.append(f"| `{top}` runs | {b['modes'][top]} | {a['modes'][top]} | |")
     for label, k, f in (("Cost / ticket p50", "cost_p50", "${:.4f}"),
+                        ("Cost / ticket p99", "cost_p99", "${:.4f}"),
                         ("Cost / ticket max", "cost_max", "${:.4f}"),
                         ("Cost / ticket mean", "cost_mean", "${:.4f}"),
                         ("Tokens / ticket mean", "tokens_mean", "{:.0f}"),

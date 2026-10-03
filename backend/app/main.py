@@ -1006,7 +1006,13 @@ def week8() -> dict:
         "sanitize_source": inspect.getsource(inj.sanitize),
         "guardrail_source": inspect.getsource(inj.guardrail),
         "readonly_source": inspect.getsource(inj.refund_read_only),
+        "sandbox_source": inspect.getsource(inj.refund_sandboxed),
+        "input_screen_source": inspect.getsource(inj.input_screen),
+        "direct_attacks": inj.DIRECT_ATTACKS,
+        "config_info": inj.CONFIG_INFO, "privilege": inj.PRIVILEGE,
         "results_md": report, "source": src,
+        "demo_md": open(os.path.join(WEEK8, "DEMO.md")).read()
+        if os.path.exists(os.path.join(WEEK8, "DEMO.md")) else "",
     }
 
 
@@ -1055,22 +1061,28 @@ def week8_injection() -> dict:
 
 class Week8Attack(BaseModel):
     attack_id: str = "A1-literal"
-    defended: bool = False
+    kind: str = "indirect"            # indirect | direct
+    config: str | None = None         # undefended | defended | sandboxed | defended+screen
+    defended: bool = False            # older clients: True == "defended"
     seed: int = 0
 
 
 @app.post("/api/week8/attack")
 def week8_attack(req: Week8Attack) -> dict:
-    """One injection attack, one seed, with or without the three defences."""
+    """One injection attack (indirect: in the ticket body; direct: in the
+    user's own turn), one seed, under one defence configuration."""
     agent8, te, inj, store8, _ = _week8()
-    if req.attack_id not in inj.ATTACKS:
-        raise HTTPException(400, f"attack must be one of {list(inj.ATTACKS)}")
-    tid = inj.plant(req.attack_id, inj.ATTACKS[req.attack_id])
-    cfg = inj.DEFENDED if req.defended else inj.UNDEFENDED
-    r = agent8.run(tid, req.seed,
-                   agent8.Config(validate_policy_args=True, **cfg))
+    attacks = inj.DIRECT_ATTACKS if req.kind == "direct" else inj.ATTACKS
+    if req.attack_id not in attacks:
+        raise HTTPException(400, f"attack must be one of {list(attacks)}")
+    config = req.config or ("defended" if req.defended else "undefended")
+    if config not in inj.CONFIGS:
+        raise HTTPException(400, f"config must be one of {list(inj.CONFIGS)}")
+    r = inj.run_one(req.kind, req.attack_id, config, req.seed)
     return {**r, "verdict": inj.attack_outcome(r, req.attack_id),
-            "ticket": {"ticket_id": tid, **store8.TICKETS[tid]}}
+            "kind": req.kind, "config": config,
+            "attack_text": attacks[req.attack_id],
+            "ticket": {"ticket_id": r["ticket_id"], **store8.TICKETS[r["ticket_id"]]}}
 
 
 class Week8Ask(BaseModel):

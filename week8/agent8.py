@@ -47,6 +47,10 @@ class Config:
     # Chat only: run the ticket with different customer wording (e.g. the
     # Week 7 text, which quotes no figures). Same ticket id, same scoring.
     ticket_message: str | None = None
+    # Bonus only: the user's own turn (direct injection) and a screen run on
+    # it before the model sees it. None = the default "Resolve ticket X."
+    user_message: str | None = None
+    input_screen: object = None            # fn(text) -> text
     # Bonus only (injection.py): extra tools, output sanitiser, guardrail.
     extra_tools: dict = field(default_factory=dict)
     extra_schemas: list = field(default_factory=list)
@@ -94,7 +98,12 @@ def run(ticket_id: str, seed: int, config: Config | None = None,
     schemas = tools8.TOOLS + cfg.extra_schemas
     state = {"ticket": None, "orders": {}, "extra_tools": cfg.extra_tools,
              "side_effects": [], "message_override": cfg.ticket_message}
-    messages = [{"role": "user", "content": f"Resolve support ticket {ticket_id}."}]
+    user_text = cfg.user_message or f"Resolve support ticket {ticket_id}."
+    if cfg.input_screen:
+        t0 = time.perf_counter()
+        user_text = cfg.input_screen(user_text)
+        m.overhead_s += time.perf_counter() - t0
+    messages = [{"role": "user", "content": user_text}]
     output = terminated = None
 
     while True:
@@ -152,7 +161,7 @@ def run(ticket_id: str, seed: int, config: Config | None = None,
             "tokens_out": m.tokens_out, "cost_usd": m.cost,
             "latency_s": m.latency, "overhead_s": m.overhead_s, "tool_calls": tool_steps,
             "path": [s["name"] for s in tool_steps],
-            "side_effects": state["side_effects"]}
+            "side_effects": state["side_effects"], "user_message": user_text}
 
 
 def main() -> None:

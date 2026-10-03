@@ -2897,3 +2897,7 @@ i.w8-cell { width: 20px; height: 20px; font-size: 11px; }
 .w8-paths td > div + div {
   border-top: 1px dashed var(--bd); padding-top: 5px; margin-top: 5px;
 }
+.w8-twocol { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+.w8-h4 { margin: 4px 0 6px; font-size: 13px; color: var(--mut); text-transform: uppercase; letter-spacing: .05em; }
+.w8-owasp td { vertical-align: top; }
+.w8-owasp td:nth-child(4) { min-width: 320px; }

@@ -1,0 +1,18 @@
+# $ git diff d2dda98 f0c23ee -- week9/mcp_config.json
+diff --git a/week9/mcp_config.json b/week9/mcp_config.json
+index 9bc3429..d13529e 100644
+--- a/week9/mcp_config.json
++++ b/week9/mcp_config.json
+@@ -6,6 +6,12 @@
+       "args": ["${ROOT}/week9/servers/rag_server.py"],
+       "cwd": "${ROOT}",
+       "env": {"HELP_CENTRE_RERANK": "${HELP_CENTRE_RERANK:-1}", "HELP_CENTRE_RAG_ERRORS": "${HELP_CENTRE_RAG_ERRORS:-}"}
++    },
++    "ticket-history": {
++      "transport": "http",
++      "url": "${TICKET_HISTORY_URL:-http://127.0.0.1:8765/mcp}",
++      "headers": {"Authorization": "Bearer ${TICKET_HISTORY_TOKEN:-dev-ticket-token}"},
++      "attach": [{"uri": "tickets://{id}/escalations", "when": "TCK-\\d{4}"}]
+     }
+   }
+ }

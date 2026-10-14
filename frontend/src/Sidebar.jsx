@@ -109,10 +109,23 @@ const QUESTION_GROUPS = [
   ['week6', 'Week 6 — eval tickets'],
   ['week7', 'Week 7 — refund tickets'],
   ['week8', 'Week 8 — trajectory tickets (+ Week 7 wording)'],
+  ['week9', 'Week 9 — MCP: tickets + help centre'],
 ]
 // Which question set goes with the week picked in the filter bar.
 const GROUP_FOR_WEEK = { week3: 'golden', week4: 'golden', week5: 'week5',
-                         week6: 'week6', week7: 'week7', week8: 'week8' }
+                         week6: 'week6', week7: 'week7', week8: 'week8', week9: 'week9' }
+
+// Week 9 questions exercise one server, the other, both, and the
+// recoverable-error path. They are fixed, so they live here.
+const WEEK9 = [
+  ['W9-1', 'Why was TCK-4403 escalated?', 'both servers'],
+  ['W9-2', 'What is the status of TCK-4405?', 'both servers'],
+  ['W9-3', 'Open help article BM-4', 'recoverable error'],
+  ['W9-4', 'What happens to stored cards during the migration?', 'RAG server'],
+  ['W9-5', 'Show me the escalation history for TCK-4401.', 'attached resource'],
+  ['W9-6', 'What is ticket TCK-44 about?', 'malformed id'],
+  ['W9-7', 'How do I reset my password?', 'not covered'],
+].map(([id, question, badge]) => ({ id, question, badge }))
 
 const trim = (q) => (q.length > 60 ? `${q.slice(0, 60)}…` : q)
 
@@ -122,10 +135,10 @@ const trim = (q) => (q.length > 60 ? `${q.slice(0, 60)}…` : q)
  * asked again under another week, judge or system and the answers compared.
  * The week follows the filter bar, and can still be changed here on its own.
  */
-function QuickQuestions({ sets, week, answerWith, onAsk }) {
+export function QuickQuestions({ sets, week, answerWith, onAsk, hint }) {
   const [group, setGroup] = useState(GROUP_FOR_WEEK[week] || 'golden')
   useEffect(() => { setGroup(GROUP_FOR_WEEK[week] || 'golden') }, [week])
-  const items = sets[group] || []
+  const items = group === 'week9' ? WEEK9 : (sets[group] || [])
   const choose = (id) => {
     const ex = items.find((e) => e.id === id)
     if (ex) onAsk(ex.question, { area: ex.product_area ?? undefined, caseId: ex.id })
@@ -137,7 +150,7 @@ function QuickQuestions({ sets, week, answerWith, onAsk }) {
         <span>1 · Choose week</span>
         <select className="picker" value={group} onChange={(e) => setGroup(e.target.value)}>
           {QUESTION_GROUPS.map(([g, label]) => (
-            <option key={g} value={g}>{label} ({(sets[g] || []).length})</option>
+            <option key={g} value={g}>{label} ({(g === 'week9' ? WEEK9 : (sets[g] || [])).length})</option>
           ))}
         </select>
       </label>
@@ -154,7 +167,7 @@ function QuickQuestions({ sets, week, answerWith, onAsk }) {
           ))}
         </select>
       </label>
-      <p className="qs-with">Answers with <b>{answerWith}</b> — change it in the filter bar.</p>
+      <p className="qs-with">{hint || <>Answers with <b>{answerWith}</b> — change it in the filter bar.</>}</p>
     </section>
   )
 }

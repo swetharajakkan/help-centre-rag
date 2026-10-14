@@ -3,3 +3,5 @@
 -r requirements.txt
 pytest==8.4.2
 httpx==0.28.1
+# in-memory MongoDB for the auth/documents tests
+mongomock==4.3.0

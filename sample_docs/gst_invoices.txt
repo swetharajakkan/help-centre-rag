@@ -1,0 +1,7 @@
+GST on invoices for customers in India
+
+Customers in India are charged 18 percent GST on every invoice, and the GST amount is shown on its own line below the subtotal. A customer who adds a valid GSTIN to their billing profile before the invoice is created gets a GST tax invoice that they can use to claim input tax credit.
+
+A GSTIN added after an invoice was created does not change that invoice, because issued tax invoices cannot be edited. The customer can ask support to issue a credit note for the old invoice and a new tax invoice with the GSTIN, which must be requested within 30 days of the original invoice date.
+
+Invoices are created in INR for customers in India, using the exchange rate published on the invoice date. Customers outside India are not charged GST and are invoiced in the currency of their plan.

@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react'
+import CrewAnswer from './CrewAnswer.jsx'
 
 const STAGE = {
   retrieving: 'searching the knowledge base…',
@@ -243,15 +244,17 @@ const WAIT = {
   week6: 'drafting the reply and running the judge…',
   week7: 'resolving the ticket…',
   week8: 'running the ticket and scoring its path…',
+  week9: 'Responder is calling MCP tools, Verifier is re-checking…',
 }
 
 function Answer({ m }) {
-  if (m.kind === 'week6' || m.kind === 'week7' || m.kind === 'week8') {
+  if (['week6', 'week7', 'week8', 'week9'].includes(m.kind)) {
     return (
       <div className={`msg bot ${m.error ? 'failed' : ''}`}>
         <span className="ftag">{m.filter}</span>
         {m.data && (m.kind === 'week6' ? <Week6Answer m={m} />
-          : m.kind === 'week8' ? <Week8Answer m={m} /> : <Week7Answer m={m} />)}
+          : m.kind === 'week9' ? <CrewAnswer data={m.data} />
+            : m.kind === 'week8' ? <Week8Answer m={m} /> : <Week7Answer m={m} />)}
         {m.error && (
           <div className="claim">
             <div className="claim-text"><strong>Request failed.</strong></div>
@@ -341,6 +344,8 @@ const EMPTY = {
     'Type a customer message or pick a Week 7 ticket. The agent chooses its own tool calls; the fixed workflow always runs the same four steps. Switch between them and ask again to compare.'],
   week8: ['Score the path, not just the answer',
     'Pick a Week 8 ticket or type a message. The sampled agent runs it at the chosen seed and both evals score it: the outcome (is the answer right?) and the trajectory (did it get there by an accepted path, with real ids?). Try TCK-7001 at seed 2, then turn on the mitigation. The full analysis is in the Trajectory · W8 view.'],
+  week9: ['Two MCP servers, two agents',
+    'The Responder discovers its tools from the help-centre RAG server and the ticket-history server over MCP and answers; the Verifier re-fetches every cited record and checks each claim before it is shown. Try “Why was TCK-4403 escalated?” or “Open help article BM-4”. Servers, tools/list and the wire capture are in the MCP · W9 view.'],
 }
 
 export default function Chat({ messages, health, week }) {

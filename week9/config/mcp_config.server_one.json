@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "help-centre-rag": {
+      "transport": "stdio",
+      "command": "${PYTHON}",
+      "args": ["${ROOT}/week9/servers/rag_server.py"],
+      "cwd": "${ROOT}",
+      "env": {"HELP_CENTRE_RERANK": "${HELP_CENTRE_RERANK:-1}", "HELP_CENTRE_RAG_ERRORS": "${HELP_CENTRE_RAG_ERRORS:-}"}
+    }
+  }
+}

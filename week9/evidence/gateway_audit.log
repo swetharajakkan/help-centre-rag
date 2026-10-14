@@ -1,0 +1,7 @@
+{"ts": "2026-10-05T11:57:37+00:00", "caller": "help-centre-agent", "resource": "tickets://ticket-history/TCK-4403/escalations", "ticket_id": "TCK-4403", "outcome": "ok"}
+{"ts": "2026-10-05T11:57:37+00:00", "caller": "help-centre-agent", "tool": "ticket-history_get_ticket", "ticket_id": "TCK-4403", "outcome": "ok"}
+{"ts": "2026-10-05T11:57:42+00:00", "caller": "help-centre-agent", "tool": "help-centre-rag_search_help_centre", "ticket_id": null, "outcome": "ok"}
+{"ts": "2026-10-05T11:57:42+00:00", "caller": "help-centre-agent-restricted", "resource": "tickets://ticket-history/TCK-4403/escalations", "ticket_id": "TCK-4403", "outcome": "denied:tickets:escalations"}
+{"ts": "2026-10-05T11:57:42+00:00", "caller": "help-centre-agent-restricted", "tool": "ticket-history_get_escalation_history", "ticket_id": "TCK-4403", "outcome": "denied:tickets:escalations"}
+{"ts": "2026-10-05T11:57:42+00:00", "caller": "help-centre-agent-restricted", "tool": "ticket-history_get_ticket", "ticket_id": "TCK-4403", "outcome": "ok"}
+{"ts": "2026-10-05T11:57:42+00:00", "caller": "help-centre-agent-restricted", "tool": "help-centre-rag_search_help_centre", "ticket_id": null, "outcome": "ok"}

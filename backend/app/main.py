@@ -10,7 +10,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 
-from . import tracing
+from . import auth, tracing
 
 # Before anything reads the environment, so keys pasted into .env take effect.
 tracing.load_dotenv()
@@ -20,6 +20,8 @@ from .ingest import build_index, load_articles, load_uploads, records_for
 from .rerank import RERANK_CANDIDATES, RERANK_MODEL, rerank_enabled
 from .ocr import available_engines as ocr_engines
 from .uploads import Rejected, delete as delete_upload, store as store_upload
+from . import week9 as week9_app
+from . import documents as documents_app
 
 INDEXES: dict = {}
 
@@ -46,6 +48,8 @@ async def lifespan(_: FastAPI):
                          "[tracing] export no longer overrides them",
                          "!" * 72)))
     yield
+    # Week 9: close the MCP sessions (and the stdio server child) cleanly.
+    await week9_app.shutdown()
     # Short-lived events would otherwise die with the process.
     tracing.flush()
 
@@ -54,6 +58,11 @@ app = FastAPI(title="Help Centre RAG", version="1.0", lifespan=lifespan)
 app.add_middleware(
     CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"],
 )
+# Who may call what: `user` asks the agent, `admin` gets everything.
+app.middleware("http")(auth.guard)
+app.include_router(auth.router)
+app.include_router(week9_app.router)
+app.include_router(documents_app.router)
 
 def _index(strategy: str):
     if strategy not in INDEXES:
@@ -123,6 +132,7 @@ def health() -> dict:
         "ocr_engines": ocr_engines(),
         "indexed_chunks": len(_index("structure_aware").records),
         "historical_corpus_reindexed": False,
+        "auth_enabled": auth.enabled(),
     }
 
 

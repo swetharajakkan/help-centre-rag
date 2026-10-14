@@ -1,0 +1,24 @@
+# Agent module diff: server one -> server one + two
+# $ git diff d2dda98 f0c23ee -- week9/agent
+# ---- output (empty means zero lines changed) ----
+
+# ---- end of output ----
+# changed lines in week9/agent: 0
+# whole-commit stat (everything that DID change):
+#   week9/mcp_config.json | 6 ++++++
+#    1 file changed, 6 insertions(+)
+#
+# git log:
+#   f0c23ee server one + two: add ticket-history (config only)
+#   d2dda98 server one: help-centre-rag only
+#
+# sha256[:16] of every agent file  (commit1 | commit2 | this working tree)
+#   week9/agent/__init__.py      7a65e32927f4e320 | 7a65e32927f4e320 | 7a65e32927f4e320
+#   week9/agent/cli.py           63f3138e92129e63 | 63f3138e92129e63 | 63f3138e92129e63
+#   week9/agent/config.py        9b6534c0b971320f | 9b6534c0b971320f | 9b6534c0b971320f
+#   week9/agent/crew.py          d8d92ced62e5158b | d8d92ced62e5158b | d8d92ced62e5158b
+#   week9/agent/host.py          a10aac533e670b43 | a10aac533e670b43 | a10aac533e670b43
+#   week9/agent/loop.py          48457a1de0c48806 | 48457a1de0c48806 | 48457a1de0c48806
+#   week9/agent/model.py         2e2e4beaebdaef3b | 2e2e4beaebdaef3b | 2e2e4beaebdaef3b
+#   week9/agent/smalltalk.py     ab449806999d3c5b | ab449806999d3c5b | ab449806999d3c5b
+# agent files identical across both commits and the shipped tree: True

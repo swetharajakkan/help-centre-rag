@@ -13,3 +13,7 @@ week7/.mem0/
 week7/vector_memory.json
 
 .DS_Store
+
+# week9: Support Ops' server writes its access log next to itself
+week9/servers/ticket_history/access.log
+backend/data/track.jsonl

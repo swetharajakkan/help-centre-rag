@@ -18,3 +18,12 @@ langfuse==4.15.6
 # Week 7 agent topics: LangGraph version of the agent/workflow, and mem0 memory.
 langgraph==1.2.12
 mem0ai==2.2.1
+
+# Week 9: MCP servers (week9/servers), the MCP host (week9/agent) and the
+# gateway. Pulls in the official `mcp` SDK.
+fastmcp==3.4.8
+
+# Sign-up accounts, the admin email list and admin-uploaded documents live in
+# MongoDB Atlas (backend/app/db.py); pypdf reads uploaded PDFs.
+pymongo==4.15.4
+pypdf==6.1.3

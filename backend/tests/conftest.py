@@ -44,6 +44,9 @@ REAL_EMBED = os.environ.get("HELP_CENTRE_TEST_REAL_EMBED") == "1"
 
 # Keep the suite offline and sub-second: opt into reranking explicitly.
 os.environ.setdefault("HELP_CENTRE_RERANK", "0")
+# The login guard (backend/app/auth.py) is off for the endpoint tests written
+# before it existed; test_week9.py switches it on to test it.
+os.environ.setdefault("HELP_CENTRE_AUTH", "0")
 
 
 def fake_embed(texts: list[str]) -> np.ndarray:
@@ -131,6 +134,13 @@ AREAS = {
     "TestDocuments": "Document upload (any type -> indexed + durable)",
     "TestArmSplit": "Week3/Week4 answer split (needs the cross-encoder)",
     "TestImageUploads": "Image upload (OCR -> indexed + checkable)",
+    "TestWeek9Discovery": "Week 9 MCP discovery (tools/list, config only)",
+    "TestWeek9Loop": "Week 9 agent loop (server two, recoverable errors)",
+    "TestWeek9Crew": "Week 9 Responder + Verifier",
+    "TestWeek9Routing": "Week 9 routing + gateway scopes",
+    "TestWeek9Auth": "Week 9 user/admin logins",
+    "TestWeek9Track": "Week 9 admin Track log",
+    "TestWeek9SmallTalk": "Week 9 small talk (hi, thanks, bye)",
 }
 
 

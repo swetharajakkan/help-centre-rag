@@ -1,5 +1,5 @@
 {
- "ran_at": "2026-09-28T14:08:51Z",
+ "ran_at": "2026-10-03T10:10:59Z",
  "ticket_ids": [
   "TCK-7001",
   "TCK-7002",
@@ -31,7 +31,7 @@
    "n": 10,
    "passed": 10,
    "pass_rate": 1.0,
-   "p50_latency_s": 1.3186047500021232,
+   "p50_latency_s": 1.1888110625150148,
    "total_tokens": 28233,
    "cost_per_ticket_usd": 0.0183105,
    "llm_calls": 40,
@@ -41,7 +41,7 @@
    "n": 10,
    "passed": 9,
    "pass_rate": 0.9,
-   "p50_latency_s": 0.5896626459980325,
+   "p50_latency_s": 0.4578373744734563,
    "total_tokens": 3432,
    "cost_per_ticket_usd": 0.0038920000000000005,
    "llm_calls": 10,
@@ -68,13 +68,13 @@
      "max_cost_usd": 0.25,
      "max_wall_s": 20.0
     },
-    "trace_url": "https://cloud.langfuse.com/project/cmts4unow08hkad0iuff9g5ln/traces/32b387e3011598e4d638688e5e9afc33",
+    "trace_url": "https://cloud.langfuse.com/project/cmts4unow08hkad0iuff9g5ln/traces/7569d51ae2aa4d503445b9082dce19c1",
     "llm_calls": 4,
     "tokens_in": 2637,
     "tokens_out": 205,
     "total_tokens": 2842,
     "cost_usd": 0.01831,
-    "latency_s": 1.3494595000011032,
+    "latency_s": 2.1878209999995306,
     "path": [
      "get_ticket",
      "get_order",
@@ -87,7 +87,7 @@
       "input_tokens": 487,
       "output_tokens": 24,
       "cost_usd": 0.003035,
-      "latency_s": 0.20231308299844386
+      "latency_s": 0.20204870804445818
      },
      {
       "kind": "tool",
@@ -105,7 +105,7 @@
        "request_type": "refund",
        "message": "I bought the Pro add-on 12 days ago and it doesn't do what I need. Can I get my money back? Order ORD-5101."
       },
-      "latency_s": 0.04766237500007264
+      "latency_s": 0.002002958965022117
      },
      {
       "kind": "llm",
@@ -113,7 +113,7 @@
       "input_tokens": 611,
       "output_tokens": 24,
       "cost_usd": 0.003655,
-      "latency_s": 0.20960108299914282
+      "latency_s": 0.2054117500083521
      },
      {
       "kind": "tool",
@@ -129,7 +129,7 @@
        "product": "Pro add-on",
        "charged_at": "2026-09-16T10:02:00Z"
       },
-      "latency_s": 0.046397167003306095
+      "latency_s": 0.0003860419965349138
      },
      {
       "kind": "llm",
@@ -137,7 +137,7 @@
       "input_tokens": 710,
       "output_tokens": 52,
       "cost_usd": 0.00485,
-      "latency_s": 0.29184012499899836
+      "latency_s": 0.29538670904003084
      },
      {
       "kind": "tool",
@@ -155,7 +155,7 @@
        "refund_allowed": true,
        "policy_section": "inside the thirty-day window"
       },
-      "latency_s": 0.04211054200277431
+      "latency_s": 0.0014477919903583825
      },
      {
       "kind": "llm",
@@ -163,12 +163,12 @@
       "input_tokens": 829,
       "output_tokens": 105,
       "cost_usd": 0.00677,
-      "latency_s": 0.4589743339965935
+      "latency_s": 0.4586205839877948
      }
     ],
     "log": [
      {
-      "t": 0.002,
+      "t": 0.001,
       "system": "agent",
       "ticket_id": "TCK-7001",
       "event": "start",
@@ -180,7 +180,7 @@
       }
      },
      {
-      "t": 0.243,
+      "t": 0.285,
       "system": "agent",
       "ticket_id": "TCK-7001",
       "event": "model_call",
@@ -190,7 +190,7 @@
       "cost_usd": 0.003035
      },
      {
-      "t": 0.291,
+      "t": 0.287,
       "system": "agent",
       "ticket_id": "TCK-7001",
       "event": "tool_call",
@@ -200,7 +200,7 @@
       }
      },
      {
-      "t": 0.502,
+      "t": 0.493,
       "system": "agent",
       "ticket_id": "TCK-7001",
       "event": "model_call",
@@ -210,7 +210,7 @@
       "cost_usd": 0.00669
      },
      {
-      "t": 0.549,
+      "t": 0.493,
       "system": "agent",
       "ticket_id": "TCK-7001",
       "event": "tool_call",
@@ -220,7 +220,7 @@
       }
      },
      {
-      "t": 0.843,
+      "t": 0.79,
       "system": "agent",
       "ticket_id": "TCK-7001",
       "event": "model_call",
@@ -230,7 +230,7 @@
       "cost_usd": 0.01154
      },
      {
-      "t": 0.885,
+      "t": 0.791,
       "system": "agent",
       "ticket_id": "TCK-7001",
       "event": "tool_call",
@@ -244,7 +244,7 @@
       }
      },
      {
-      "t": 1.346,
+      "t": 1.251,
       "system": "agent",
       "ticket_id": "TCK-7001",
       "event": "model_call",
@@ -254,7 +254,7 @@
       "cost_usd": 0.01831
      },
      {
-      "t": 1.346,
+      "t": 1.252,
       "system": "agent",
       "ticket_id": "TCK-7001",
       "event": "finished",
@@ -303,13 +303,13 @@
      "max_cost_usd": 0.25,
      "max_wall_s": 20.0
     },
-    "trace_url": "https://cloud.langfuse.com/project/cmts4unow08hkad0iuff9g5ln/traces/1e81556bd9760f2587b0b085d58150d1",
+    "trace_url": "https://cloud.langfuse.com/project/cmts4unow08hkad0iuff9g5ln/traces/d1c0bcfbbe0851105e3baaa1ef06538f",
     "llm_calls": 4,
     "tokens_in": 2593,
     "tokens_out": 196,
     "total_tokens": 2789,
     "cost_usd": 0.017865,
-    "latency_s": 1.280137374997139,
+    "latency_s": 1.1441787920193747,
     "path": [
      "get_ticket",
      "get_order",
@@ -322,7 +322,7 @@
       "input_tokens": 487,
       "output_tokens": 24,
       "cost_usd": 0.003035,
-      "latency_s": 0.20689204199879896
+      "latency_s": 0.20371575001627207
      },
      {
       "kind": "tool",
@@ -340,7 +340,7 @@
        "request_type": "refund",
        "message": "Please refund order ORD-5102, I stopped using it."
       },
-      "latency_s": 0.04611812499933876
+      "latency_s": 0.0017814580351114273
      },
      {
       "kind": "llm",
@@ -348,7 +348,7 @@
       "input_tokens": 596,
       "output_tokens": 24,
       "cost_usd": 0.00358,
-      "latency_s": 0.2090395420018467
+      "latency_s": 0.20914495800388977
      },
      {
       "kind": "tool",
@@ -364,7 +364,7 @@
        "product": "Starter",
        "charged_at": "2026-08-15T08:40:00Z"
       },
-      "latency_s": 0.043264125000860076
+      "latency_s": 0.0005751249846071005
      },
      {
       "kind": "llm",
@@ -372,7 +372,7 @@
       "input_tokens": 695,
       "output_tokens": 52,
       "cost_usd": 0.004775,
-      "latency_s": 0.29522895800619153
+      "latency_s": 0.2948090420104563
      },
      {
       "kind": "tool",
@@ -390,7 +390,7 @@
        "refund_allowed": false,
        "policy_section": "the refund window is thirty days"
       },
-      "latency_s": 0.04398149999906309
+      "latency_s": 0.0010489170090295374
      },
      {
       "kind": "llm",
@@ -398,7 +398,7 @@
       "input_tokens": 815,
       "output_tokens": 96,
       "cost_usd": 0.006475,
-      "latency_s": 0.4283073750048061
+      "latency_s": 0.4272492919699289
      }
     ],
     "log": [
@@ -415,7 +415,7 @@
       }
      },
      {
-      "t": 0.209,
+      "t": 0.205,
       "system": "agent",
       "ticket_id": "TCK-7002",
       "event": "model_call",
@@ -425,7 +425,7 @@
       "cost_usd": 0.003035
      },
      {
-      "t": 0.256,
+      "t": 0.207,
       "system": "agent",
       "ticket_id": "TCK-7002",
       "event": "tool_call",
@@ -435,7 +435,7 @@
       }
      },
      {
-      "t": 0.466,
+      "t": 0.418,
       "system": "agent",
       "ticket_id": "TCK-7002",
       "event": "model_call",
@@ -445,7 +445,7 @@
       "cost_usd": 0.006615
      },
      {
-      "t": 0.509,
+      "t": 0.418,
       "system": "agent",
       "ticket_id": "TCK-7002",
       "event": "tool_call",
@@ -455,7 +455,7 @@
       }
      },
      {
-      "t": 0.806,
+      "t": 0.714,
       "system": "agent",
       "ticket_id": "TCK-7002",
       "event": "model_call",
@@ -465,7 +465,7 @@
       "cost_usd": 0.01139
      },
      {
-      "t": 0.85,
+      "t": 0.715,
       "system": "agent",
       "ticket_id": "TCK-7002",
       "event": "tool_call",
@@ -479,7 +479,7 @@
       }
      },
      {
-      "t": 1.28,
+      "t": 1.144,
       "system": "agent",
       "ticket_id": "TCK-7002",
       "event": "model_call",
@@ -489,7 +489,7 @@
       "cost_usd": 0.017865
      },
      {
-      "t": 1.28,
+      "t": 1.144,
       "system": "agent",
       "ticket_id": "TCK-7002",
       "event": "finished",
@@ -538,13 +538,13 @@
      "max_cost_usd": 0.25,
      "max_wall_s": 20.0
     },
-    "trace_url": "https://cloud.langfuse.com/project/cmts4unow08hkad0iuff9g5ln/traces/1f5bd95c8fe3c3fd1986197baee6997b",
+    "trace_url": "https://cloud.langfuse.com/project/cmts4unow08hkad0iuff9g5ln/traces/9c1ea4ca4bc7274566fda5a74c774d55",
     "llm_calls": 4,
     "tokens_in": 2606,
     "tokens_out": 208,
     "total_tokens": 2814,
     "cost_usd": 0.01823,
-    "latency_s": 1.319999250001274,
+    "latency_s": 1.1784142500255257,
     "path": [
      "get_ticket",
      "get_order",
@@ -557,7 +557,7 @@
       "input_tokens": 487,
       "output_tokens": 24,
       "cost_usd": 0.003035,
-      "latency_s": 0.20540283300215378
+      "latency_s": 0.2056286659790203
      },
      {
       "kind": "tool",
@@ -575,7 +575,7 @@
        "request_type": "refund",
        "message": "Refund ORD-5103 please, the seats were bought by mistake."
       },
-      "latency_s": 0.04658608300087508
+      "latency_s": 0.0006172499852254987
      },
      {
       "kind": "llm",
@@ -583,7 +583,7 @@
       "input_tokens": 598,
       "output_tokens": 24,
       "cost_usd": 0.00359,
-      "latency_s": 0.2045440410001902
+      "latency_s": 0.20879112498369068
      },
      {
       "kind": "tool",
@@ -599,7 +599,7 @@
        "product": "3 seats",
        "charged_at": "2026-09-19T14:11:00Z"
       },
-      "latency_s": 0.04633191599714337
+      "latency_s": 0.0010078750201500952
      },
      {
       "kind": "llm",
@@ -607,7 +607,7 @@
       "input_tokens": 697,
       "output_tokens": 52,
       "cost_usd": 0.004785,
-      "latency_s": 0.2947427079998306
+      "latency_s": 0.2908527919789776
      },
      {
       "kind": "tool",
@@ -625,7 +625,7 @@
        "refund_allowed": true,
        "policy_section": "inside the thirty-day window; Priority tier is always escalated"
       },
-      "latency_s": 0.04666808299953118
+      "latency_s": 0.0008084579603746533
      },
      {
       "kind": "llm",
@@ -633,7 +633,7 @@
       "input_tokens": 824,
       "output_tokens": 108,
       "cost_usd": 0.00682,
-      "latency_s": 0.46587129199906485
+      "latency_s": 0.4646085409913212
      }
     ],
     "log": [
@@ -660,7 +660,7 @@
       "cost_usd": 0.003035
      },
      {
-      "t": 0.254,
+      "t": 0.207,
       "system": "agent",
       "ticket_id": "TCK-7003",
       "event": "tool_call",
@@ -670,7 +670,7 @@
       }
      },
      {
-      "t": 0.46,
+      "t": 0.418,
       "system": "agent",
       "ticket_id": "TCK-7003",
       "event": "model_call",
@@ -680,7 +680,7 @@
       "cost_usd": 0.006625
      },
      {
-      "t": 0.507,
+      "t": 0.419,
       "system": "agent",
       "ticket_id": "TCK-7003",
       "event": "tool_call",
@@ -690,7 +690,7 @@
       }
      },
      {
-      "t": 0.804,
+      "t": 0.711,
       "system": "agent",
       "ticket_id": "TCK-7003",
       "event": "model_call",
@@ -700,7 +700,7 @@
       "cost_usd": 0.01141
      },
      {
-      "t": 0.85,
+      "t": 0.712,
       "system": "agent",
       "ticket_id": "TCK-7003",
       "event": "tool_call",
@@ -714,7 +714,7 @@
       }
      },
      {
-      "t": 1.318,
+      "t": 1.178,
       "system": "agent",
       "ticket_id": "TCK-7003",
       "event": "model_call",
@@ -724,7 +724,7 @@
       "cost_usd": 0.01823
      },
      {
-      "t": 1.318,
+      "t": 1.178,
       "system": "agent",
       "ticket_id": "TCK-7003",
       "event": "finished",
@@ -773,13 +773,13 @@
      "max_cost_usd": 0.25,
      "max_wall_s": 20.0
     },
-    "trace_url": "https://cloud.langfuse.com/project/cmts4unow08hkad0iuff9g5ln/traces/f973ccb3dec6a5d3d4ad6e297b0b76eb",
+    "trace_url": "https://cloud.langfuse.com/project/cmts4unow08hkad0iuff9g5ln/traces/4f2a84056c513312a8e3f253e40f4bbb",
     "llm_calls": 4,
     "tokens_in": 2540,
     "tokens_out": 212,
     "total_tokens": 2752,
     "cost_usd": 0.018,
-    "latency_s": 1.3230171670002164,
+    "latency_s": 1.194561208016239,
     "path": [
      "get_ticket",
      "get_order",
@@ -792,7 +792,7 @@
       "input_tokens": 487,
       "output_tokens": 24,
       "cost_usd": 0.003035,
-      "latency_s": 0.20456066699989606
+      "latency_s": 0.2052154999691993
      },
      {
       "kind": "tool",
@@ -810,7 +810,7 @@
        "request_type": "refund",
        "message": "Where is my refund for ORD-5199? I asked last week."
       },
-      "latency_s": 0.046498541996697895
+      "latency_s": 0.001161916006822139
      },
      {
       "kind": "llm",
@@ -818,7 +818,7 @@
       "input_tokens": 597,
       "output_tokens": 24,
       "cost_usd": 0.003585,
-      "latency_s": 0.2079797080004937
+      "latency_s": 0.2081762919551693
      },
      {
       "kind": "tool",
@@ -830,7 +830,7 @@
        "order_id": "ORD-5199",
        "status": "not_found"
       },
-      "latency_s": 0.04584929200063925
+      "latency_s": 0.0004800840397365391
      },
      {
       "kind": "llm",
@@ -838,7 +838,7 @@
       "input_tokens": 667,
       "output_tokens": 54,
       "cost_usd": 0.004685,
-      "latency_s": 0.29562100000475766
+      "latency_s": 0.30050124996341765
      },
      {
       "kind": "tool",
@@ -856,7 +856,7 @@
        "refund_allowed": false,
        "policy_section": "no billing record: escalate"
       },
-      "latency_s": 0.04648229199665366
+      "latency_s": 0.0005574589595198631
      },
      {
       "kind": "llm",
@@ -864,7 +864,7 @@
       "input_tokens": 789,
       "output_tokens": 110,
       "cost_usd": 0.006695,
-      "latency_s": 0.4684941669984255
+      "latency_s": 0.47111145802773535
      }
     ],
     "log": [
@@ -881,7 +881,7 @@
       }
      },
      {
-      "t": 0.206,
+      "t": 0.208,
       "system": "agent",
       "ticket_id": "TCK-7004",
       "event": "model_call",
@@ -891,7 +891,7 @@
       "cost_usd": 0.003035
      },
      {
-      "t": 0.253,
+      "t": 0.209,
       "system": "agent",
       "ticket_id": "TCK-7004",
       "event": "tool_call",
@@ -901,7 +901,7 @@
       }
      },
      {
-      "t": 0.463,
+      "t": 0.418,
       "system": "agent",
       "ticket_id": "TCK-7004",
       "event": "model_call",
@@ -911,7 +911,7 @@
       "cost_usd": 0.00662
      },
      {
-      "t": 0.509,
+      "t": 0.419,
       "system": "agent",
       "ticket_id": "TCK-7004",
       "event": "tool_call",
@@ -921,7 +921,7 @@
       }
      },
      {
-      "t": 0.806,
+      "t": 0.72,
       "system": "agent",
       "ticket_id": "TCK-7004",
       "event": "model_call",
@@ -931,7 +931,7 @@
       "cost_usd": 0.011305
      },
      {
-      "t": 0.852,
+      "t": 0.72,
       "system": "agent",
       "ticket_id": "TCK-7004",
       "event": "tool_call",
@@ -945,7 +945,7 @@
       }
      },
      {
-      "t": 1.322,
+      "t": 1.194,
       "system": "agent",
       "ticket_id": "TCK-7004",
       "event": "model_call",
@@ -955,7 +955,7 @@
       "cost_usd": 0.018
      },
      {
-      "t": 1.322,
+      "t": 1.194,
       "system": "agent",
       "ticket_id": "TCK-7004",
       "event": "finished",
@@ -1004,13 +1004,13 @@
      "max_cost_usd": 0.25,
      "max_wall_s": 20.0
     },
-    "trace_url": "https://cloud.langfuse.com/project/cmts4unow08hkad0iuff9g5ln/traces/ac419a3b06cc2d04b80165074162a8fe",
+    "trace_url": "https://cloud.langfuse.com/project/cmts4unow08hkad0iuff9g5ln/traces/2e36ac3a7389222f5b637e1ae4474417",
     "llm_calls": 4,
     "tokens_in": 2584,
     "tokens_out": 209,
     "total_tokens": 2793,
     "cost_usd": 0.018145,
-    "latency_s": 1.307732916000532,
+    "latency_s": 1.1830609170137905,
     "path": [
      "get_ticket",
      "get_order",
@@ -1023,7 +1023,7 @@
       "input_tokens": 487,
       "output_tokens": 24,
       "cost_usd": 0.003035,
-      "latency_s": 0.20306441700085998
+      "latency_s": 0.2069402920315042
      },
      {
       "kind": "tool",
@@ -1041,7 +1041,7 @@
        "request_type": "refund",
        "message": "I still want my refund for ORD-5105."
       },
-      "latency_s": 0.04159208299824968
+      "latency_s": 0.000656916992738843
      },
      {
       "kind": "llm",
@@ -1049,7 +1049,7 @@
       "input_tokens": 593,
       "output_tokens": 24,
       "cost_usd": 0.003565,
-      "latency_s": 0.20897949999925913
+      "latency_s": 0.20874774997355416
      },
      {
       "kind": "tool",
@@ -1065,7 +1065,7 @@
        "product": "Starter",
        "charged_at": "2026-09-10T09:00:00Z"
       },
-      "latency_s": 0.046296917003928684
+      "latency_s": 0.001029042003210634
      },
      {
       "kind": "llm",
@@ -1073,7 +1073,7 @@
       "input_tokens": 693,
       "output_tokens": 53,
       "cost_usd": 0.00479,
-      "latency_s": 0.29729212499660207
+      "latency_s": 0.2939132920000702
      },
      {
       "kind": "tool",
@@ -1091,7 +1091,7 @@
        "refund_allowed": false,
        "policy_section": "one refund per order"
       },
-      "latency_s": 0.04298974999983329
+      "latency_s": 0.000573707977309823
      },
      {
       "kind": "llm",
@@ -1099,7 +1099,7 @@
       "input_tokens": 811,
       "output_tokens": 108,
       "cost_usd": 0.006755,
-      "latency_s": 0.4608412079978734
+      "latency_s": 0.4653999170404859
      }
     ],
     "log": [
@@ -1116,7 +1116,7 @@
       }
      },
      {
-      "t": 0.204,
+      "t": 0.209,
       "system": "agent",
       "ticket_id": "TCK-7005",
       "event": "model_call",
@@ -1126,7 +1126,7 @@
       "cost_usd": 0.003035
      },
      {
-      "t": 0.246,
+      "t": 0.209,
       "system": "agent",
       "ticket_id": "TCK-7005",
       "event": "tool_call",
@@ -1136,7 +1136,7 @@
       }
      },
      {
-      "t": 0.455,
+      "t": 0.419,
       "system": "agent",
       "ticket_id": "TCK-7005",
       "event": "model_call",
@@ -1146,7 +1146,7 @@
       "cost_usd": 0.0066
      },
      {
-      "t": 0.502,
+      "t": 0.42,
       "system": "agent",
       "ticket_id": "TCK-7005",
       "event": "tool_call",
@@ -1156,7 +1156,7 @@
       }
      },
      {
-      "t": 0.8,
+      "t": 0.716,
       "system": "agent",
       "ticket_id": "TCK-7005",
       "event": "model_call",
@@ -1166,7 +1166,7 @@
       "cost_usd": 0.01139
      },
      {
-      "t": 0.843,
+      "t": 0.716,
       "system": "agent",
       "ticket_id": "TCK-7005",
       "event": "tool_call",
@@ -1180,7 +1180,7 @@
       }
      },
      {
-      "t": 1.307,
+      "t": 1.183,
       "system": "agent",
       "ticket_id": "TCK-7005",
       "event": "model_call",
@@ -1190,7 +1190,7 @@
       "cost_usd": 0.018145
      },
      {
-      "t": 1.307,
+      "t": 1.183,
       "system": "agent",
       "ticket_id": "TCK-7005",
       "event": "finished",
@@ -1239,13 +1239,13 @@
      "max_cost_usd": 0.25,
      "max_wall_s": 20.0
     },
-    "trace_url": "https://cloud.langfuse.com/project/cmts4unow08hkad0iuff9g5ln/traces/052c6c18cc94de6c7c292238bda3fdca",
+    "trace_url": "https://cloud.langfuse.com/project/cmts4unow08hkad0iuff9g5ln/traces/6b191542730aa97b43eba03f5805e489",
     "llm_calls": 4,
     "tokens_in": 2608,
     "tokens_out": 212,
     "total_tokens": 2820,
     "cost_usd": 0.018340000000000002,
-    "latency_s": 1.3172102500029723,
+    "latency_s": 1.1951994170085527,
     "path": [
      "get_ticket",
      "get_order",
@@ -1258,7 +1258,7 @@
       "input_tokens": 487,
       "output_tokens": 24,
       "cost_usd": 0.003035,
-      "latency_s": 0.20444904200121528
+      "latency_s": 0.2064070840133354
      },
      {
       "kind": "tool",
@@ -1276,7 +1276,7 @@
        "request_type": "refund",
        "message": "Refund ORD-5106 or I'll keep the dispute open with my bank."
       },
-      "latency_s": 0.04118812499655178
+      "latency_s": 0.0006366249872371554
      },
      {
       "kind": "llm",
@@ -1284,7 +1284,7 @@
       "input_tokens": 599,
       "output_tokens": 24,
       "cost_usd": 0.003595,
-      "latency_s": 0.20722874999773921
+      "latency_s": 0.2087572499876842
      },
      {
       "kind": "tool",
@@ -1300,7 +1300,7 @@
        "product": "Pro add-on",
        "charged_at": "2026-09-13T16:25:00Z"
       },
-      "latency_s": 0.04410720799933188
+      "latency_s": 0.0010230410262010992
      },
      {
       "kind": "llm",
@@ -1308,7 +1308,7 @@
       "input_tokens": 700,
       "output_tokens": 54,
       "cost_usd": 0.00485,
-      "latency_s": 0.2986821250015055
+      "latency_s": 0.3005773749900982
      },
      {
       "kind": "tool",
@@ -1326,7 +1326,7 @@
        "refund_allowed": false,
        "policy_section": "open bank dispute: disputes team"
       },
-      "latency_s": 0.04551329200330656
+      "latency_s": 0.0005479580140672624
      },
      {
       "kind": "llm",
@@ -1334,7 +1334,7 @@
       "input_tokens": 822,
       "output_tokens": 110,
       "cost_usd": 0.00686,
-      "latency_s": 0.4683114579966059
+      "latency_s": 0.47167295799590647
      }
     ],
     "log": [
@@ -1351,7 +1351,7 @@
       }
      },
      {
-      "t": 0.207,
+      "t": 0.208,
       "system": "agent",
       "ticket_id": "TCK-7006",
       "event": "model_call",
@@ -1361,7 +1361,7 @@
       "cost_usd": 0.003035
      },
      {
-      "t": 0.248,
+      "t": 0.209,
       "system": "agent",
       "ticket_id": "TCK-7006",
       "event": "tool_call",
@@ -1371,7 +1371,7 @@
       }
      },
      {
-      "t": 0.457,
+      "t": 0.418,
       "system": "agent",
       "ticket_id": "TCK-7006",
       "event": "model_call",
@@ -1381,7 +1381,7 @@
       "cost_usd": 0.00663
      },
      {
-      "t": 0.501,
+      "t": 0.419,
       "system": "agent",
       "ticket_id": "TCK-7006",
       "event": "tool_call",
@@ -1391,7 +1391,7 @@
       }
      },
      {
-      "t": 0.801,
+      "t": 0.722,
       "system": "agent",
       "ticket_id": "TCK-7006",
       "event": "model_call",
@@ -1401,7 +1401,7 @@
       "cost_usd": 0.01148
      },
      {
-      "t": 0.846,
+      "t": 0.723,
       "system": "agent",
       "ticket_id": "TCK-7006",
       "event": "tool_call",
@@ -1415,7 +1415,7 @@
       }
      },
      {
-      "t": 1.317,
+      "t": 1.195,
       "system": "agent",
       "ticket_id": "TCK-7006",
       "event": "model_call",
@@ -1425,7 +1425,7 @@
       "cost_usd": 0.01834
      },
      {
-      "t": 1.317,
+      "t": 1.195,
       "system": "agent",
       "ticket_id": "TCK-7006",
       "event": "finished",
@@ -1474,13 +1474,13 @@
      "max_cost_usd": 0.25,
      "max_wall_s": 20.0
     },
-    "trace_url": "https://cloud.langfuse.com/project/cmts4unow08hkad0iuff9g5ln/traces/907a3db642ab40f7c69ff35234f99ea0",
+    "trace_url": "https://cloud.langfuse.com/project/cmts4unow08hkad0iuff9g5ln/traces/68dd2b634efb5c4548ee59e1479c9fa1",
     "llm_calls": 4,
     "tokens_in": 2611,
     "tokens_out": 207,
     "total_tokens": 2818,
     "cost_usd": 0.01823,
-    "latency_s": 1.31394333299977,
+    "latency_s": 1.172435124986805,
     "path": [
      "get_ticket",
      "get_order",
@@ -1493,7 +1493,7 @@
       "input_tokens": 487,
       "output_tokens": 24,
       "cost_usd": 0.003035,
-      "latency_s": 0.20687383400218096
+      "latency_s": 0.20430341694736853
      },
      {
       "kind": "tool",
@@ -1511,7 +1511,7 @@
        "request_type": "refund",
        "message": "Can I still get a refund on ORD-5107? It has been exactly a month."
       },
-      "latency_s": 0.049271999996562954
+      "latency_s": 0.0006931250100024045
      },
      {
       "kind": "llm",
@@ -1519,7 +1519,7 @@
       "input_tokens": 601,
       "output_tokens": 24,
       "cost_usd": 0.003605,
-      "latency_s": 0.2092560000019148
+      "latency_s": 0.20730275003006682
      },
      {
       "kind": "tool",
@@ -1535,7 +1535,7 @@
        "product": "Team plan (monthly)",
        "charged_at": "2026-08-29T12:00:00Z"
       },
-      "latency_s": 0.04428745799668832
+      "latency_s": 0.0009431670187041163
      },
      {
       "kind": "llm",
@@ -1543,7 +1543,7 @@
       "input_tokens": 702,
       "output_tokens": 52,
       "cost_usd": 0.00481,
-      "latency_s": 0.29254429200227605
+      "latency_s": 0.29348733299411833
      },
      {
       "kind": "tool",
@@ -1561,7 +1561,7 @@
        "refund_allowed": true,
        "policy_section": "inside the thirty-day window"
       },
-      "latency_s": 0.04623145799996564
+      "latency_s": 0.0005750830168835819
      },
      {
       "kind": "llm",
@@ -1569,7 +1569,7 @@
       "input_tokens": 821,
       "output_tokens": 107,
       "cost_usd": 0.00678,
-      "latency_s": 0.4590032499982044
+      "latency_s": 0.46010091598145664
      }
     ],
     "log": [
@@ -1586,7 +1586,7 @@
       }
      },
      {
-      "t": 0.208,
+      "t": 0.206,
       "system": "agent",
       "ticket_id": "TCK-7007",
       "event": "model_call",
@@ -1596,7 +1596,7 @@
       "cost_usd": 0.003035
      },
      {
-      "t": 0.258,
+      "t": 0.206,
       "system": "agent",
       "ticket_id": "TCK-7007",
       "event": "tool_call",
@@ -1606,7 +1606,7 @@
       }
      },
      {
-      "t": 0.468,
+      "t": 0.415,
       "system": "agent",
       "ticket_id": "TCK-7007",
       "event": "model_call",
@@ -1616,7 +1616,7 @@
       "cost_usd": 0.00664
      },
      {
-      "t": 0.512,
+      "t": 0.416,
       "system": "agent",
       "ticket_id": "TCK-7007",
       "event": "tool_call",
@@ -1626,7 +1626,7 @@
       }
      },
      {
-      "t": 0.807,
+      "t": 0.71,
       "system": "agent",
       "ticket_id": "TCK-7007",
       "event": "model_call",
@@ -1636,7 +1636,7 @@
       "cost_usd": 0.01145
      },
      {
-      "t": 0.853,
+      "t": 0.711,
       "system": "agent",
       "ticket_id": "TCK-7007",
       "event": "tool_call",
@@ -1650,7 +1650,7 @@
       }
      },
      {
-      "t": 1.313,
+      "t": 1.172,
       "system": "agent",
       "ticket_id": "TCK-7007",
       "event": "model_call",
@@ -1660,7 +1660,7 @@
       "cost_usd": 0.01823
      },
      {
-      "t": 1.313,
+      "t": 1.172,
       "system": "agent",
       "ticket_id": "TCK-7007",
       "event": "finished",
@@ -1709,13 +1709,13 @@
      "max_cost_usd": 0.25,
      "max_wall_s": 20.0
     },
-    "trace_url": "https://cloud.langfuse.com/project/cmts4unow08hkad0iuff9g5ln/traces/88d2132855ea3509854bb097f441ebe0",
+    "trace_url": "https://cloud.langfuse.com/project/cmts4unow08hkad0iuff9g5ln/traces/94eb72c8d173528955e73415f42489fd",
     "llm_calls": 4,
     "tokens_in": 2616,
     "tokens_out": 223,
     "total_tokens": 2839,
     "cost_usd": 0.018654999999999998,
-    "latency_s": 1.3653020420024404,
+    "latency_s": 1.2282190829864703,
     "path": [
      "get_ticket",
      "get_order",
@@ -1728,7 +1728,7 @@
       "input_tokens": 487,
       "output_tokens": 24,
       "cost_usd": 0.003035,
-      "latency_s": 0.20345787500264123
+      "latency_s": 0.20445874996948987
      },
      {
       "kind": "tool",
@@ -1746,7 +1746,7 @@
        "request_type": "refund",
        "message": "We want to cancel the annual plan on ORD-5108 and get the money back."
       },
-      "latency_s": 0.049731041995983105
+      "latency_s": 0.004521625000052154
      },
      {
       "kind": "llm",
@@ -1754,7 +1754,7 @@
       "input_tokens": 601,
       "output_tokens": 24,
       "cost_usd": 0.003605,
-      "latency_s": 0.20914349999657134
+      "latency_s": 0.20775970799149945
      },
      {
       "kind": "tool",
@@ -1770,7 +1770,7 @@
        "product": "Team plan (annual)",
        "charged_at": "2026-09-18T11:30:00Z"
       },
-      "latency_s": 0.04637295899738092
+      "latency_s": 0.0006506670033559203
      },
      {
       "kind": "llm",
@@ -1778,7 +1778,7 @@
       "input_tokens": 703,
       "output_tokens": 52,
       "cost_usd": 0.004815,
-      "latency_s": 0.295398792004562
+      "latency_s": 0.2947947920183651
      },
      {
       "kind": "tool",
@@ -1796,7 +1796,7 @@
        "refund_allowed": true,
        "policy_section": "refunds over USD 100 need a manager"
       },
-      "latency_s": 0.04207812499953434
+      "latency_s": 0.0006473330431617796
      },
      {
       "kind": "llm",
@@ -1804,7 +1804,7 @@
       "input_tokens": 825,
       "output_tokens": 123,
       "cost_usd": 0.0072,
-      "latency_s": 0.5100893749986426
+      "latency_s": 0.5096054999739863
      }
     ],
     "log": [
@@ -1831,7 +1831,7 @@
       "cost_usd": 0.003035
      },
      {
-      "t": 0.255,
+      "t": 0.211,
       "system": "agent",
       "ticket_id": "TCK-7008",
       "event": "tool_call",
@@ -1841,7 +1841,7 @@
       }
      },
      {
-      "t": 0.467,
+      "t": 0.42,
       "system": "agent",
       "ticket_id": "TCK-7008",
       "event": "model_call",
@@ -1851,7 +1851,7 @@
       "cost_usd": 0.00664
      },
      {
-      "t": 0.514,
+      "t": 0.42,
       "system": "agent",
       "ticket_id": "TCK-7008",
       "event": "tool_call",
@@ -1861,7 +1861,7 @@
       }
      },
      {
-      "t": 0.811,
+      "t": 0.716,
       "system": "agent",
       "ticket_id": "TCK-7008",
       "event": "model_call",
@@ -1871,7 +1871,7 @@
       "cost_usd": 0.011455
      },
      {
-      "t": 0.853,
+      "t": 0.717,
       "system": "agent",
       "ticket_id": "TCK-7008",
       "event": "tool_call",
@@ -1885,7 +1885,7 @@
       }
      },
      {
-      "t": 1.364,
+      "t": 1.228,
       "system": "agent",
       "ticket_id": "TCK-7008",
       "event": "model_call",
@@ -1895,7 +1895,7 @@
       "cost_usd": 0.018655
      },
      {
-      "t": 1.365,
+      "t": 1.228,
       "system": "agent",
       "ticket_id": "TCK-7008",
       "event": "finished",
@@ -1944,13 +1944,13 @@
      "max_cost_usd": 0.25,
      "max_wall_s": 20.0
     },
-    "trace_url": "https://cloud.langfuse.com/project/cmts4unow08hkad0iuff9g5ln/traces/a5e49ccfd55d67f81413a12889420d69",
+    "trace_url": "https://cloud.langfuse.com/project/cmts4unow08hkad0iuff9g5ln/traces/b92ac59fbc6cd2acad070f10ca4eef42",
     "llm_calls": 5,
     "tokens_in": 3552,
     "tokens_out": 231,
     "total_tokens": 3783,
     "cost_usd": 0.023535,
-    "latency_s": 1.5629197919988655,
+    "latency_s": 1.5431547079933807,
     "path": [
      "get_ticket",
      "get_order",
@@ -1964,7 +1964,7 @@
       "input_tokens": 487,
       "output_tokens": 24,
       "cost_usd": 0.003035,
-      "latency_s": 0.20225054200273007
+      "latency_s": 0.20688587496988475
      },
      {
       "kind": "tool",
@@ -1983,7 +1983,7 @@
        "request_type": "duplicate_charge",
        "message": "You charged me twice for the same thing, ORD-5109 and ORD-5110. Refund the extra one."
       },
-      "latency_s": 0.04457791599998018
+      "latency_s": 0.0008539580157957971
      },
      {
       "kind": "llm",
@@ -1991,7 +1991,7 @@
       "input_tokens": 611,
       "output_tokens": 24,
       "cost_usd": 0.003655,
-      "latency_s": 0.2068585000015446
+      "latency_s": 0.20766991598065943
      },
      {
       "kind": "tool",
@@ -2007,7 +2007,7 @@
        "product": "Pro add-on",
        "charged_at": "2026-09-23T09:14:02Z"
       },
-      "latency_s": 0.04397991700534476
+      "latency_s": 0.0006835829699411988
      },
      {
       "kind": "llm",
@@ -2015,7 +2015,7 @@
       "input_tokens": 711,
       "output_tokens": 24,
       "cost_usd": 0.004155,
-      "latency_s": 0.20704687500256114
+      "latency_s": 0.20853545796126127
      },
      {
       "kind": "tool",
@@ -2031,7 +2031,7 @@
        "product": "Pro add-on",
        "charged_at": "2026-09-23T09:14:42Z"
       },
-      "latency_s": 0.04540699999779463
+      "latency_s": 0.000913208001293242
      },
      {
       "kind": "llm",
@@ -2039,7 +2039,7 @@
       "input_tokens": 810,
       "output_tokens": 54,
       "cost_usd": 0.0054,
-      "latency_s": 0.3001510000030976
+      "latency_s": 0.4517566249705851
      },
      {
       "kind": "tool",
@@ -2057,7 +2057,7 @@
        "refund_allowed": true,
        "policy_section": "duplicate charges are always refunded"
       },
-      "latency_s": 0.046057416999246925
+      "latency_s": 0.0001872080028988421
      },
      {
       "kind": "llm",
@@ -2065,7 +2065,7 @@
       "input_tokens": 933,
       "output_tokens": 105,
       "cost_usd": 0.00729,
-      "latency_s": 0.45734641599847237
+      "latency_s": 0.45878816599724814
      }
     ],
     "log": [
@@ -2082,7 +2082,7 @@
       }
      },
      {
-      "t": 0.204,
+      "t": 0.208,
       "system": "agent",
       "ticket_id": "TCK-7009",
       "event": "model_call",
@@ -2092,7 +2092,7 @@
       "cost_usd": 0.003035
      },
      {
-      "t": 0.249,
+      "t": 0.209,
       "system": "agent",
       "ticket_id": "TCK-7009",
       "event": "tool_call",
@@ -2102,7 +2102,7 @@
       }
      },
      {
-      "t": 0.457,
+      "t": 0.418,
       "system": "agent",
       "ticket_id": "TCK-7009",
       "event": "model_call",
@@ -2112,7 +2112,7 @@
       "cost_usd": 0.00669
      },
      {
-      "t": 0.501,
+      "t": 0.419,
       "system": "agent",
       "ticket_id": "TCK-7009",
       "event": "tool_call",
@@ -2122,7 +2122,7 @@
       }
      },
      {
-      "t": 0.71,
+      "t": 0.629,
       "system": "agent",
       "ticket_id": "TCK-7009",
       "event": "model_call",
@@ -2132,7 +2132,7 @@
       "cost_usd": 0.010845
      },
      {
-      "t": 0.756,
+      "t": 0.63,
       "system": "agent",
       "ticket_id": "TCK-7009",
       "event": "tool_call",
@@ -2142,7 +2142,7 @@
       }
      },
      {
-      "t": 1.058,
+      "t": 1.082,
       "system": "agent",
       "ticket_id": "TCK-7009",
       "event": "model_call",
@@ -2152,7 +2152,7 @@
       "cost_usd": 0.016245
      },
      {
-      "t": 1.104,
+      "t": 1.082,
       "system": "agent",
       "ticket_id": "TCK-7009",
       "event": "tool_call",
@@ -2166,7 +2166,7 @@
       }
      },
      {
-      "t": 1.562,
+      "t": 1.542,
       "system": "agent",
       "ticket_id": "TCK-7009",
       "event": "model_call",
@@ -2176,7 +2176,7 @@
       "cost_usd": 0.023535
      },
      {
-      "t": 1.562,
+      "t": 1.542,
       "system": "agent",
       "ticket_id": "TCK-7009",
       "event": "finished",
@@ -2225,13 +2225,13 @@
      "max_cost_usd": 0.25,
      "max_wall_s": 20.0
     },
-    "trace_url": "https://cloud.langfuse.com/project/cmts4unow08hkad0iuff9g5ln/traces/73d1c01b22d07d6785c3b50278fc4fb3",
+    "trace_url": "https://cloud.langfuse.com/project/cmts4unow08hkad0iuff9g5ln/traces/8c18b85467fd60cd464e73972dae5c2e",
     "llm_calls": 3,
     "tokens_in": 1789,
     "tokens_out": 194,
     "total_tokens": 1983,
     "cost_usd": 0.013794999999999998,
-    "latency_s": 1.0828767909988528,
+    "latency_s": 0.9981687500257976,
     "path": [
      "get_ticket",
      "lookup_refund_policy"
@@ -2243,7 +2243,7 @@
       "input_tokens": 487,
       "output_tokens": 24,
       "cost_usd": 0.003035,
-      "latency_s": 0.20699533399601933
+      "latency_s": 0.20611370797269046
      },
      {
       "kind": "tool",
@@ -2259,7 +2259,7 @@
        "request_type": "refund",
        "message": "I want a refund for my last purchase."
       },
-      "latency_s": 0.042364624998299405
+      "latency_s": 0.0007300000288523734
      },
      {
       "kind": "llm",
@@ -2267,7 +2267,7 @@
       "input_tokens": 590,
       "output_tokens": 54,
       "cost_usd": 0.0043,
-      "latency_s": 0.2976897909975378
+      "latency_s": 0.2989792909938842
      },
      {
       "kind": "tool",
@@ -2285,7 +2285,7 @@
        "refund_allowed": false,
        "policy_section": "no billing record: escalate"
       },
-      "latency_s": 0.046463917002256494
+      "latency_s": 0.0006417919648811221
      },
      {
       "kind": "llm",
@@ -2293,7 +2293,7 @@
       "input_tokens": 712,
       "output_tokens": 116,
       "cost_usd": 0.00646,
-      "latency_s": 0.48312054199777776
+      "latency_s": 0.4870123339933343
      }
     ],
     "log": [
@@ -2310,7 +2310,7 @@
       }
      },
      {
-      "t": 0.209,
+      "t": 0.208,
       "system": "agent",
       "ticket_id": "TCK-7010",
       "event": "model_call",
@@ -2320,7 +2320,7 @@
       "cost_usd": 0.003035
      },
      {
-      "t": 0.251,
+      "t": 0.209,
       "system": "agent",
       "ticket_id": "TCK-7010",
       "event": "tool_call",
@@ -2330,7 +2330,7 @@
       }
      },
      {
-      "t": 0.551,
+      "t": 0.509,
       "system": "agent",
       "ticket_id": "TCK-7010",
       "event": "model_call",
@@ -2340,7 +2340,7 @@
       "cost_usd": 0.007335
      },
      {
-      "t": 0.597,
+      "t": 0.509,
       "system": "agent",
       "ticket_id": "TCK-7010",
       "event": "tool_call",
@@ -2354,7 +2354,7 @@
       }
      },
      {
-      "t": 1.082,
+      "t": 0.998,
       "system": "agent",
       "ticket_id": "TCK-7010",
       "event": "model_call",
@@ -2364,7 +2364,7 @@
       "cost_usd": 0.013795
      },
      {
-      "t": 1.082,
+      "t": 0.998,
       "system": "agent",
       "ticket_id": "TCK-7010",
       "event": "finished",
@@ -2409,13 +2409,13 @@
      "reply": "Hi, thanks for raising ticket TCK-7001.\n\nWe have approved a refund of USD 41.50 for order ORD-5101 (Pro add-on). It will reach your original payment method within 5-10 business days.\n\nBest regards,\nBilling Support"
     },
     "terminated": null,
-    "trace_url": "https://cloud.langfuse.com/project/cmts4unow08hkad0iuff9g5ln/traces/82dcc611a23397b5d740ceeb67a68ac8",
+    "trace_url": "https://cloud.langfuse.com/project/cmts4unow08hkad0iuff9g5ln/traces/800975ce6b85a5f276790a736eb16ec5",
     "llm_calls": 1,
     "tokens_in": 249,
     "tokens_out": 105,
     "total_tokens": 354,
     "cost_usd": 0.00387,
-    "latency_s": 0.5823294159999932,
+    "latency_s": 0.45025925000663847,
     "path": [
      "get_ticket",
      "get_order",
@@ -2438,7 +2438,7 @@
        "request_type": "refund",
        "message": "I bought the Pro add-on 12 days ago and it doesn't do what I need. Can I get my money back? Order ORD-5101."
       },
-      "latency_s": 0.046190916997147724
+      "latency_s": 0.0008478329982608557
      },
      {
       "kind": "tool",
@@ -2454,7 +2454,7 @@
        "product": "Pro add-on",
        "charged_at": "2026-09-16T10:02:00Z"
       },
-      "latency_s": 0.04393958299624501
+      "latency_s": 0.0006534999702125788
      },
      {
       "kind": "tool",
@@ -2472,7 +2472,7 @@
        "refund_allowed": true,
        "policy_section": "inside the thirty-day window"
       },
-      "latency_s": 0.04507095799635863
+      "latency_s": 0.0003286250284872949
      },
      {
       "kind": "llm",
@@ -2480,7 +2480,7 @@
       "input_tokens": 249,
       "output_tokens": 105,
       "cost_usd": 0.00387,
-      "latency_s": 0.4428634170035366
+      "latency_s": 0.44511079095536843
      }
     ],
     "log": [
@@ -2491,7 +2491,7 @@
       "event": "start"
      },
      {
-      "t": 0.049,
+      "t": 0.002,
       "system": "workflow",
       "ticket_id": "TCK-7001",
       "event": "tool_call",
@@ -2501,7 +2501,7 @@
       }
      },
      {
-      "t": 0.093,
+      "t": 0.002,
       "system": "workflow",
       "ticket_id": "TCK-7001",
       "event": "tool_call",
@@ -2511,7 +2511,7 @@
       }
      },
      {
-      "t": 0.138,
+      "t": 0.003,
       "system": "workflow",
       "ticket_id": "TCK-7001",
       "event": "tool_call",
@@ -2525,7 +2525,7 @@
       }
      },
      {
-      "t": 0.582,
+      "t": 0.449,
       "system": "workflow",
       "ticket_id": "TCK-7001",
       "event": "model_call",
@@ -2535,7 +2535,7 @@
       "cost_usd": 0.00387
      },
      {
-      "t": 0.582,
+      "t": 0.449,
       "system": "workflow",
       "ticket_id": "TCK-7001",
       "event": "finished",
@@ -2578,13 +2578,13 @@
      "reply": "Hi, thanks for raising ticket TCK-7002.\n\nOrder ORD-5102 was purchased 44 days ago, which is outside our 30-day window, so it is not eligible for a refund.\n\nBest regards,\nBilling Support"
     },
     "terminated": null,
-    "trace_url": "https://cloud.langfuse.com/project/cmts4unow08hkad0iuff9g5ln/traces/86cfd19db1c4525be68bef2fc3ebace6",
+    "trace_url": "https://cloud.langfuse.com/project/cmts4unow08hkad0iuff9g5ln/traces/c3fd505fc343448d238ea9ef5700a54f",
     "llm_calls": 1,
     "tokens_in": 235,
     "tokens_out": 96,
     "total_tokens": 331,
     "cost_usd": 0.003575,
-    "latency_s": 0.5594177919992944,
+    "latency_s": 0.4207600829540752,
     "path": [
      "get_ticket",
      "get_order",
@@ -2607,7 +2607,7 @@
        "request_type": "refund",
        "message": "Please refund order ORD-5102, I stopped using it."
       },
-      "latency_s": 0.04578491700522136
+      "latency_s": 0.000461166026070714
      },
      {
       "kind": "tool",
@@ -2623,7 +2623,7 @@
        "product": "Starter",
        "charged_at": "2026-08-15T08:40:00Z"
       },
-      "latency_s": 0.04606962500110967
+      "latency_s": 0.0004118339857086539
      },
      {
       "kind": "tool",
@@ -2641,7 +2641,7 @@
        "refund_allowed": false,
        "policy_section": "the refund window is thirty days"
       },
-      "latency_s": 0.046474832997773774
+      "latency_s": 0.00041129201417788863
      },
      {
       "kind": "llm",
@@ -2649,7 +2649,7 @@
       "input_tokens": 235,
       "output_tokens": 96,
       "cost_usd": 0.003575,
-      "latency_s": 0.4176990830019349
+      "latency_s": 0.41781995800556615
      }
     ],
     "log": [
@@ -2660,7 +2660,7 @@
       "event": "start"
      },
      {
-      "t": 0.046,
+      "t": 0.001,
       "system": "workflow",
       "ticket_id": "TCK-7002",
       "event": "tool_call",
@@ -2670,7 +2670,7 @@
       }
      },
      {
-      "t": 0.092,
+      "t": 0.001,
       "system": "workflow",
       "ticket_id": "TCK-7002",
       "event": "tool_call",
@@ -2680,7 +2680,7 @@
       }
      },
      {
-      "t": 0.139,
+      "t": 0.002,
       "system": "workflow",
       "ticket_id": "TCK-7002",
       "event": "tool_call",
@@ -2694,7 +2694,7 @@
       }
      },
      {
-      "t": 0.559,
+      "t": 0.42,
       "system": "workflow",
       "ticket_id": "TCK-7002",
       "event": "model_call",
@@ -2704,7 +2704,7 @@
       "cost_usd": 0.003575
      },
      {
-      "t": 0.559,
+      "t": 0.42,
       "system": "workflow",
       "ticket_id": "TCK-7002",
       "event": "finished",
@@ -2747,13 +2747,13 @@
      "reply": "Hi, thanks for raising ticket TCK-7003.\n\nWe have approved a refund of USD 29.00 for order ORD-5103 (3 seats). It will reach your original payment method within 5-10 business days.\n\n[ESCALATED]\n\nBest regards,\nBilling Support"
     },
     "terminated": null,
-    "trace_url": "https://cloud.langfuse.com/project/cmts4unow08hkad0iuff9g5ln/traces/1d105428edebdd82636c7e0fefe81e02",
+    "trace_url": "https://cloud.langfuse.com/project/cmts4unow08hkad0iuff9g5ln/traces/a8b7a48f38253e4967792df885a52993",
     "llm_calls": 1,
     "tokens_in": 244,
     "tokens_out": 108,
     "total_tokens": 352,
     "cost_usd": 0.00392,
-    "latency_s": 0.5931893749948358,
+    "latency_s": 0.45837891596602276,
     "path": [
      "get_ticket",
      "get_order",
@@ -2776,7 +2776,7 @@
        "request_type": "refund",
        "message": "Refund ORD-5103 please, the seats were bought by mistake."
       },
-      "latency_s": 0.04542220800067298
+      "latency_s": 0.0005273750284686685
      },
      {
       "kind": "tool",
@@ -2792,7 +2792,7 @@
        "product": "3 seats",
        "charged_at": "2026-09-19T14:11:00Z"
       },
-      "latency_s": 0.04728104200330563
+      "latency_s": 0.0004765000194311142
      },
      {
       "kind": "tool",
@@ -2810,7 +2810,7 @@
        "refund_allowed": true,
        "policy_section": "inside the thirty-day window; Priority tier is always escalated"
       },
-      "latency_s": 0.04299595899647102
+      "latency_s": 0.0004780409508384764
      },
      {
       "kind": "llm",
@@ -2818,7 +2818,7 @@
       "input_tokens": 244,
       "output_tokens": 108,
       "cost_usd": 0.00392,
-      "latency_s": 0.45412424999813084
+      "latency_s": 0.45408862497424707
      }
     ],
     "log": [
@@ -2829,7 +2829,7 @@
       "event": "start"
      },
      {
-      "t": 0.046,
+      "t": 0.001,
       "system": "workflow",
       "ticket_id": "TCK-7003",
       "event": "tool_call",
@@ -2839,7 +2839,7 @@
       }
      },
      {
-      "t": 0.093,
+      "t": 0.002,
       "system": "workflow",
       "ticket_id": "TCK-7003",
       "event": "tool_call",
@@ -2849,7 +2849,7 @@
       }
      },
      {
-      "t": 0.137,
+      "t": 0.002,
       "system": "workflow",
       "ticket_id": "TCK-7003",
       "event": "tool_call",
@@ -2863,7 +2863,7 @@
       }
      },
      {
-      "t": 0.592,
+      "t": 0.458,
       "system": "workflow",
       "ticket_id": "TCK-7003",
       "event": "model_call",
@@ -2873,7 +2873,7 @@
       "cost_usd": 0.00392
      },
      {
-      "t": 0.592,
+      "t": 0.458,
       "system": "workflow",
       "ticket_id": "TCK-7003",
       "event": "finished",
@@ -2916,13 +2916,13 @@
      "reply": "Hi, thanks for raising ticket TCK-7004.\n\nI could not find order ORD-5199 in our billing system. I have passed your ticket to the billing team, who will confirm the order details with you.\n\n[ESCALATED]\n\nBest regards,\nBilling Support"
     },
     "terminated": null,
-    "trace_url": "https://cloud.langfuse.com/project/cmts4unow08hkad0iuff9g5ln/traces/96b66cc31e6328e9ee79d93c4de9a16b",
+    "trace_url": "https://cloud.langfuse.com/project/cmts4unow08hkad0iuff9g5ln/traces/da531307b483773d8e9d492bb883c6e8",
     "llm_calls": 1,
     "tokens_in": 208,
     "tokens_out": 110,
     "total_tokens": 318,
     "cost_usd": 0.00379,
-    "latency_s": 0.5934193329958362,
+    "latency_s": 0.46368749998509884,
     "path": [
      "get_ticket",
      "get_order",
@@ -2945,7 +2945,7 @@
        "request_type": "refund",
        "message": "Where is my refund for ORD-5199? I asked last week."
       },
-      "latency_s": 0.041622542004915886
+      "latency_s": 0.0005952090141363442
      },
      {
       "kind": "tool",
@@ -2957,7 +2957,7 @@
        "order_id": "ORD-5199",
        "status": "not_found"
       },
-      "latency_s": 0.04818208299548132
+      "latency_s": 0.001078583998605609
      },
      {
       "kind": "tool",
@@ -2975,7 +2975,7 @@
        "refund_allowed": false,
        "policy_section": "no billing record: escalate"
       },
-      "latency_s": 0.04329791600321187
+      "latency_s": 0.00044908298877999187
      },
      {
       "kind": "llm",
@@ -2983,7 +2983,7 @@
       "input_tokens": 208,
       "output_tokens": 110,
       "cost_usd": 0.00379,
-      "latency_s": 0.4584155000047758
+      "latency_s": 0.4586354159982875
      }
     ],
     "log": [
@@ -2994,7 +2994,7 @@
       "event": "start"
      },
      {
-      "t": 0.042,
+      "t": 0.001,
       "system": "workflow",
       "ticket_id": "TCK-7004",
       "event": "tool_call",
@@ -3004,7 +3004,7 @@
       }
      },
      {
-      "t": 0.09,
+      "t": 0.002,
       "system": "workflow",
       "ticket_id": "TCK-7004",
       "event": "tool_call",
@@ -3014,7 +3014,7 @@
       }
      },
      {
-      "t": 0.134,
+      "t": 0.003,
       "system": "workflow",
       "ticket_id": "TCK-7004",
       "event": "tool_call",
@@ -3028,7 +3028,7 @@
       }
      },
      {
-      "t": 0.593,
+      "t": 0.463,
       "system": "workflow",
       "ticket_id": "TCK-7004",
       "event": "model_call",
@@ -3038,7 +3038,7 @@
       "cost_usd": 0.00379
      },
      {
-      "t": 0.593,
+      "t": 0.463,
       "system": "workflow",
       "ticket_id": "TCK-7004",
       "event": "finished",
@@ -3081,13 +3081,13 @@
      "reply": "Hi, thanks for raising ticket TCK-7005.\n\nOur records show order ORD-5105 was already refunded in full, so there is nothing further to process. Bank transfers can take up to 10 business days to appear.\n\nBest regards,\nBilling Support"
     },
     "terminated": null,
-    "trace_url": "https://cloud.langfuse.com/project/cmts4unow08hkad0iuff9g5ln/traces/323ad27fa6bf633a9f016e530e16de03",
+    "trace_url": "https://cloud.langfuse.com/project/cmts4unow08hkad0iuff9g5ln/traces/94cd76926d9c6d5c4fff1e0ee5911463",
     "llm_calls": 1,
     "tokens_in": 230,
     "tokens_out": 108,
     "total_tokens": 338,
     "cost_usd": 0.00385,
-    "latency_s": 0.5855680829990888,
+    "latency_s": 0.4572958329808898,
     "path": [
      "get_ticket",
      "get_order",
@@ -3110,7 +3110,7 @@
        "request_type": "refund",
        "message": "I still want my refund for ORD-5105."
       },
-      "latency_s": 0.04629320799722336
+      "latency_s": 0.00044891599100083113
      },
      {
       "kind": "tool",
@@ -3126,7 +3126,7 @@
        "product": "Starter",
        "charged_at": "2026-09-10T09:00:00Z"
       },
-      "latency_s": 0.04161387500062119
+      "latency_s": 0.00040020799497142434
      },
      {
       "kind": "tool",
@@ -3144,7 +3144,7 @@
        "refund_allowed": false,
        "policy_section": "one refund per order"
       },
-      "latency_s": 0.041258666999056004
+      "latency_s": 0.00040087499655783176
      },
      {
       "kind": "llm",
@@ -3152,7 +3152,7 @@
       "input_tokens": 230,
       "output_tokens": 108,
       "cost_usd": 0.00385,
-      "latency_s": 0.4538270420016488
+      "latency_s": 0.4537590409745462
      }
     ],
     "log": [
@@ -3163,7 +3163,7 @@
       "event": "start"
      },
      {
-      "t": 0.047,
+      "t": 0.001,
       "system": "workflow",
       "ticket_id": "TCK-7005",
       "event": "tool_call",
@@ -3173,7 +3173,7 @@
       }
      },
      {
-      "t": 0.089,
+      "t": 0.001,
       "system": "workflow",
       "ticket_id": "TCK-7005",
       "event": "tool_call",
@@ -3183,7 +3183,7 @@
       }
      },
      {
-      "t": 0.13,
+      "t": 0.002,
       "system": "workflow",
       "ticket_id": "TCK-7005",
       "event": "tool_call",
@@ -3197,7 +3197,7 @@
       }
      },
      {
-      "t": 0.585,
+      "t": 0.457,
       "system": "workflow",
       "ticket_id": "TCK-7005",
       "event": "model_call",
@@ -3207,7 +3207,7 @@
       "cost_usd": 0.00385
      },
      {
-      "t": 0.585,
+      "t": 0.457,
       "system": "workflow",
       "ticket_id": "TCK-7005",
       "event": "finished",
@@ -3250,13 +3250,13 @@
      "reply": "Hi, thanks for raising ticket TCK-7006.\n\nOrder ORD-5106 has an open dispute with your bank, so it is handled by our disputes team rather than as a refund. I have passed your ticket to them.\n\n[ESCALATED]\n\nBest regards,\nBilling Support"
     },
     "terminated": null,
-    "trace_url": "https://cloud.langfuse.com/project/cmts4unow08hkad0iuff9g5ln/traces/4f9c37efdecd6c027737f3c8f0cb4916",
+    "trace_url": "https://cloud.langfuse.com/project/cmts4unow08hkad0iuff9g5ln/traces/3e8dec888e3de0c0cc975c62f372f9de",
     "llm_calls": 1,
     "tokens_in": 241,
     "tokens_out": 110,
     "total_tokens": 351,
     "cost_usd": 0.003955,
-    "latency_s": 0.595696999997017,
+    "latency_s": 0.4642152499873191,
     "path": [
      "get_ticket",
      "get_order",
@@ -3279,7 +3279,7 @@
        "request_type": "refund",
        "message": "Refund ORD-5106 or I'll keep the dispute open with my bank."
       },
-      "latency_s": 0.04476537499431288
+      "latency_s": 0.00029562495183199644
      },
      {
       "kind": "tool",
@@ -3295,7 +3295,7 @@
        "product": "Pro add-on",
        "charged_at": "2026-09-13T16:25:00Z"
       },
-      "latency_s": 0.045290833004401065
+      "latency_s": 0.0002536670072004199
      },
      {
       "kind": "tool",
@@ -3313,7 +3313,7 @@
        "refund_allowed": false,
        "policy_section": "open bank dispute: disputes team"
       },
-      "latency_s": 0.041210625000530854
+      "latency_s": 0.000245374976657331
      },
      {
       "kind": "llm",
@@ -3321,7 +3321,7 @@
       "input_tokens": 241,
       "output_tokens": 110,
       "cost_usd": 0.003955,
-      "latency_s": 0.4599760829951265
+      "latency_s": 0.46136220800690353
      }
     ],
     "log": [
@@ -3332,7 +3332,7 @@
       "event": "start"
      },
      {
-      "t": 0.045,
+      "t": 0.001,
       "system": "workflow",
       "ticket_id": "TCK-7006",
       "event": "tool_call",
@@ -3342,7 +3342,7 @@
       }
      },
      {
-      "t": 0.091,
+      "t": 0.001,
       "system": "workflow",
       "ticket_id": "TCK-7006",
       "event": "tool_call",
@@ -3352,7 +3352,7 @@
       }
      },
      {
-      "t": 0.132,
+      "t": 0.001,
       "system": "workflow",
       "ticket_id": "TCK-7006",
       "event": "tool_call",
@@ -3366,7 +3366,7 @@
       }
      },
      {
-      "t": 0.594,
+      "t": 0.464,
       "system": "workflow",
       "ticket_id": "TCK-7006",
       "event": "model_call",
@@ -3376,7 +3376,7 @@
       "cost_usd": 0.003955
      },
      {
-      "t": 0.594,
+      "t": 0.464,
       "system": "workflow",
       "ticket_id": "TCK-7006",
       "event": "finished",
@@ -3419,13 +3419,13 @@
      "reply": "Hi, thanks for raising ticket TCK-7007.\n\nWe have approved a refund of USD 60.00 for order ORD-5107 (Team plan (monthly)). It will reach your original payment method within 5-10 business days.\n\nBest regards,\nBilling Support"
     },
     "terminated": null,
-    "trace_url": "https://cloud.langfuse.com/project/cmts4unow08hkad0iuff9g5ln/traces/b27d56b921757d63ad51ea39743e17ec",
+    "trace_url": "https://cloud.langfuse.com/project/cmts4unow08hkad0iuff9g5ln/traces/b35e226dddca8682436b3ac2e4131d2b",
     "llm_calls": 1,
     "tokens_in": 241,
     "tokens_out": 107,
     "total_tokens": 348,
     "cost_usd": 0.00388,
-    "latency_s": 0.5861359170012292,
+    "latency_s": 0.45412583398865536,
     "path": [
      "get_ticket",
      "get_order",
@@ -3448,7 +3448,7 @@
        "request_type": "refund",
        "message": "Can I still get a refund on ORD-5107? It has been exactly a month."
       },
-      "latency_s": 0.047268333997635636
+      "latency_s": 0.0005554590024985373
      },
      {
       "kind": "tool",
@@ -3464,7 +3464,7 @@
        "product": "Team plan (monthly)",
        "charged_at": "2026-08-29T12:00:00Z"
       },
-      "latency_s": 0.04235874999722
+      "latency_s": 0.0004540829686447978
      },
      {
       "kind": "tool",
@@ -3482,7 +3482,7 @@
        "refund_allowed": true,
        "policy_section": "inside the thirty-day window"
       },
-      "latency_s": 0.04501658400113229
+      "latency_s": 0.0004428329993970692
      },
      {
       "kind": "llm",
@@ -3490,7 +3490,7 @@
       "input_tokens": 241,
       "output_tokens": 107,
       "cost_usd": 0.00388,
-      "latency_s": 0.4487011250021169
+      "latency_s": 0.4504414170514792
      }
     ],
     "log": [
@@ -3501,7 +3501,7 @@
       "event": "start"
      },
      {
-      "t": 0.048,
+      "t": 0.001,
       "system": "workflow",
       "ticket_id": "TCK-7007",
       "event": "tool_call",
@@ -3511,7 +3511,7 @@
       }
      },
      {
-      "t": 0.09,
+      "t": 0.002,
       "system": "workflow",
       "ticket_id": "TCK-7007",
       "event": "tool_call",
@@ -3521,7 +3521,7 @@
       }
      },
      {
-      "t": 0.135,
+      "t": 0.002,
       "system": "workflow",
       "ticket_id": "TCK-7007",
       "event": "tool_call",
@@ -3535,7 +3535,7 @@
       }
      },
      {
-      "t": 0.585,
+      "t": 0.454,
       "system": "workflow",
       "ticket_id": "TCK-7007",
       "event": "model_call",
@@ -3545,7 +3545,7 @@
       "cost_usd": 0.00388
      },
      {
-      "t": 0.585,
+      "t": 0.454,
       "system": "workflow",
       "ticket_id": "TCK-7007",
       "event": "finished",
@@ -3588,13 +3588,13 @@
      "reply": "Hi, thanks for raising ticket TCK-7008.\n\nYour request for USD 240.00 back on order ORD-5108 is above what support can approve directly, so it has gone to a billing manager for sign-off. You will hear back within one business day.\n\n[ESCALATED]\n\nBest regards,\nBilling Support"
     },
     "terminated": null,
-    "trace_url": "https://cloud.langfuse.com/project/cmts4unow08hkad0iuff9g5ln/traces/787961db72f1fd60ed416b85d00304cc",
+    "trace_url": "https://cloud.langfuse.com/project/cmts4unow08hkad0iuff9g5ln/traces/ea2fb3349d8706c39fb4293d514407f5",
     "llm_calls": 1,
     "tokens_in": 245,
     "tokens_out": 123,
     "total_tokens": 368,
     "cost_usd": 0.0043,
-    "latency_s": 0.6359516669981531,
+    "latency_s": 0.5034718749811873,
     "path": [
      "get_ticket",
      "get_order",
@@ -3617,7 +3617,7 @@
        "request_type": "refund",
        "message": "We want to cancel the annual plan on ORD-5108 and get the money back."
       },
-      "latency_s": 0.04627325000183191
+      "latency_s": 0.0006929170340299606
      },
      {
       "kind": "tool",
@@ -3633,7 +3633,7 @@
        "product": "Team plan (annual)",
        "charged_at": "2026-09-18T11:30:00Z"
       },
-      "latency_s": 0.04242095800145762
+      "latency_s": 0.0006204170058481395
      },
      {
       "kind": "tool",
@@ -3651,7 +3651,7 @@
        "refund_allowed": true,
        "policy_section": "refunds over USD 100 need a manager"
       },
-      "latency_s": 0.044825291995948646
+      "latency_s": 0.0008490000036545098
      },
      {
       "kind": "llm",
@@ -3659,7 +3659,7 @@
       "input_tokens": 245,
       "output_tokens": 123,
       "cost_usd": 0.0043,
-      "latency_s": 0.4991317909953068
+      "latency_s": 0.49907095899106935
      }
     ],
     "log": [
@@ -3670,7 +3670,7 @@
       "event": "start"
      },
      {
-      "t": 0.047,
+      "t": 0.001,
       "system": "workflow",
       "ticket_id": "TCK-7008",
       "event": "tool_call",
@@ -3680,7 +3680,7 @@
       }
      },
      {
-      "t": 0.089,
+      "t": 0.002,
       "system": "workflow",
       "ticket_id": "TCK-7008",
       "event": "tool_call",
@@ -3690,7 +3690,7 @@
       }
      },
      {
-      "t": 0.134,
+      "t": 0.003,
       "system": "workflow",
       "ticket_id": "TCK-7008",
       "event": "tool_call",
@@ -3704,7 +3704,7 @@
       }
      },
      {
-      "t": 0.635,
+      "t": 0.503,
       "system": "workflow",
       "ticket_id": "TCK-7008",
       "event": "model_call",
@@ -3714,7 +3714,7 @@
       "cost_usd": 0.0043
      },
      {
-      "t": 0.635,
+      "t": 0.503,
       "system": "workflow",
       "ticket_id": "TCK-7008",
       "event": "finished",
@@ -3757,13 +3757,13 @@
      "reply": "Hi, thanks for raising ticket TCK-7009.\n\nWe have approved a refund of USD 25.00 for order ORD-5109 (Pro add-on). It will reach your original payment method within 5-10 business days.\n\nBest regards,\nBilling Support"
     },
     "terminated": null,
-    "trace_url": "https://cloud.langfuse.com/project/cmts4unow08hkad0iuff9g5ln/traces/3dd9cf92f5d49b5285ea352aeec1ab87",
+    "trace_url": "https://cloud.langfuse.com/project/cmts4unow08hkad0iuff9g5ln/traces/27b2fc686e28c152a935902b7a63b650",
     "llm_calls": 1,
     "tokens_in": 252,
     "tokens_out": 105,
     "total_tokens": 357,
     "cost_usd": 0.003885,
-    "latency_s": 0.5800148750058725,
+    "latency_s": 0.44896158296614885,
     "path": [
      "get_ticket",
      "get_order",
@@ -3787,7 +3787,7 @@
        "request_type": "duplicate_charge",
        "message": "You charged me twice for the same thing, ORD-5109 and ORD-5110. Refund the extra one."
       },
-      "latency_s": 0.04276591700181598
+      "latency_s": 0.0006950410315766931
      },
      {
       "kind": "tool",
@@ -3803,7 +3803,7 @@
        "product": "Pro add-on",
        "charged_at": "2026-09-23T09:14:02Z"
       },
-      "latency_s": 0.04522499999438878
+      "latency_s": 0.0005372909945435822
      },
      {
       "kind": "tool",
@@ -3821,7 +3821,7 @@
        "refund_allowed": true,
        "policy_section": "duplicate charges are always refunded"
       },
-      "latency_s": 0.04352104199642781
+      "latency_s": 0.00047208298929035664
      },
      {
       "kind": "llm",
@@ -3829,7 +3829,7 @@
       "input_tokens": 252,
       "output_tokens": 105,
       "cost_usd": 0.003885,
-      "latency_s": 0.4432655840064399
+      "latency_s": 0.44424437498673797
      }
     ],
     "log": [
@@ -3840,7 +3840,7 @@
       "event": "start"
      },
      {
-      "t": 0.043,
+      "t": 0.001,
       "system": "workflow",
       "ticket_id": "TCK-7009",
       "event": "tool_call",
@@ -3850,7 +3850,7 @@
       }
      },
      {
-      "t": 0.088,
+      "t": 0.002,
       "system": "workflow",
       "ticket_id": "TCK-7009",
       "event": "tool_call",
@@ -3860,7 +3860,7 @@
       }
      },
      {
-      "t": 0.132,
+      "t": 0.002,
       "system": "workflow",
       "ticket_id": "TCK-7009",
       "event": "tool_call",
@@ -3874,7 +3874,7 @@
       }
      },
      {
-      "t": 0.578,
+      "t": 0.448,
       "system": "workflow",
       "ticket_id": "TCK-7009",
       "event": "model_call",
@@ -3884,7 +3884,7 @@
       "cost_usd": 0.003885
      },
      {
-      "t": 0.579,
+      "t": 0.448,
       "system": "workflow",
       "ticket_id": "TCK-7009",
       "event": "finished",
@@ -3933,13 +3933,13 @@
      "reply": "Hi, thanks for raising ticket TCK-7010.\n\nYour message does not include an order number, so I cannot look up the charge. I have passed your ticket to the billing team, who will confirm the order details with you.\n\n[ESCALATED]\n\nBest regards,\nBilling Support"
     },
     "terminated": null,
-    "trace_url": "https://cloud.langfuse.com/project/cmts4unow08hkad0iuff9g5ln/traces/f6ed3bfd1a561f811b3920830c64f37d",
+    "trace_url": "https://cloud.langfuse.com/project/cmts4unow08hkad0iuff9g5ln/traces/2bf08084796ceb2c4229c07800764d3c",
     "llm_calls": 1,
     "tokens_in": 199,
     "tokens_out": 116,
     "total_tokens": 315,
     "cost_usd": 0.003895,
-    "latency_s": 0.617392916996323,
+    "latency_s": 0.48067516600713134,
     "path": [
      "get_ticket",
      "get_order",
@@ -3960,7 +3960,7 @@
        "request_type": "refund",
        "message": "I want a refund for my last purchase."
       },
-      "latency_s": 0.04630083299707621
+      "latency_s": 0.000659208046272397
      },
      {
       "kind": "tool",
@@ -3972,7 +3972,7 @@
        "order_id": null,
        "status": "not_found"
       },
-      "latency_s": 0.04660495900316164
+      "latency_s": 0.00047233299119398
      },
      {
       "kind": "tool",
@@ -3990,7 +3990,7 @@
        "refund_allowed": false,
        "policy_section": "no billing record: escalate"
       },
-      "latency_s": 0.0479089170039515
+      "latency_s": 0.0005786250112578273
      },
      {
       "kind": "llm",
@@ -3998,7 +3998,7 @@
       "input_tokens": 199,
       "output_tokens": 116,
       "cost_usd": 0.003895,
-      "latency_s": 0.4736983330003568
+      "latency_s": 0.47635258396621794
      }
     ],
     "log": [
@@ -4009,7 +4009,7 @@
       "event": "start"
      },
      {
-      "t": 0.047,
+      "t": 0.001,
       "system": "workflow",
       "ticket_id": "TCK-7010",
       "event": "tool_call",
@@ -4019,7 +4019,7 @@
       }
      },
      {
-      "t": 0.093,
+      "t": 0.002,
       "system": "workflow",
       "ticket_id": "TCK-7010",
       "event": "tool_call",
@@ -4029,7 +4029,7 @@
       }
      },
      {
-      "t": 0.141,
+      "t": 0.002,
       "system": "workflow",
       "ticket_id": "TCK-7010",
       "event": "tool_call",
@@ -4043,7 +4043,7 @@
       }
      },
      {
-      "t": 0.617,
+      "t": 0.48,
       "system": "workflow",
       "ticket_id": "TCK-7010",
       "event": "model_call",
@@ -4053,7 +4053,7 @@
       "cost_usd": 0.003895
      },
      {
-      "t": 0.617,
+      "t": 0.48,
       "system": "workflow",
       "ticket_id": "TCK-7010",
       "event": "finished",
@@ -4237,14 +4237,6 @@
    "order_ids": [],
    "request_type": "refund",
    "message": "I want a refund for my last purchase."
-  },
-  "TCK-9001": {
-   "customer_tier": "standard",
-   "order_ids": [
-    "ORD-5101"
-   ],
-   "request_type": "refund",
-   "message": "Please refund ORD-5101, it doesn't work for me"
   }
  },
  "paths": [
@@ -4459,6 +4451,6 @@
    "workflow_passed": true
   }
  ],
- "verdict": "Decision rule: does the execution path vary with the input? Measured on 10 tickets, the agent's path varied on 2 (TCK-7009, TCK-7010). On TCK-7010 the path changed but the output did not. The 4 branch tickets (TCK-7004, TCK-7005, TCK-7006, TCK-7008) did not need it: the enum policy tool turns a missing, refunded, charged-back or over-limit order into a decision, so the fixed path handled them. The class that forces a variable path is the multi-order (duplicate-charge) ticket: the workflow fetched one order and refunded the wrong one (TCK-7009). Workflow: 9/10 pass, p50 0.59s, 3,432 tokens, $0.0039/ticket. Agent: 10/10, p50 1.32s, 28,233 tokens (8.2x), $0.0183/ticket (4.7x). Verdict: the fixed workflow is sufficient for single-order tickets; only multi-order tickets justify the agent's cost.",
+ "verdict": "Decision rule: does the execution path vary with the input? Measured on 10 tickets, the agent's path varied on 2 (TCK-7009, TCK-7010). On TCK-7010 the path changed but the output did not. The 4 branch tickets (TCK-7004, TCK-7005, TCK-7006, TCK-7008) did not need it: the enum policy tool turns a missing, refunded, charged-back or over-limit order into a decision, so the fixed path handled them. The class that forces a variable path is the multi-order (duplicate-charge) ticket: the workflow fetched one order and refunded the wrong one (TCK-7009). Workflow: 9/10 pass, p50 0.46s, 3,432 tokens, $0.0039/ticket. Agent: 10/10, p50 1.19s, 28,233 tokens (8.2x), $0.0183/ticket (4.7x). Verdict: the fixed workflow is sufficient for single-order tickets; only multi-order tickets justify the agent's cost.",
  "verdict_words": 121
 }

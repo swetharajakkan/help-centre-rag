@@ -1,0 +1,25 @@
+{
+  "mcpServers": {
+    "help-centre-rag": {
+      "transport": "stdio",
+      "command": "${PYTHON}",
+      "args": ["${ROOT}/week9/servers/rag_server.py"],
+      "cwd": "${ROOT}",
+      "env": {"HELP_CENTRE_RERANK": "${HELP_CENTRE_RERANK:-1}", "HELP_CENTRE_RAG_ERRORS": "${HELP_CENTRE_RAG_ERRORS:-}"}
+    },
+    "ticket-history": {
+      "transport": "http",
+      "url": "${TICKET_HISTORY_URL:-http://127.0.0.1:8765/mcp}",
+      "headers": {"Authorization": "Bearer ${TICKET_HISTORY_TOKEN:-dev-ticket-token}"},
+      "attach": [{"uri": "tickets://{id}/escalations", "when": "TCK-\\d{4}"}]
+    },
+    "admin-documents": {
+      "transport": "stdio",
+      "command": "${PYTHON}",
+      "args": ["${ROOT}/week9/servers/documents_server.py"],
+      "cwd": "${ROOT}",
+      "env": {"HELP_CENTRE_RERANK": "${HELP_CENTRE_RERANK:-1}", "MONGODB_URI": "${MONGODB_URI:-}",
+              "MONGODB_DB": "${MONGODB_DB:-help_centre}"}
+    }
+  }
+}

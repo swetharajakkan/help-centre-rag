@@ -1,0 +1,176 @@
+{
+ "query": "What is going on with ticket TCK-4403, and what does the help centre say about it?",
+ "config": "week9/mcp_config.json (commit 2)",
+ "tool_calls": [
+  {
+   "tool": "ticket-history__get_ticket",
+   "server": "ticket-history",
+   "args": {
+    "ticket_id": "TCK-4403"
+   },
+   "is_error": false,
+   "ms": 6.2
+  },
+  {
+   "tool": "help-centre-rag__search_help_centre",
+   "server": "help-centre-rag",
+   "args": {
+    "query": "Proration charged twice after mid-cycle upgrade",
+    "product_area": "subscriptions"
+   },
+   "is_error": false,
+   "ms": 4427.6
+  }
+ ],
+ "attached_context": [
+  "tickets://TCK-4403/escalations"
+ ],
+ "answer": "TCK-4403 (\u201cProration charged twice after mid-cycle upgrade\u201d) is escalated with urgent priority. [TCK-4403] The customer wrote: \u201cWe upgraded seats mid-cycle during the migration window and were charged the proration twice.\u201d [TCK-4403] It has been escalated 2 time(s); most recently on 2026-09-28 from L2-billing to L3-ledger-eng because dual-write produced two proration events; needs ledger engineering. [TCK-4403] Ledger v1 prorated subscription changes to the nearest whole day. [BM-004]",
+ "model": "offline-mcp-planner",
+ "discovery": {
+  "config": "/var/folders/b8/48lnc8bx3wqf16vjs8d8p6300000gn/T/week9-proof-f13lm6ds/week9/mcp_config.json",
+  "servers": {
+   "help-centre-rag": {
+    "transport": "stdio",
+    "endpoint": "/Users/softsuave/Desktop/Help-centre/help-centre/.venv/bin/python /Users/softsuave/Desktop/Help-centre/help-centre/week9/servers/rag_server.py",
+    "connected": true,
+    "error": null,
+    "connect_ms": 598.7,
+    "protocol": "2025-11-25",
+    "server_info": {
+     "name": "help-centre-rag",
+     "version": "9.0.0"
+    },
+    "tools": [
+     {
+      "name": "search_help_centre",
+      "qualified": "help-centre-rag__search_help_centre",
+      "description": "Search the billing-migration help centre and return the k best chunks.\n\nUse this for any question about the billing migration (phases, cutover,\npayment methods, invoices, proration, tax ids, API and webhooks) and to\nground an answer about a support ticket in policy. Pass the user's\nquestion, or a ticket's subject, as `query` in plain words.\n\nk: 1-10, default 3. product_area: optional exact filter, one of\nbilling, payments, invoicing, subscriptions, tax-compliance,\ndeveloper-api.\n\nEach hit has chunk_id, article_id, title, score, relevance and text.\nCite chunk_id and quote text verbatim. relevance is \"weak\" when the\nreranker scores the chunk as unrelated to the query: treat weak hits, or\nan empty `hits` list, as \"the help centre does not cover this\" and say so\nrather than answering from memory.",
+      "input_schema": {
+       "additionalProperties": false,
+       "properties": {
+        "query": {
+         "type": "string"
+        },
+        "k": {
+         "default": 3,
+         "type": "integer"
+        },
+        "product_area": {
+         "anyOf": [
+          {
+           "type": "string"
+          },
+          {
+           "type": "null"
+          }
+         ],
+         "default": null
+        }
+       },
+       "required": [
+        "query"
+       ],
+       "type": "object"
+      }
+     },
+     {
+      "name": "get_article",
+      "qualified": "help-centre-rag__get_article",
+      "description": "Fetch the full text of ONE help-centre article by its article id.\n\nUse this when you already hold an article id -- from the user's message, or\nfrom the article_id field of a search_help_centre hit -- and need the whole\narticle rather than a chunk of it. If you only have a topic or a question,\ncall search_help_centre instead; never guess an id.\n\narticle_id: \"BM-\" followed by exactly three digits, e.g. \"BM-004\". A user who\nwrites \"BM-4\" or \"bm 4\" means \"BM-004\".\n\nReturns article_id, title, product_area, last_updated and text (markdown).\nQuote from text when you cite it; text is exactly what the user would read.\n\nErrors are recoverable and say which case they are:\n  - \"not found ... ids look like BM-nnn\": reformat the id and call again once.\n  - \"no article ... call search_help_centre\": the id is well-formed but does\n    not exist; search by topic instead of retrying.\n",
+      "input_schema": {
+       "additionalProperties": false,
+       "properties": {
+        "article_id": {
+         "type": "string"
+        }
+       },
+       "required": [
+        "article_id"
+       ],
+       "type": "object"
+      }
+     }
+    ],
+    "resources": [
+     "kb://articles"
+    ],
+    "resource_templates": [
+     "kb://articles/{article_id}"
+    ],
+    "prompts": [
+     "grounded_answer"
+    ],
+    "attach": []
+   },
+   "ticket-history": {
+    "transport": "http",
+    "endpoint": "http://127.0.0.1:8765/mcp",
+    "connected": true,
+    "error": null,
+    "connect_ms": 47.3,
+    "protocol": "2025-11-25",
+    "server_info": {
+     "name": "ticket-history",
+     "version": "1.3.0"
+    },
+    "tools": [
+     {
+      "name": "get_ticket",
+      "qualified": "ticket-history__get_ticket",
+      "description": "Fetch one support ticket by id: subject, status, priority, product area,\nthe customer's own message and how many times it was escalated.\n\nUse it whenever the user names a ticket id (ids look like TCK-nnnn, e.g.\nTCK-4403). It does not search: if you only have a description of the\nproblem, do not guess an id.",
+      "input_schema": {
+       "additionalProperties": false,
+       "properties": {
+        "ticket_id": {
+         "type": "string"
+        }
+       },
+       "required": [
+        "ticket_id"
+       ],
+       "type": "object"
+      }
+     },
+     {
+      "name": "get_escalation_history",
+      "qualified": "ticket-history__get_escalation_history",
+      "description": "Every escalation behind a ticket (TCK-nnnn), oldest first: when, from\nwhich tier to which, who moved it and why.\n\nThe host usually attaches this as context already (resource\ntickets://{ticket_id}/escalations); only call it when that context is not\nin the conversation.",
+      "input_schema": {
+       "additionalProperties": false,
+       "properties": {
+        "ticket_id": {
+         "type": "string"
+        }
+       },
+       "required": [
+        "ticket_id"
+       ],
+       "type": "object"
+      }
+     }
+    ],
+    "resources": [],
+    "resource_templates": [
+     "tickets://{ticket_id}/escalations"
+    ],
+    "prompts": [
+     "handover_note"
+    ],
+    "attach": [
+     {
+      "uri": "tickets://{id}/escalations",
+      "when": "TCK-\\d{4}"
+     }
+    ]
+   }
+  },
+  "tool_count": 4,
+  "tool_names": [
+   "help-centre-rag__search_help_centre",
+   "help-centre-rag__get_article",
+   "ticket-history__get_ticket",
+   "ticket-history__get_escalation_history"
+  ]
+ }
+}

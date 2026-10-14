@@ -1,0 +1,307 @@
+[
+ {
+  "step": "unauthenticated",
+  "http": {
+   "request": "POST http://127.0.0.1:8765/mcp",
+   "status": 401,
+   "request_headers": {
+    "accept": "application/json, text/event-stream",
+    "content-type": "application/json"
+   },
+   "response_headers": {
+    "www-authenticate": "Bearer"
+   }
+  },
+  "request": {
+   "jsonrpc": "2.0",
+   "id": 1,
+   "method": "initialize",
+   "params": {
+    "protocolVersion": "2025-11-25",
+    "capabilities": {},
+    "clientInfo": {
+     "name": "week9-wire-capture",
+     "version": "1.0"
+    }
+   }
+  },
+  "response": null
+ },
+ {
+  "step": "initialize",
+  "http": {
+   "request": "POST http://127.0.0.1:8765/mcp",
+   "status": 200,
+   "request_headers": {
+    "accept": "application/json, text/event-stream",
+    "content-type": "application/json",
+    "authorization": "Bearer <redacted>"
+   },
+   "response_headers": {
+    "content-type": "text/event-stream",
+    "mcp-session-id": "2e19a6827baa4eddbca16a8835a441bf"
+   }
+  },
+  "request": {
+   "jsonrpc": "2.0",
+   "id": 1,
+   "method": "initialize",
+   "params": {
+    "protocolVersion": "2025-11-25",
+    "capabilities": {},
+    "clientInfo": {
+     "name": "week9-wire-capture",
+     "version": "1.0"
+    }
+   }
+  },
+  "response": {
+   "jsonrpc": "2.0",
+   "id": 1,
+   "result": {
+    "protocolVersion": "2025-11-25",
+    "capabilities": {
+     "experimental": {},
+     "logging": {},
+     "prompts": {
+      "listChanged": true
+     },
+     "resources": {
+      "subscribe": false,
+      "listChanged": true
+     },
+     "tools": {
+      "listChanged": true
+     },
+     "extensions": {
+      "io.modelcontextprotocol/ui": {}
+     }
+    },
+    "serverInfo": {
+     "name": "ticket-history",
+     "version": "1.3.0"
+    },
+    "instructions": "Support Ops ticket history. Look tickets up by id (TCK-nnnn). Records are read-only."
+   }
+  }
+ },
+ {
+  "step": "initialized",
+  "http": {
+   "request": "POST http://127.0.0.1:8765/mcp",
+   "status": 202,
+   "request_headers": {
+    "accept": "application/json, text/event-stream",
+    "content-type": "application/json",
+    "authorization": "Bearer <redacted>",
+    "mcp-session-id": "2e19a6827baa4eddbca16a8835a441bf",
+    "mcp-protocol-version": "2025-11-25"
+   },
+   "response_headers": {
+    "content-type": "application/json",
+    "mcp-session-id": "2e19a6827baa4eddbca16a8835a441bf"
+   }
+  },
+  "request": {
+   "jsonrpc": "2.0",
+   "method": "notifications/initialized"
+  },
+  "response": null
+ },
+ {
+  "step": "tools_list",
+  "http": {
+   "request": "POST http://127.0.0.1:8765/mcp",
+   "status": 200,
+   "request_headers": {
+    "accept": "application/json, text/event-stream",
+    "content-type": "application/json",
+    "authorization": "Bearer <redacted>",
+    "mcp-session-id": "2e19a6827baa4eddbca16a8835a441bf",
+    "mcp-protocol-version": "2025-11-25"
+   },
+   "response_headers": {
+    "content-type": "text/event-stream",
+    "mcp-session-id": "2e19a6827baa4eddbca16a8835a441bf"
+   }
+  },
+  "request": {
+   "jsonrpc": "2.0",
+   "id": 2,
+   "method": "tools/list",
+   "params": {}
+  },
+  "response": {
+   "jsonrpc": "2.0",
+   "id": 2,
+   "result": {
+    "tools": [
+     {
+      "name": "get_ticket",
+      "description": "Fetch one support ticket by id: subject, status, priority, product area,\nthe customer's own message and how many times it was escalated.\n\nUse it whenever the user names a ticket id (ids look like TCK-nnnn, e.g.\nTCK-4403). It does not search: if you only have a description of the\nproblem, do not guess an id.",
+      "inputSchema": {
+       "additionalProperties": false,
+       "properties": {
+        "ticket_id": {
+         "type": "string"
+        }
+       },
+       "required": [
+        "ticket_id"
+       ],
+       "type": "object"
+      },
+      "outputSchema": {
+       "additionalProperties": true,
+       "type": "object"
+      },
+      "annotations": {
+       "readOnlyHint": true,
+       "openWorldHint": false
+      },
+      "_meta": {
+       "fastmcp": {
+        "tags": []
+       }
+      }
+     },
+     {
+      "name": "get_escalation_history",
+      "description": "Every escalation behind a ticket (TCK-nnnn), oldest first: when, from\nwhich tier to which, who moved it and why.\n\nThe host usually attaches this as context already (resource\ntickets://{ticket_id}/escalations); only call it when that context is not\nin the conversation.",
+      "inputSchema": {
+       "additionalProperties": false,
+       "properties": {
+        "ticket_id": {
+         "type": "string"
+        }
+       },
+       "required": [
+        "ticket_id"
+       ],
+       "type": "object"
+      },
+      "outputSchema": {
+       "additionalProperties": true,
+       "type": "object"
+      },
+      "annotations": {
+       "readOnlyHint": true,
+       "openWorldHint": false
+      },
+      "_meta": {
+       "fastmcp": {
+        "tags": []
+       }
+      }
+     }
+    ]
+   }
+  }
+ },
+ {
+  "step": "tools_call",
+  "http": {
+   "request": "POST http://127.0.0.1:8765/mcp",
+   "status": 200,
+   "request_headers": {
+    "accept": "application/json, text/event-stream",
+    "content-type": "application/json",
+    "authorization": "Bearer <redacted>",
+    "mcp-session-id": "2e19a6827baa4eddbca16a8835a441bf",
+    "mcp-protocol-version": "2025-11-25"
+   },
+   "response_headers": {
+    "content-type": "text/event-stream",
+    "mcp-session-id": "2e19a6827baa4eddbca16a8835a441bf"
+   }
+  },
+  "request": {
+   "jsonrpc": "2.0",
+   "id": 3,
+   "method": "tools/call",
+   "params": {
+    "name": "get_ticket",
+    "arguments": {
+     "ticket_id": "TCK-4403"
+    }
+   }
+  },
+  "response": {
+   "jsonrpc": "2.0",
+   "id": 3,
+   "result": {
+    "content": [
+     {
+      "type": "text",
+      "text": "{\"subject\":\"Proration charged twice after mid-cycle upgrade\",\"customer\":{\"account\":\"BLUE-0412\",\"name\":\"Bluefin Analytics\",\"contact_email\":\"finance@bluefin.example\"},\"status\":\"escalated\",\"priority\":\"urgent\",\"product_area\":\"subscriptions\",\"opened_at\":\"2026-09-27T10:21:00Z\",\"message\":\"We upgraded seats mid-cycle during the migration window and were charged the proration twice.\",\"ticket_id\":\"TCK-4403\",\"escalation_count\":2,\"latest_escalation\":{\"at\":\"2026-09-28T16:30:00Z\",\"from_tier\":\"L2-billing\",\"to_tier\":\"L3-ledger-eng\",\"by\":\"agent:dana\",\"reason\":\"dual-write produced two proration events; needs ledger engineering\"}}"
+     }
+    ],
+    "structuredContent": {
+     "subject": "Proration charged twice after mid-cycle upgrade",
+     "customer": {
+      "account": "BLUE-0412",
+      "name": "Bluefin Analytics",
+      "contact_email": "finance@bluefin.example"
+     },
+     "status": "escalated",
+     "priority": "urgent",
+     "product_area": "subscriptions",
+     "opened_at": "2026-09-27T10:21:00Z",
+     "message": "We upgraded seats mid-cycle during the migration window and were charged the proration twice.",
+     "ticket_id": "TCK-4403",
+     "escalation_count": 2,
+     "latest_escalation": {
+      "at": "2026-09-28T16:30:00Z",
+      "from_tier": "L2-billing",
+      "to_tier": "L3-ledger-eng",
+      "by": "agent:dana",
+      "reason": "dual-write produced two proration events; needs ledger engineering"
+     }
+    },
+    "isError": false
+   }
+  }
+ },
+ {
+  "step": "tools_call_error",
+  "http": {
+   "request": "POST http://127.0.0.1:8765/mcp",
+   "status": 200,
+   "request_headers": {
+    "accept": "application/json, text/event-stream",
+    "content-type": "application/json",
+    "authorization": "Bearer <redacted>",
+    "mcp-session-id": "2e19a6827baa4eddbca16a8835a441bf",
+    "mcp-protocol-version": "2025-11-25"
+   },
+   "response_headers": {
+    "content-type": "text/event-stream",
+    "mcp-session-id": "2e19a6827baa4eddbca16a8835a441bf"
+   }
+  },
+  "request": {
+   "jsonrpc": "2.0",
+   "id": 4,
+   "method": "tools/call",
+   "params": {
+    "name": "get_ticket",
+    "arguments": {
+     "ticket_id": "TCK-44"
+    }
+   }
+  },
+  "response": {
+   "jsonrpc": "2.0",
+   "id": 4,
+   "result": {
+    "content": [
+     {
+      "type": "text",
+      "text": "ticket id 'TCK-44' is malformed: ticket ids look like TCK-nnnn (TCK- then four digits, e.g. TCK-4401). Re-read the id from the customer's message; do not retry this exact value."
+     }
+    ],
+    "isError": true
+   }
+  }
+ }
+]

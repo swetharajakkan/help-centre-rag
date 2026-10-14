@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "support-gateway": {
+      "transport": "http",
+      "url": "${GATEWAY_URL:-http://127.0.0.1:8766/mcp}",
+      "headers": {"Authorization": "Bearer ${GATEWAY_TOKEN:-agent-full}"},
+      "attach": [{"uri": "tickets://ticket-history/{id}/escalations", "when": "TCK-\\d{4}"}]
+    }
+  }
+}

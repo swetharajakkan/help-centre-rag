@@ -1,0 +1,387 @@
+{
+ "_how_to_read": "Each step holds the exact JSON sent and received; the _request_notes/_response_notes beside it annotate every top-level field (and the top-level fields of result).",
+ "where_the_model_runs": "The model call happens in the host, in week9/agent/loop.py (model.complete), after tools/list returns and before tools/call is sent; it never happens on this wire or inside the ticket-history server, which only lists tools and executes them.",
+ "server": "http://127.0.0.1:8765/mcp",
+ "exchange": [
+  {
+   "step": "unauthenticated",
+   "http": {
+    "request": "POST http://127.0.0.1:8765/mcp",
+    "status": 401,
+    "request_headers": {
+     "accept": "application/json, text/event-stream",
+     "content-type": "application/json"
+    },
+    "response_headers": {
+     "www-authenticate": "Bearer"
+    },
+    "_note": "401 + WWW-Authenticate: Bearer. Remote MCP auth sits in HTTP, under JSON-RPC: the request is refused before any MCP method runs."
+   },
+   "request": {
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "initialize",
+    "params": {
+     "protocolVersion": "2025-11-25",
+     "capabilities": {},
+     "clientInfo": {
+      "name": "week9-wire-capture",
+      "version": "1.0"
+     }
+    }
+   },
+   "_request_notes": {
+    "jsonrpc": "Always the string \"2.0\": this is JSON-RPC 2.0 framing.",
+    "id": "Request id chosen by the client; would be echoed in the response.",
+    "method": "initialize -- but it never reaches MCP: the HTTP layer rejects it first.",
+    "params": "Same params as step 1. Irrelevant here; auth is checked before parsing."
+   },
+   "response": null,
+   "_response_notes": {
+    "(empty body)": "No JSON-RPC response at all: no token, no session, no id echoed."
+   }
+  },
+  {
+   "step": "initialize",
+   "http": {
+    "request": "POST http://127.0.0.1:8765/mcp",
+    "status": 200,
+    "request_headers": {
+     "accept": "application/json, text/event-stream",
+     "content-type": "application/json",
+     "authorization": "Bearer <redacted>"
+    },
+    "response_headers": {
+     "content-type": "text/event-stream",
+     "mcp-session-id": "2e19a6827baa4eddbca16a8835a441bf"
+    },
+    "_note": "The response header mcp-session-id names this session; every later request must send it back."
+   },
+   "request": {
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "initialize",
+    "params": {
+     "protocolVersion": "2025-11-25",
+     "capabilities": {},
+     "clientInfo": {
+      "name": "week9-wire-capture",
+      "version": "1.0"
+     }
+    }
+   },
+   "_request_notes": {
+    "jsonrpc": "JSON-RPC version, fixed \"2.0\".",
+    "id": "1 -- the first request of the session; the response carries the same id.",
+    "method": "initialize: the handshake. Nothing else may be sent before it.",
+    "params": "protocolVersion the client speaks, the client's capabilities (none offered: no sampling, no roots), and clientInfo (who is calling)."
+   },
+   "response": {
+    "jsonrpc": "2.0",
+    "id": 1,
+    "result": {
+     "protocolVersion": "2025-11-25",
+     "capabilities": {
+      "experimental": {},
+      "logging": {},
+      "prompts": {
+       "listChanged": true
+      },
+      "resources": {
+       "subscribe": false,
+       "listChanged": true
+      },
+      "tools": {
+       "listChanged": true
+      },
+      "extensions": {
+       "io.modelcontextprotocol/ui": {}
+      }
+     },
+     "serverInfo": {
+      "name": "ticket-history",
+      "version": "1.3.0"
+     },
+     "instructions": "Support Ops ticket history. Look tickets up by id (TCK-nnnn). Records are read-only."
+    }
+   },
+   "_response_notes": {
+    "jsonrpc": "\"2.0\" again.",
+    "id": "1 -- matches the request, which is how the client pairs them.",
+    "result": "The server's half of the handshake (fields below).",
+    "result.protocolVersion": "The version the server agreed to; both sides now speak it.",
+    "result.capabilities": "What this server offers: tools, resources and prompts (each with listChanged notifications), logging, plus experimental/extensions slots. The host only asks for what is listed here.",
+    "result.serverInfo": "Name and version of the server -- ticket-history 1.3.0. This is the third-party identity the risk note is about.",
+    "result.instructions": "Free text the server wants the host to show its model. Untrusted input from a third party, like any tool description."
+   }
+  },
+  {
+   "step": "initialized",
+   "http": {
+    "request": "POST http://127.0.0.1:8765/mcp",
+    "status": 202,
+    "request_headers": {
+     "accept": "application/json, text/event-stream",
+     "content-type": "application/json",
+     "authorization": "Bearer <redacted>",
+     "mcp-session-id": "2e19a6827baa4eddbca16a8835a441bf",
+     "mcp-protocol-version": "2025-11-25"
+    },
+    "response_headers": {
+     "content-type": "application/json",
+     "mcp-session-id": "2e19a6827baa4eddbca16a8835a441bf"
+    },
+    "_note": "202 Accepted with an empty body. Only now may the client send requests."
+   },
+   "request": {
+    "jsonrpc": "2.0",
+    "method": "notifications/initialized"
+   },
+   "_request_notes": {
+    "jsonrpc": "\"2.0\".",
+    "method": "notifications/initialized: the client confirms the handshake is done.",
+    "(no id)": "No id field at all -- that is what makes it a notification: no reply."
+   },
+   "response": null,
+   "_response_notes": {}
+  },
+  {
+   "step": "tools_list",
+   "http": {
+    "request": "POST http://127.0.0.1:8765/mcp",
+    "status": 200,
+    "request_headers": {
+     "accept": "application/json, text/event-stream",
+     "content-type": "application/json",
+     "authorization": "Bearer <redacted>",
+     "mcp-session-id": "2e19a6827baa4eddbca16a8835a441bf",
+     "mcp-protocol-version": "2025-11-25"
+    },
+    "response_headers": {
+     "content-type": "text/event-stream",
+     "mcp-session-id": "2e19a6827baa4eddbca16a8835a441bf"
+    },
+    "_note": "200, JSON-RPC result."
+   },
+   "request": {
+    "jsonrpc": "2.0",
+    "id": 2,
+    "method": "tools/list",
+    "params": {}
+   },
+   "_request_notes": {
+    "jsonrpc": "\"2.0\".",
+    "id": "2.",
+    "method": "tools/list: discovery. The answer is the ONLY source of the agent's tool list for this server.",
+    "params": "Empty: no pagination cursor on the first page."
+   },
+   "response": {
+    "jsonrpc": "2.0",
+    "id": 2,
+    "result": {
+     "tools": [
+      {
+       "name": "get_ticket",
+       "description": "Fetch one support ticket by id: subject, status, priority, product area,\nthe customer's own message and how many times it was escalated.\n\nUse it whenever the user names a ticket id (ids look like TCK-nnnn, e.g.\nTCK-4403). It does not search: if you only have a description of the\nproblem, do not guess an id.",
+       "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+         "ticket_id": {
+          "type": "string"
+         }
+        },
+        "required": [
+         "ticket_id"
+        ],
+        "type": "object"
+       },
+       "outputSchema": {
+        "additionalProperties": true,
+        "type": "object"
+       },
+       "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false
+       },
+       "_meta": {
+        "fastmcp": {
+         "tags": []
+        }
+       }
+      },
+      {
+       "name": "get_escalation_history",
+       "description": "Every escalation behind a ticket (TCK-nnnn), oldest first: when, from\nwhich tier to which, who moved it and why.\n\nThe host usually attaches this as context already (resource\ntickets://{ticket_id}/escalations); only call it when that context is not\nin the conversation.",
+       "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+         "ticket_id": {
+          "type": "string"
+         }
+        },
+        "required": [
+         "ticket_id"
+        ],
+        "type": "object"
+       },
+       "outputSchema": {
+        "additionalProperties": true,
+        "type": "object"
+       },
+       "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false
+       },
+       "_meta": {
+        "fastmcp": {
+         "tags": []
+        }
+       }
+      }
+     ]
+    }
+   },
+   "_response_notes": {
+    "jsonrpc": "\"2.0\".",
+    "id": "2 -- pairs with the request.",
+    "result": "The discovered tools (field below).",
+    "result.tools": "One entry per tool: name, description (the docstring the model reads as a prompt), inputSchema (JSON Schema the model's arguments must satisfy), outputSchema, annotations (readOnlyHint), and _meta. Two tools: get_ticket, get_escalation_history."
+   }
+  },
+  {
+   "step": "tools_call",
+   "http": {
+    "request": "POST http://127.0.0.1:8765/mcp",
+    "status": 200,
+    "request_headers": {
+     "accept": "application/json, text/event-stream",
+     "content-type": "application/json",
+     "authorization": "Bearer <redacted>",
+     "mcp-session-id": "2e19a6827baa4eddbca16a8835a441bf",
+     "mcp-protocol-version": "2025-11-25"
+    },
+    "response_headers": {
+     "content-type": "text/event-stream",
+     "mcp-session-id": "2e19a6827baa4eddbca16a8835a441bf"
+    },
+    "_note": "200."
+   },
+   "request": {
+    "jsonrpc": "2.0",
+    "id": 3,
+    "method": "tools/call",
+    "params": {
+     "name": "get_ticket",
+     "arguments": {
+      "ticket_id": "TCK-4403"
+     }
+    }
+   },
+   "_request_notes": {
+    "jsonrpc": "\"2.0\".",
+    "id": "3.",
+    "method": "tools/call: execute one tool. The model chose it, in the host, before this request was written.",
+    "params": "name (the server's own tool name, without the host's \"ticket-history__\" prefix) and arguments (the model's input)."
+   },
+   "response": {
+    "jsonrpc": "2.0",
+    "id": 3,
+    "result": {
+     "content": [
+      {
+       "type": "text",
+       "text": "{\"subject\":\"Proration charged twice after mid-cycle upgrade\",\"customer\":{\"account\":\"BLUE-0412\",\"name\":\"Bluefin Analytics\",\"contact_email\":\"finance@bluefin.example\"},\"status\":\"escalated\",\"priority\":\"urgent\",\"product_area\":\"subscriptions\",\"opened_at\":\"2026-09-27T10:21:00Z\",\"message\":\"We upgraded seats mid-cycle during the migration window and were charged the proration twice.\",\"ticket_id\":\"TCK-4403\",\"escalation_count\":2,\"latest_escalation\":{\"at\":\"2026-09-28T16:30:00Z\",\"from_tier\":\"L2-billing\",\"to_tier\":\"L3-ledger-eng\",\"by\":\"agent:dana\",\"reason\":\"dual-write produced two proration events; needs ledger engineering\"}}"
+      }
+     ],
+     "structuredContent": {
+      "subject": "Proration charged twice after mid-cycle upgrade",
+      "customer": {
+       "account": "BLUE-0412",
+       "name": "Bluefin Analytics",
+       "contact_email": "finance@bluefin.example"
+      },
+      "status": "escalated",
+      "priority": "urgent",
+      "product_area": "subscriptions",
+      "opened_at": "2026-09-27T10:21:00Z",
+      "message": "We upgraded seats mid-cycle during the migration window and were charged the proration twice.",
+      "ticket_id": "TCK-4403",
+      "escalation_count": 2,
+      "latest_escalation": {
+       "at": "2026-09-28T16:30:00Z",
+       "from_tier": "L2-billing",
+       "to_tier": "L3-ledger-eng",
+       "by": "agent:dana",
+       "reason": "dual-write produced two proration events; needs ledger engineering"
+      }
+     },
+     "isError": false
+    }
+   },
+   "_response_notes": {
+    "jsonrpc": "\"2.0\".",
+    "id": "3.",
+    "result": "The tool's output (fields below). Plain data -- no model ran.",
+    "result.content": "Content blocks for the model: one text block holding the ticket as JSON. This is what goes into the tool_result.",
+    "result.structuredContent": "The same record as a JSON object, typed by the tool's outputSchema, for code rather than the model.",
+    "result.isError": "false: the call succeeded."
+   }
+  },
+  {
+   "step": "tools_call_error",
+   "http": {
+    "request": "POST http://127.0.0.1:8765/mcp",
+    "status": 200,
+    "request_headers": {
+     "accept": "application/json, text/event-stream",
+     "content-type": "application/json",
+     "authorization": "Bearer <redacted>",
+     "mcp-session-id": "2e19a6827baa4eddbca16a8835a441bf",
+     "mcp-protocol-version": "2025-11-25"
+    },
+    "response_headers": {
+     "content-type": "text/event-stream",
+     "mcp-session-id": "2e19a6827baa4eddbca16a8835a441bf"
+    },
+    "_note": "200 -- a tool error is not an HTTP or JSON-RPC error."
+   },
+   "request": {
+    "jsonrpc": "2.0",
+    "id": 4,
+    "method": "tools/call",
+    "params": {
+     "name": "get_ticket",
+     "arguments": {
+      "ticket_id": "TCK-44"
+     }
+    }
+   },
+   "_request_notes": {
+    "jsonrpc": "\"2.0\".",
+    "id": "4.",
+    "method": "tools/call again.",
+    "params": "A malformed id, TCK-44, as a model might copy it from a message."
+   },
+   "response": {
+    "jsonrpc": "2.0",
+    "id": 4,
+    "result": {
+     "content": [
+      {
+       "type": "text",
+       "text": "ticket id 'TCK-44' is malformed: ticket ids look like TCK-nnnn (TCK- then four digits, e.g. TCK-4401). Re-read the id from the customer's message; do not retry this exact value."
+      }
+     ],
+     "isError": true
+    }
+   },
+   "_response_notes": {
+    "jsonrpc": "\"2.0\".",
+    "id": "4.",
+    "result": "Still a RESULT, not a JSON-RPC error: the protocol worked, the tool failed. That is what lets the model see and fix it.",
+    "result.content": "The error text the model reads: it says the id is malformed, what ids look like, and not to retry this value.",
+    "result.isError": "true: tells the host this tool_result is an error (sent to Claude as is_error)."
+   }
+  }
+ ]
+}

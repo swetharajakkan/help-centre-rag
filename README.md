@@ -14,6 +14,12 @@ hit-rate@3, an R/G/Not-In-Corpus failure tally, and one retrieval change
 91.7%, p50 latency 50 ms → 834 ms — shipped**, enabled by default. Roll back
 with `HELP_CENTRE_RERANK=0`, which restores the Week 3 ordering exactly.
 
+**Week 9** puts the app behind MCP and adds Support Ops' ticket-history
+server with a config change only: [week9/README.md](week9/README.md). **2 → 4
+tools discovered, 0 lines changed in the agent module.** It also adds two
+logins (`user` can only ask the agent; `admin` sees everything) and a
+Responder + Verifier pair of agents behind the chat.
+
 - `corpus/` — the 6 new articles (frontmatter carries `article_id`,
   `product_area`, `last_updated`)
 - `backend/app/chunkers.py` — `fixed_window` (the pipeline's existing chunker)

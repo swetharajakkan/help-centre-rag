@@ -1,0 +1,79 @@
+{
+  "TCK-4401": {
+    "subject": "Saved card disappeared after Phase 2 started",
+    "customer": {"account": "ACME-0193", "name": "Acme Robotics", "contact_email": "billing@acme-robotics.example"},
+    "status": "open",
+    "priority": "high",
+    "product_area": "payments",
+    "opened_at": "2026-10-01T08:12:00Z",
+    "message": "Our stored card vanished from the billing page the day our workspace entered Phase 2 of the migration. Renewal is on Friday. Do we need to re-add it?",
+    "escalations": [
+      {"at": "2026-10-01T09:40:00Z", "from_tier": "L1", "to_tier": "L2-payments", "by": "agent:priya", "reason": "re-tokenisation still pending after 1 hour; customer renewal within 72h"}
+    ]
+  },
+  "TCK-4402": {
+    "subject": "Invoice totals differ between old and new ledger",
+    "customer": {"account": "NORD-2207", "name": "Nordlicht GmbH", "contact_email": "ap@nordlicht.example"},
+    "status": "pending_customer",
+    "priority": "normal",
+    "product_area": "invoicing",
+    "opened_at": "2026-09-29T14:03:00Z",
+    "message": "The September invoice shows a different total in Ledger v2 than in the legacy export. Which one is right?",
+    "escalations": []
+  },
+  "TCK-4403": {
+    "subject": "Proration charged twice after mid-cycle upgrade",
+    "customer": {"account": "BLUE-0412", "name": "Bluefin Analytics", "contact_email": "finance@bluefin.example"},
+    "status": "escalated",
+    "priority": "urgent",
+    "product_area": "subscriptions",
+    "opened_at": "2026-09-27T10:21:00Z",
+    "message": "We upgraded seats mid-cycle during the migration window and were charged the proration twice.",
+    "escalations": [
+      {"at": "2026-09-27T11:05:00Z", "from_tier": "L1", "to_tier": "L2-billing", "by": "agent:marco", "reason": "duplicate proration line on invoice INV-88213"},
+      {"at": "2026-09-28T16:30:00Z", "from_tier": "L2-billing", "to_tier": "L3-ledger-eng", "by": "agent:dana", "reason": "dual-write produced two proration events; needs ledger engineering"}
+    ]
+  },
+  "TCK-4404": {
+    "subject": "VAT number rejected during tax backfill",
+    "customer": {"account": "LUMA-7781", "name": "Luma Studio SARL", "contact_email": "compta@luma.example"},
+    "status": "open",
+    "priority": "normal",
+    "product_area": "tax-compliance",
+    "opened_at": "2026-10-02T07:55:00Z",
+    "message": "Our French VAT number was accepted for years and is now flagged invalid after the migration.",
+    "escalations": []
+  },
+  "TCK-4405": {
+    "subject": "Webhooks stopped arriving after cutover",
+    "customer": {"account": "ORCA-0055", "name": "Orca Logistics", "contact_email": "devops@orca.example"},
+    "status": "open",
+    "priority": "high",
+    "product_area": "developer-api",
+    "opened_at": "2026-10-03T19:44:00Z",
+    "message": "Since our cutover we no longer receive invoice.paid webhooks. Did the event names change?",
+    "escalations": [
+      {"at": "2026-10-03T20:10:00Z", "from_tier": "L1", "to_tier": "L2-api", "by": "agent:sam", "reason": "customer integration blocked; needs API team confirmation of v2 event names"}
+    ]
+  },
+  "TCK-4406": {
+    "subject": "SEPA mandate shows 'needs reauthorisation'",
+    "customer": {"account": "KAFE-3310", "name": "Kaffeerösterei Weiss", "contact_email": "info@kaffee-weiss.example"},
+    "status": "resolved",
+    "priority": "low",
+    "product_area": "payments",
+    "opened_at": "2026-09-24T09:00:00Z",
+    "message": "The bank asks us to reauthorise our SEPA mandate. Is this expected during the migration?",
+    "escalations": []
+  },
+  "TCK-4407": {
+    "subject": "When does our workspace cut over?",
+    "customer": {"account": "PINE-9001", "name": "Pinecrest Schools", "contact_email": "it@pinecrest.example"},
+    "status": "open",
+    "priority": "low",
+    "product_area": "billing",
+    "opened_at": "2026-10-04T12:30:00Z",
+    "message": "We got the migration notice. What are the phases and when is our cutover?",
+    "escalations": []
+  }
+}

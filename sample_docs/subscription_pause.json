@@ -1,0 +1,6 @@
+{
+  "summary": "Customers can pause a subscription for up to 3 months, once in any 12 month period, from Billing then Plan then Pause subscription.",
+  "while_paused": "No invoices are created while a subscription is paused, and saved data is kept but the workspace becomes read-only.",
+  "resume": "A paused subscription resumes automatically at the end of the pause, or earlier when the customer clicks Resume, and billing restarts on the resume date.",
+  "not_allowed": "Subscriptions with an unpaid invoice or on a trial cannot be paused."
+}

@@ -4,6 +4,7 @@ import Chat from './Chat.jsx'
 import EvalView from './EvalView.jsx'
 import Week7View from './Week7View.jsx'
 import Week8View from './Week8View.jsx'
+import Week9View from './Week9View.jsx'
 import { streamSSE } from './sse'
 
 const BACKEND_HINT =
@@ -39,6 +40,7 @@ const WEEKS = [
   { value: 'week6', short: 'Week 6', label: 'Week 6 — ticket reply + judge' },
   { value: 'week7', short: 'Week 7', label: 'Week 7 — agent vs workflow' },
   { value: 'week8', short: 'Week 8', label: 'Week 8 — trajectory-scored agent (sampled engine)' },
+  { value: 'week9', short: 'Week 9', label: 'Week 9 — MCP tools, Responder + Verifier' },
 ]
 const JUDGES = [['judge_v1', 'Judge v1'], ['judge_v2', 'Judge v2']]
 const SYSTEMS = [['agent', 'Agent'], ['workflow', 'Fixed workflow']]
@@ -46,14 +48,15 @@ const MITIGATION = [[false, 'Off'], [true, 'Arg validation']]
 // Week 6's drafter uses Week 4 retrieval, and Week 7 retrieves nothing, so
 // the chunk comparison runs on the Week 4 arm for both.
 const RETRIEVAL_ARM = { week3: 'week3', week4: 'week4', week5: 'week5',
-                        week6: 'week4', week7: 'week4', week8: 'week4' }
+                        week6: 'week4', week7: 'week4', week8: 'week4', week9: 'week4' }
 
 const VIEWS = [
   ['chat', 'Chat'], ['chunks', 'Chunks'], ['eval', 'Eval'],
-  ['agent', 'Agent · W7'], ['trajectory', 'Trajectory · W8'], ['documents', 'Documents'],
+  ['agent', 'Agent · W7'], ['trajectory', 'Trajectory · W8'], ['mcp', 'MCP · W9'],
+  ['documents', 'Documents'],
 ]
 // Links shared before the views were renamed keep working.
-const OLD_HASH = { compare: 'chunks', errors: 'eval', evals: 'eval', week7: 'agent', week8: 'trajectory' }
+const OLD_HASH = { compare: 'chunks', errors: 'eval', evals: 'eval', week7: 'agent', week8: 'trajectory', week9: 'mcp' }
 
 function filterLabel(week, judge, system, mitigate, seed) {
   const w = WEEKS.find((x) => x.value === week)
@@ -130,7 +133,7 @@ function DocumentsView({ documents }) {
 
 function CompareView({ compare, week }) {
   const note = RETRIEVAL_ARM[week] !== week
-    ? <p className="filter-note">{week === 'week7' || week === 'week8' ? `${week === 'week7' ? 'Week 7' : 'Week 8'} calls tools instead of retrieving chunks`
+    ? <p className="filter-note">{['week7', 'week8', 'week9'].includes(week) ? `${{ week7: 'Week 7', week8: 'Week 8', week9: 'Week 9' }[week]} calls tools instead of retrieving chunks`
         : 'Week 6 drafts from Week 4 retrieval'}, so chunks are compared on the Week 4 arm.</p>
     : null
   if (!compare) {
@@ -345,7 +348,7 @@ async function postJSON(url, body, signal) {
   return data
 }
 
-export default function App() {
+export default function App({ user = null, onLogout = null }) {
   // Hash routing so a view is linkable: #eval opens the evaluation straight
   // away, which is what you want when demoing from a pasted link.
   const viewFromHash = () => {
@@ -480,7 +483,7 @@ export default function App() {
     setQ('')
     setErr(null)
     setBusy(true)
-    const kind = ['week6', 'week7', 'week8'].includes(week) ? week : 'rag'
+    const kind = ['week6', 'week7', 'week8', 'week9'].includes(week) ? week : 'rag'
     const label = filterLabel(week, judge, system, mitigate, seed)
     setMessages((ms) => [...ms,
       { role: 'user', text: question, filter: label },
@@ -499,6 +502,10 @@ export default function App() {
                        case_id: opts.caseId || null }
         if (useArea) body.product_area = useArea
         const data = await postJSON('/api/ask_week6', body, controller.signal)
+        patch((m) => ({ ...m, data, streaming: false }))
+      } else if (kind === 'week9') {
+        const data = await postJSON('/api/w9/ask', { question, session_id: sessionId },
+          controller.signal)
         patch((m) => ({ ...m, data, streaming: false }))
       } else if (kind === 'week8') {
         const data = await postJSON('/api/ask_week8',
@@ -549,7 +556,7 @@ export default function App() {
   }
 
   const showFilters = view === 'chat' || view === 'chunks'
-  const retrieves = week !== 'week7' && week !== 'week8'
+  const retrieves = !['week7', 'week8', 'week9'].includes(week)
 
   return (
     <div className="shell">
@@ -593,6 +600,13 @@ export default function App() {
               </span>
             )
           ) : null}
+
+          {user && (
+            <span className="who" title={`signed in as ${user.role}`}>
+              {user.username} · {user.role}
+            </span>
+          )}
+          {onLogout && <button className="ghost" onClick={onLogout}>Sign out</button>}
         </div>
 
         {showFilters && (
@@ -666,6 +680,7 @@ export default function App() {
           {view === 'eval' && <EvalPage analysis={analysis} onAsk={ask} />}
           {view === 'agent' && <Week7View />}
           {view === 'trajectory' && <Week8View />}
+          {view === 'mcp' && <Week9View />}
           {view === 'documents' && <DocumentsView documents={documents} />}
         </ErrorBoundary>
 
@@ -678,7 +693,9 @@ export default function App() {
                 onKeyDown={(e) => e.key === 'Enter' && submit()}
                 placeholder={view === 'chunks'
                   ? 'Query to run through both chunkers…'
-                  : week === 'week8'
+                  : week === 'week9'
+                  ? 'Ask about the migration or a ticket (e.g. “Why was TCK-4403 escalated?”) — answered over MCP, then verified…'
+                : week === 'week8'
                     ? 'Pick a ticket (e.g. TCK-7001) or type a message — the path is scored, not just the answer…'
                   : week === 'week7'
                     ? 'Type a customer message (e.g. “Refund ORD-5101 please”) or a ticket id like TCK-7004…'

@@ -227,7 +227,7 @@ function Overview({ d, go }) {
         </p>
       </section>
 
-      <section className="w7-card">
+      {/* <section className="w7-card">
         <h3>Submission checklist — where each item is on this page</h3>
         <table className="w7-cmp w8-check">
           <tbody>
@@ -240,7 +240,7 @@ function Overview({ d, go }) {
             ))}
           </tbody>
         </table>
-      </section>
+      </section> */}
 
       <section className="w7-card">
         <h3>Week 8 topics — where each is covered</h3>

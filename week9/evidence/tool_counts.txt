@@ -1,0 +1,6 @@
+2 before -> 4 after
+before (2): search_help_centre, get_article
+after  (4): search_help_centre, get_article, get_ticket, get_escalation_history
+  help-centre-rag: search_help_centre, get_article
+  ticket-history: get_ticket, get_escalation_history
+source: tools/list responses received by week9/agent/host.py at connect time

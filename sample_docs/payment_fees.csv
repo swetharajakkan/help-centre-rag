@@ -1,0 +1,6 @@
+Payment method,Processing time,Fee,Supported currencies
+Credit or debit card,Instant,2.9% + 0.30 per transaction,"USD, EUR, GBP, INR"
+SEPA bank transfer,2 to 3 business days,0.8% capped at 5 EUR,EUR only
+ACH bank transfer,3 to 5 business days,0.8% capped at 5 USD,USD only
+UPI,Instant,No fee,INR only
+PayPal,Instant,3.4% + 0.35 per transaction,"USD, EUR, GBP"

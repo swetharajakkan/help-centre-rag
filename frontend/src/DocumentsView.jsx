@@ -137,13 +137,12 @@ export default function DocumentsView() {
           </button>
         </form>
 
-        <h2 className="docs-h">Ask the Week 9 agent</h2>
+        <h2 className="docs-h">Ask the Support crew</h2>
         <form className="docs-card" onSubmit={ask}>
           <div className="docs-row">
             <input value={q} placeholder="e.g. How long does a refund take?" onChange={(e) => setQ(e.target.value)} />
             <button className="send" disabled={asking || !q.trim()}>{asking ? 'Working…' : 'Ask'}</button>
           </div>
-          <p className="login-hint">Same agent users talk to: it searches the help centre and these documents over MCP, and the Verifier re-fetches every cited source.</p>
           {asking && <div className="stage"><i className="led-dot" />writing the answer and checking it…</div>}
           {answer?.data && <div className="msg bot docs-answer"><CrewAnswer data={answer.data} /></div>}
           {answer?.error && <p className="note bad">{answer.error}</p>}

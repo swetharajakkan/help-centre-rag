@@ -141,6 +141,9 @@ AREAS = {
     "TestWeek9Auth": "Week 9 user/admin logins",
     "TestWeek9Track": "Week 9 admin Track log",
     "TestWeek9SmallTalk": "Week 9 small talk (hi, thanks, bye)",
+    "TestWeek10Race": "Week 10 race report (same cases, 4 numbers, multiplier)",
+    "TestWeek10Arms": "Week 10 single agent vs squad hand-offs + injected 500",
+    "TestWeek10A2A": "Week 10 A2A worker (AgentCard, JSON-RPC, task lifecycle)",
 }
 
 

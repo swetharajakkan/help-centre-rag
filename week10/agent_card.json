@@ -1,0 +1,35 @@
+{
+  "name": "Help Centre Triage Squad",
+  "description": "Drafts a reply to a billing-migration support ticket: triages it, looks up the fix and support policy SP-001, and returns a draft reply with cited quotes.",
+  "url": "http://127.0.0.1:8000/a2a/triage-squad",
+  "version": "0.10.0",
+  "protocolVersion": "0.3.0",
+  "provider": { "organization": "Help Centre RAG" },
+  "capabilities": { "streaming": false, "pushNotifications": false, "stateTransitionHistory": true },
+  "securitySchemes": {
+    "session": { "type": "apiKey", "in": "cookie", "name": "hc_session",
+                 "description": "Admin session cookie issued by /api/auth/login" }
+  },
+  "security": [{ "session": [] }],
+  "defaultInputModes": ["application/json", "text/plain"],
+  "defaultOutputModes": ["application/json", "text/plain"],
+  "skills": [
+    {
+      "id": "draft-ticket-reply",
+      "name": "Draft ticket reply",
+      "description": "Given a ticket {ticket_id, tier, question, days_since_purchase, refund_requested, refund_amount_usd, product_area}, return {reply, answered, claims[]} where every claim quotes a help-centre chunk verbatim.",
+      "tags": ["support", "billing", "refunds", "triage"],
+      "examples": ["What does ERR-4215 mean and what should I do?"],
+      "inputModes": ["application/json"],
+      "outputModes": ["application/json", "text/plain"]
+    },
+    {
+      "id": "triage-ticket",
+      "name": "Triage ticket",
+      "description": "Return {error_codes, product_area, priority, refund_in_window, intent} from the ticket fields alone. No tools.",
+      "tags": ["triage"],
+      "inputModes": ["application/json"],
+      "outputModes": ["application/json"]
+    }
+  ]
+}

@@ -30,7 +30,7 @@ export default function AdminShell({ user, onLogout }) {
       <div className="admin-body">
         {tab === 'track' && <TrackView />}
         {tab === 'docs' && <DocumentsView />}
-        <div style={{ display: tab === 'chat' ? 'block' : 'none' }}>
+        <div className="admin-pane" style={{ display: tab === 'chat' ? 'block' : 'none' }}>
           <App />
         </div>
       </div>

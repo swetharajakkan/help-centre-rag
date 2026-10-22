@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
 
 function Upload({ onUploaded, ocrEngines }) {
   const [over, setOver] = useState(false)
@@ -42,9 +42,9 @@ function Upload({ onUploaded, ocrEngines }) {
         onDrop={(e) => { e.preventDefault(); setOver(false); send(e.dataTransfer.files) }}
       >
         <span className="drop-icon">{busy ? '◌' : '↥'}</span>
-        <span className="drop-main">{busy ? 'Indexing…' : 'Drop documents here'}</span>
+        <span className="drop-main">{busy ? 'Uploading…' : 'Drop documents here'}</span>
         <span className="drop-sub">
-          text or images — md, txt, csv, json, html, png, jpg, heic
+          text or images
         </span>
       </button>
       {/* No `accept`: every file type may be chosen, and the server decides
@@ -52,18 +52,9 @@ function Upload({ onUploaded, ocrEngines }) {
       <input ref={picker} type="file" multiple hidden
         onChange={(e) => send(e.target.files)} />
 
-      {ocrEngines?.length > 0 ? (
-        <p className="note">
-          Images are read with OCR ({ocrEngines[0]}) and the original is kept so
-          a quote can be checked against the picture.
-        </p>
-      ) : ocrEngines ? (
-        <p className="note bad">
-          No OCR engine on this server, so images will be refused. Set{' '}
-          <code>ANTHROPIC_API_KEY</code>, or install Apple Vision with{' '}
-          <code>pip install pyobjc-framework-Vision</code>.
-        </p>
-      ) : null}
+      {ocrEngines && !ocrEngines.length && (
+        <p className="note bad">Images can't be read on this server.</p>
+      )}
 
       {result?.accepted?.length > 0 && (
         <p className="note ok">
@@ -91,8 +82,7 @@ function MyDocuments({ documents, onDelete }) {
           <div className="doc-name">
             {d.source_file}
             <div className="doc-meta">
-              {d.article_id} · {d.chunks} chunks
-              {d.extracted_by ? <span className="ocr-tag">OCR</span> : null}
+              {d.article_id}
             </div>
           </div>
           <button className="icon-btn" title={`Delete ${d.source_file}`}
@@ -103,76 +93,59 @@ function MyDocuments({ documents, onDelete }) {
   )
 }
 
-const QUESTION_GROUPS = [
-  ['golden', 'Golden set — Week 4'],
-  ['week5', 'Week 5 — sampled traces'],
-  ['week6', 'Week 6 — eval tickets'],
-  ['week7', 'Week 7 — refund tickets'],
-  ['week8', 'Week 8 — trajectory tickets (+ Week 7 wording)'],
-  ['week9', 'Week 9 — MCP: tickets + help centre'],
-]
-// Which question set goes with the week picked in the filter bar.
-const GROUP_FOR_WEEK = { week3: 'golden', week4: 'golden', week5: 'week5',
-                         week6: 'week6', week7: 'week7', week8: 'week8', week9: 'week9' }
+// The latest question set: the ten tickets the triage squad is raced on.
+export const LATEST_IDS = ['C-01', 'C-02', 'C-04', 'C-05', 'C-06',
+                           'C-07', 'C-08', 'C-09', 'C-10', 'C-11']
 
-// Week 9 questions exercise one server, the other, both, and the
-// recoverable-error path. They are fixed, so they live here.
-const WEEK9 = [
-  ['W9-1', 'Why was TCK-4403 escalated?', 'both servers'],
-  ['W9-2', 'What is the status of TCK-4405?', 'both servers'],
-  ['W9-3', 'Open help article BM-4', 'recoverable error'],
-  ['W9-4', 'What happens to stored cards during the migration?', 'RAG server'],
-  ['W9-5', 'Show me the escalation history for TCK-4401.', 'attached resource'],
-  ['W9-6', 'What is ticket TCK-44 about?', 'malformed id'],
-  ['W9-7', 'How do I reset my password?', 'not covered'],
-].map(([id, question, badge]) => ({ id, question, badge }))
+// Race 2 (week10/fanout.py): tickets with several independent error codes.
+export const FANOUT_QUESTIONS = [
+  { id: 'F-01', product_area: null, question: 'After cutover we see ERR-4215 on invoices, ERR-4301 on a subscription and ERR-4036 on a card update. What does each mean and what do we do?' },
+  { id: 'F-02', product_area: null, question: 'Four errors since migration: ERR-4502, ERR-4114, ERR-4005 and ERR-4216. How do we fix each one?' },
+  { id: 'F-03', product_area: null, question: 'Our finance team hit ERR-4001, ERR-4033, ERR-4212, ERR-4303 and ERR-4503 this week. Please explain each and the fix.' },
+  { id: 'F-04', product_area: null, question: 'Six codes across our workspaces: ERR-4002, ERR-4030, ERR-4110, ERR-4211, ERR-4302 and ERR-4504. What is each and what should we do?' },
+]
+
+export const latestQuestions = (cases) =>
+  [...LATEST_IDS.map((id) => (cases || []).find((c) => c.id === id)).filter(Boolean),
+   ...FANOUT_QUESTIONS]
 
 const trim = (q) => (q.length > 60 ? `${q.slice(0, 60)}…` : q)
 
 /**
- * Choose a week, then a question from it. Picking a question asks it straight
- * away with whatever the filter bar is set to, so the same question can be
- * asked again under another week, judge or system and the answers compared.
- * The week follows the filter bar, and can still be changed here on its own.
+ * Quick questions. `items` is one flat list (the user screen); `groups` is
+ * every set, each picked question carrying the system that answers it.
  */
-export function QuickQuestions({ sets, week, answerWith, onAsk, hint }) {
-  const [group, setGroup] = useState(GROUP_FOR_WEEK[week] || 'golden')
-  useEffect(() => { setGroup(GROUP_FOR_WEEK[week] || 'golden') }, [week])
-  const items = group === 'week9' ? WEEK9 : (sets[group] || [])
-  const choose = (id) => {
-    const ex = items.find((e) => e.id === id)
-    if (ex) onAsk(ex.question, { area: ex.product_area ?? undefined, caseId: ex.id })
+export function QuickQuestions({ items, groups, onAsk }) {
+  const all = groups
+    ? groups.flatMap((g) => g.items.map((ex) => ({ ...ex, mode: g.mode, key: `${g.mode}:${ex.id}` })))
+    : (items || []).map((ex) => ({ ...ex, key: ex.id }))
+  const choose = (key) => {
+    const ex = all.find((e) => e.key === key)
+    if (ex) onAsk(ex.question, { area: ex.product_area ?? undefined, caseId: ex.id, mode: ex.mode })
   }
+  const option = (ex) => (
+    <option key={ex.key} value={ex.key} title={ex.question}>{ex.id} — {trim(ex.question)}</option>
+  )
   return (
     <section className="block">
-      <p className="block-title">Quick test questions</p>
-      <label className="qs-step">
-        <span>1 · Choose week</span>
-        <select className="picker" value={group} onChange={(e) => setGroup(e.target.value)}>
-          {QUESTION_GROUPS.map(([g, label]) => (
-            <option key={g} value={g}>{label} ({(g === 'week9' ? WEEK9 : (sets[g] || [])).length})</option>
-          ))}
-        </select>
-      </label>
-      <label className="qs-step">
-        <span>2 · Choose question</span>
-        {/* value is pinned to "" so picking the same question twice asks it again. */}
-        <select className="picker" value="" disabled={!items.length}
-          onChange={(e) => choose(e.target.value)}>
-          <option value="">{items.length ? 'Choose a question…' : 'No questions in this week'}</option>
-          {items.map((ex) => (
-            <option key={ex.id} value={ex.id} title={ex.question}>
-              {ex.id}{ex.badge ? ` [${ex.badge}]` : ''} — {trim(ex.question)}
-            </option>
-          ))}
-        </select>
-      </label>
-      <p className="qs-with">{hint || <>Answers with <b>{answerWith}</b> — change it in the filter bar.</>}</p>
+      <p className="block-title">Quick questions {groups && <span className="count">{all.length}</span>}</p>
+      {/* value is pinned to "" so picking the same question twice asks it again. */}
+      <select className="picker" value="" disabled={!all.length}
+        onChange={(e) => choose(e.target.value)}>
+        <option value="">{all.length ? 'Choose a question…' : 'No questions'}</option>
+        {groups
+          ? groups.map((g) => (
+            <optgroup key={g.mode} label={`${g.label} (${g.items.length})`}>
+              {all.filter((ex) => ex.mode === g.mode).map(option)}
+            </optgroup>
+          ))
+          : all.map(option)}
+      </select>
     </section>
   )
 }
 
-export default function Sidebar({ documents, sets, week, answerWith, onAsk,
+export default function Sidebar({ documents, groups, onAsk,
   onUploaded, onDelete, onClear, ocrEngines }) {
   return (
     <aside className="sidebar">
@@ -186,7 +159,7 @@ export default function Sidebar({ documents, sets, week, answerWith, onAsk,
 
       <Upload onUploaded={onUploaded} ocrEngines={ocrEngines} />
       <MyDocuments documents={documents} onDelete={onDelete} />
-      <QuickQuestions sets={sets} week={week} answerWith={answerWith} onAsk={onAsk} />
+      <QuickQuestions groups={groups} onAsk={onAsk} />
 
       <div className="sidebar-foot">
         <button className="ghost" onClick={onClear}>Clear chat session</button>

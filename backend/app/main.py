@@ -21,6 +21,7 @@ from .rerank import RERANK_CANDIDATES, RERANK_MODEL, rerank_enabled
 from .ocr import available_engines as ocr_engines
 from .uploads import Rejected, delete as delete_upload, store as store_upload
 from . import week9 as week9_app
+from . import week10 as week10_app
 from . import documents as documents_app
 
 INDEXES: dict = {}
@@ -62,6 +63,7 @@ app.add_middleware(
 app.middleware("http")(auth.guard)
 app.include_router(auth.router)
 app.include_router(week9_app.router)
+app.include_router(week10_app.router)
 app.include_router(documents_app.router)
 
 def _index(strategy: str):

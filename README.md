@@ -20,6 +20,13 @@ tools discovered, 0 lines changed in the agent module.** It also adds two
 logins (`user` can only ask the agent; `admin` sees everything) and a
 Responder + Verifier pair of agents behind the chat.
 
+**Week 10** races a triage squad (orchestrator + triage worker + policy-lookup
+worker) against the single agent on the same 10 Week-6 cases:
+[week10/README.md](week10/README.md). **0/10 vs 0/10 pass, 1.1x tokens,
+$0.0219 vs $0.0172 per ticket, p99 4.85s vs 3.01s. Killed.** An injected
+policy-worker 500 was degraded silently (no retry). It is in the UI under
+**Agent race**.
+
 - `corpus/` — the 6 new articles (frontmatter carries `article_id`,
   `product_area`, `last_updated`)
 - `backend/app/chunkers.py` — `fixed_window` (the pipeline's existing chunker)

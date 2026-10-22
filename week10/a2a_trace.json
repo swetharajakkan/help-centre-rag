@@ -1,0 +1,335 @@
+{
+ "card": {
+  "name": "Policy-lookup worker",
+  "description": "Finds the help-centre fix for a triaged billing ticket and applies support policy SP-001. Returns {answered, claims, refusal}.",
+  "url": "/api/a2a/policy-worker",
+  "version": "0.10.0",
+  "protocolVersion": "0.3.0",
+  "preferredTransport": "JSONRPC",
+  "capabilities": {
+   "streaming": false,
+   "pushNotifications": false,
+   "stateTransitionHistory": true
+  },
+  "securitySchemes": {
+   "session": {
+    "type": "apiKey",
+    "in": "cookie",
+    "name": "hc_session"
+   }
+  },
+  "security": [
+   {
+    "session": []
+   }
+  ],
+  "defaultInputModes": [
+   "application/json"
+  ],
+  "defaultOutputModes": [
+   "application/json"
+  ],
+  "skills": [
+   {
+    "id": "policy-lookup",
+    "name": "Policy lookup",
+    "description": "Input: {ticket, triage}. Output: {answered, claims, refusal}.",
+    "tags": [
+     "support",
+     "policy",
+     "retrieval"
+    ],
+    "inputModes": [
+     "application/json"
+    ],
+    "outputModes": [
+     "application/json"
+    ]
+   }
+  ]
+ },
+ "case_id": "C-01",
+ "healthy": {
+  "id": "bc145e783811",
+  "state": "completed",
+  "transitions": [
+   {
+    "state": "submitted",
+    "at": "2026-10-22T10:28:44.764Z",
+    "note": null
+   },
+   {
+    "state": "working",
+    "at": "2026-10-22T10:28:44.765Z",
+    "note": "triage done; delegating policy lookup over A2A"
+   },
+   {
+    "state": "completed",
+    "at": "2026-10-22T10:28:45.620Z",
+    "note": "worker completed; reply synthesised"
+   }
+  ],
+  "reply": "Hi, thanks for raising ticket TCK-4001.\n\nERR-4301 means Subscription has a proration mode that does not exist in v2. Set the subscription to the closest supported mode in Subscriptions then Edit then Proration, then retry.\n\nERR-4502 means Tax authority endpoint was unreachable during the sweep. No action needed. The sweep retries the unreachable authority on the next daily run.\n\nWe have approved a refund of USD 41.50 for this charge.\n\n[ESCALATED]\n\nBest regards,\nBilling Support",
+  "question_for_owner": null
+ },
+ "failed": {
+  "id": "4d34f2539555",
+  "state": "input-required",
+  "transitions": [
+   {
+    "state": "submitted",
+    "at": "2026-10-22T10:28:45.620Z",
+    "note": null
+   },
+   {
+    "state": "working",
+    "at": "2026-10-22T10:28:45.620Z",
+    "note": "triage done; delegating policy lookup over A2A"
+   },
+   {
+    "state": "input-required",
+    "at": "2026-10-22T10:28:45.620Z",
+    "note": "worker task 117650610284 failed: policy-lookup worker: internal server error (500)"
+   }
+  ],
+  "reply": null,
+  "question_for_owner": "Policy lookup failed (policy-lookup worker: internal server error (500)). No reply was drafted. Ticket owner: reply 'retry', 'billing_review' or 'manual'."
+ },
+ "after_retry": {
+  "id": "4d34f2539555",
+  "state": "completed",
+  "transitions": [
+   {
+    "state": "submitted",
+    "at": "2026-10-22T10:28:45.620Z",
+    "note": null
+   },
+   {
+    "state": "working",
+    "at": "2026-10-22T10:28:45.620Z",
+    "note": "triage done; delegating policy lookup over A2A"
+   },
+   {
+    "state": "input-required",
+    "at": "2026-10-22T10:28:45.620Z",
+    "note": "worker task 117650610284 failed: policy-lookup worker: internal server error (500)"
+   },
+   {
+    "state": "working",
+    "at": "2026-10-22T10:28:45.620Z",
+    "note": "owner chose retry"
+   },
+   {
+    "state": "completed",
+    "at": "2026-10-22T10:28:46.171Z",
+    "note": "worker completed; reply synthesised"
+   }
+  ],
+  "reply": "Hi, thanks for raising ticket TCK-4001.\n\nERR-4301 means Subscription has a proration mode that does not exist in v2. Set the subscription to the closest supported mode in Subscriptions then Edit then Proration, then retry.\n\nERR-4502 means Tax authority endpoint was unreachable during the sweep. No action needed. The sweep retries the unreachable authority on the next daily run.\n\nWe have approved a refund of USD 41.50 for this charge.\n\n[ESCALATED]\n\nBest regards,\nBilling Support",
+  "question_for_owner": null
+ },
+ "worker_tasks": [
+  {
+   "id": "ffe3d4bc4e56",
+   "state": "completed",
+   "transitions": [
+    {
+     "state": "submitted",
+     "at": "2026-10-22T10:28:44.765Z",
+     "note": null
+    },
+    {
+     "state": "working",
+     "at": "2026-10-22T10:28:44.765Z",
+     "note": null
+    },
+    {
+     "state": "completed",
+     "at": "2026-10-22T10:28:45.620Z",
+     "note": null
+    }
+   ]
+  },
+  {
+   "id": "117650610284",
+   "state": "failed",
+   "transitions": [
+    {
+     "state": "submitted",
+     "at": "2026-10-22T10:28:45.620Z",
+     "note": null
+    },
+    {
+     "state": "working",
+     "at": "2026-10-22T10:28:45.620Z",
+     "note": null
+    },
+    {
+     "state": "failed",
+     "at": "2026-10-22T10:28:45.620Z",
+     "note": "HTTP 500 from the policy-lookup backend"
+    }
+   ]
+  },
+  {
+   "id": "b56b78470fdb",
+   "state": "completed",
+   "transitions": [
+    {
+     "state": "submitted",
+     "at": "2026-10-22T10:28:45.620Z",
+     "note": null
+    },
+    {
+     "state": "working",
+     "at": "2026-10-22T10:28:45.620Z",
+     "note": null
+    },
+    {
+     "state": "completed",
+     "at": "2026-10-22T10:28:46.171Z",
+     "note": null
+    }
+   ]
+  }
+ ],
+ "rpc_sample": {
+  "request": {
+   "jsonrpc": "2.0",
+   "id": "864ff087",
+   "method": "message/send",
+   "params": {
+    "message": {
+     "kind": "message",
+     "role": "user",
+     "messageId": "efad3b0b9208474c84a9bb644bb8b9e1",
+     "parts": [
+      {
+       "kind": "data",
+       "data": {
+        "ticket": {
+         "ticket_id": "TCK-4001",
+         "tier": "Priority",
+         "days_since_purchase": 12,
+         "refund_requested": true,
+         "refund_amount_usd": 41.5,
+         "question": "We have ERR-4502 on one account and ERR-4301 on another. Are these the same root cause?",
+         "product_area": "invoicing",
+         "case_id": "C-01"
+        },
+        "triage": {
+         "error_codes": [
+          "ERR-4301",
+          "ERR-4502"
+         ],
+         "product_area": "invoicing",
+         "priority": true,
+         "refund_in_window": true,
+         "intent": "refund+fix"
+        }
+       }
+      }
+     ],
+     "taskId": null,
+     "contextId": "d6b5972146f7"
+    },
+    "metadata": {
+     "inject_500": true
+    }
+   }
+  },
+  "response": {
+   "jsonrpc": "2.0",
+   "id": "864ff087",
+   "result": {
+    "kind": "task",
+    "id": "117650610284",
+    "contextId": "d6b5972146f7",
+    "status": {
+     "state": "failed",
+     "timestamp": "2026-10-22T10:28:45.620Z",
+     "message": {
+      "kind": "message",
+      "role": "agent",
+      "messageId": "657d51b9bfa64259a552b8304ec2d956",
+      "parts": [
+       {
+        "kind": "text",
+        "text": "policy-lookup worker: internal server error (500)"
+       }
+      ],
+      "taskId": "117650610284",
+      "contextId": "d6b5972146f7"
+     }
+    },
+    "history": [
+     {
+      "kind": "message",
+      "role": "user",
+      "messageId": "efad3b0b9208474c84a9bb644bb8b9e1",
+      "parts": [
+       {
+        "kind": "data",
+        "data": {
+         "ticket": {
+          "ticket_id": "TCK-4001",
+          "tier": "Priority",
+          "days_since_purchase": 12,
+          "refund_requested": true,
+          "refund_amount_usd": 41.5,
+          "question": "We have ERR-4502 on one account and ERR-4301 on another. Are these the same root cause?",
+          "product_area": "invoicing",
+          "case_id": "C-01"
+         },
+         "triage": {
+          "error_codes": [
+           "ERR-4301",
+           "ERR-4502"
+          ],
+          "product_area": "invoicing",
+          "priority": true,
+          "refund_in_window": true,
+          "intent": "refund+fix"
+         }
+        }
+       }
+      ],
+      "taskId": null,
+      "contextId": "d6b5972146f7"
+     },
+     {
+      "kind": "message",
+      "role": "agent",
+      "messageId": "657d51b9bfa64259a552b8304ec2d956",
+      "parts": [
+       {
+        "kind": "text",
+        "text": "policy-lookup worker: internal server error (500)"
+       }
+      ],
+      "taskId": "117650610284",
+      "contextId": "d6b5972146f7"
+     }
+    ],
+    "artifacts": [],
+    "transitions": [
+     {
+      "state": "submitted",
+      "at": "2026-10-22T10:28:45.620Z",
+      "note": null
+     },
+     {
+      "state": "working",
+      "at": "2026-10-22T10:28:45.620Z",
+      "note": null
+     },
+     {
+      "state": "failed",
+      "at": "2026-10-22T10:28:45.620Z",
+      "note": "HTTP 500 from the policy-lookup backend"
+     }
+    ]
+   }
+  }
+ }
+}

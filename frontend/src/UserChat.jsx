@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import CrewAnswer from './CrewAnswer.jsx'
-import { QuickQuestions } from './Sidebar.jsx'
+import { QuickQuestions, latestQuestions } from './Sidebar.jsx'
 
 const SUGGESTIONS = [
   'Why was TCK-4403 escalated?',
@@ -8,6 +8,9 @@ const SUGGESTIONS = [
   'What is the status of TCK-4405?',
   'Why was my VAT number rejected after the migration?',
 ]
+
+const ROUTED = { crew: 'the support crew', single: 'the single agent',
+  single_par: 'the single agent (parallel lookups)', squad: 'the triage squad' }
 
 /**
  * The whole UI a `user` gets: pick a week's question or type one, read the
@@ -34,7 +37,9 @@ export default function UserChat({ user, onLogout }) {
     setMessages((ms) => [...ms, { role: 'user', text: question }, { role: 'bot', pending: true }])
     let reply
     try {
-      const res = await fetch('/api/w9/ask', {
+      // The router picks the agent: no error code -> the support crew; one issue ->
+      // the single agent; a few -> single agent with parallel lookups; many -> the squad.
+      const res = await fetch('/api/w10/auto', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ question }),
       })
@@ -60,8 +65,7 @@ export default function UserChat({ user, onLogout }) {
             <p className="kicker">Ask the support agent</p>
           </div>
         </div>
-        <QuickQuestions sets={sets} week="week9" onAsk={(text) => ask(text)}
-          hint={<>Answered by the <b>support agent</b>: one agent writes the reply, a second checks it.</>} />
+        <QuickQuestions items={latestQuestions(sets.week6)} onAsk={(text) => ask(text)} />
         <div className="sidebar-foot">
           <button className="ghost" onClick={() => setMessages([])}>Clear chat</button>
         </div>
@@ -78,12 +82,7 @@ export default function UserChat({ user, onLogout }) {
           <div className="view">
             <div className="empty">
               <h2>How can we help?</h2>
-              <p>
-                Pick a question on the left, or type your own. Ask about the billing
-                migration, or quote a ticket id (e.g. TCK-4403). One agent writes the
-                answer from the help centre and ticket history; a second agent
-                re-checks every statement against the source before you see it.
-              </p>
+              <p>Pick a question on the left, or type your own.</p>
               <div className="hints">
                 {SUGGESTIONS.map((s) => (
                   <button key={s} className="hint-chip" onClick={() => ask(s)}>{s}</button>
@@ -98,8 +97,13 @@ export default function UserChat({ user, onLogout }) {
                 ? <div className="msg you" key={i}>{m.text}</div>
                 : (
                   <div className={`msg bot ${m.error ? 'failed' : ''}`} key={i}>
-                    {m.pending && <div className="stage"><i className="led-dot" />writing the answer and checking it…</div>}
-                    {m.data && <CrewAnswer data={m.data} />}
+                    {m.pending && <div className="stage"><i className="led-dot" />working…</div>}
+                    {m.data && m.data.route && (
+                      <div className="route-tag">Handled by <b>{ROUTED[m.data.route.arm]}</b> · {m.data.route.reason}</div>
+                    )}
+                    {m.data && (m.data.crew ? <CrewAnswer data={m.data.crew} />
+                      : m.data.reply ? <pre className="reply-box">{m.data.reply}</pre>
+                        : !m.data.route && <CrewAnswer data={m.data} />)}
                     {m.error && <div className="claim-text"><strong>Something went wrong.</strong> {m.error}</div>}
                   </div>
                 ))}

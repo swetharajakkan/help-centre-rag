@@ -1,0 +1,1961 @@
+{
+ "cases": [
+  "C-01",
+  "C-02",
+  "C-04",
+  "C-05",
+  "C-06",
+  "C-07",
+  "C-08",
+  "C-09",
+  "C-10",
+  "C-11"
+ ],
+ "judge": "judge_v2.txt",
+ "priced_as": "claude-opus-5-5",
+ "summary": {
+  "single": {
+   "n": 10,
+   "passed": 10,
+   "pass_rate": 1.0,
+   "p50_s": 1.331234500015853,
+   "p99_s": 2.440986557392753,
+   "total_tokens": 28231,
+   "cost_per_ticket_usd": 0.015118000000000001
+  },
+  "single_par": {
+   "n": 10,
+   "passed": 10,
+   "pass_rate": 1.0,
+   "p50_s": 1.3284433335065842,
+   "p99_s": 2.854931644544704,
+   "total_tokens": 28291,
+   "cost_per_ticket_usd": 0.0151804
+  },
+  "squad": {
+   "n": 10,
+   "passed": 10,
+   "pass_rate": 1.0,
+   "p50_s": 2.192625729512656,
+   "p99_s": 3.808955095531419,
+   "total_tokens": 31903,
+   "cost_per_ticket_usd": 0.0202716
+  }
+ },
+ "multiplier": 1.1,
+ "multiplier_line": "Context re-send multiplier: 31,903 / 28,231 = 1.1x \u2014 largest share: orchestrator -> policy worker resend (ticket + triage + full SP-001, sent again with the chunks), 70% of all squad tokens",
+ "handoff_shares": [
+  {
+   "handoff": "orchestrator -> policy worker",
+   "tokens": 22419,
+   "share": 0.702723881766605
+  },
+  {
+   "handoff": "policy worker -> orchestrator",
+   "tokens": 6275,
+   "share": 0.1966899664608344
+  },
+  {
+   "handoff": "user -> orchestrator",
+   "tokens": 1827,
+   "share": 0.05726734162931386
+  },
+  {
+   "handoff": "orchestrator -> triage worker",
+   "tokens": 1382,
+   "share": 0.04331881014324672
+  }
+ ],
+ "runs": {
+  "single": [
+   {
+    "case_id": "C-01",
+    "question": "We have ERR-4502 on one account and ERR-4301 on another. Are these the same root cause?",
+    "reply": "Hi, thanks for raising ticket TCK-4001.\n\nERR-4301 means Subscription has a proration mode that does not exist in v2. Set the subscription to the closest supported mode in Subscriptions then Edit then Proration, then retry.\n\nERR-4502 means Tax authority endpoint was unreachable during the sweep. No action needed. The sweep retries the unreachable authority on the next daily run.\n\nWe have approved a refund of USD 41.50 for this charge.\n\n[ESCALATED]\n\nBest regards,\nBilling Support",
+    "tokens": 3130,
+    "cost_usd": 0.017544,
+    "latency_s": 1.9604030839982443,
+    "handoffs": [
+     {
+      "case": "C-01",
+      "arm": "single",
+      "seq": 1,
+      "from": "user",
+      "to": "single agent",
+      "label": "plan + search call",
+      "tokens_in": 443,
+      "tokens_out": 48,
+      "tokens": 491,
+      "error": null
+     },
+     {
+      "case": "C-01",
+      "arm": "single",
+      "seq": 2,
+      "from": "search_help_centre",
+      "to": "single agent",
+      "label": "read chunks, call policy",
+      "tokens_in": 881,
+      "tokens_out": 16,
+      "tokens": 897,
+      "error": null
+     },
+     {
+      "case": "C-01",
+      "arm": "single",
+      "seq": 3,
+      "from": "get_support_policy",
+      "to": "single agent",
+      "label": "write reply",
+      "tokens_in": 1492,
+      "tokens_out": 250,
+      "tokens": 1742,
+      "error": null
+     }
+    ],
+    "grade": {
+     "passed": true,
+     "assertions_failed": [],
+     "verdict": "RESOLVED",
+     "why": "the reply gives the fix for the reported problem"
+    }
+   },
+   {
+    "case_id": "C-02",
+    "question": "What does ERR-4215 mean and what should I do?",
+    "reply": "Hi, thanks for raising ticket TCK-4002.\n\nERR-4215 means Manual adjustment on the invoice has no v2 equivalent adjustment type. Convert the adjustment to a credit note in Ledger v1, then retry the sync.\n\nThis purchase is outside the 30-day refund window. If you would like the charge looked at again, reply and we will route the case to Billing Review.\n\nBest regards,\nBilling Support",
+    "tokens": 2591,
+    "cost_usd": 0.013244,
+    "latency_s": 1.2626937910099514,
+    "handoffs": [
+     {
+      "case": "C-02",
+      "arm": "single",
+      "seq": 1,
+      "from": "user",
+      "to": "single agent",
+      "label": "plan + search call",
+      "tokens_in": 434,
+      "tokens_out": 38,
+      "tokens": 472,
+      "error": null
+     },
+     {
+      "case": "C-02",
+      "arm": "single",
+      "seq": 2,
+      "from": "search_help_centre",
+      "to": "single agent",
+      "label": "read chunks, call policy",
+      "tokens_in": 683,
+      "tokens_out": 16,
+      "tokens": 699,
+      "error": null
+     },
+     {
+      "case": "C-02",
+      "arm": "single",
+      "seq": 3,
+      "from": "get_support_policy",
+      "to": "single agent",
+      "label": "write reply",
+      "tokens_in": 1294,
+      "tokens_out": 126,
+      "tokens": 1420,
+      "error": null
+     }
+    ],
+    "grade": {
+     "passed": true,
+     "assertions_failed": [],
+     "verdict": "RESOLVED",
+     "why": "the reply gives the fix for the reported problem"
+    }
+   },
+   {
+    "case_id": "C-04",
+    "question": "What does ERR-4115 mean and what should I do?",
+    "reply": "Hi, thanks for raising ticket TCK-4004.\n\nERR-4115 means Signature verification failed after the customer rotated their secret mid-cutover. Re-issue the signing secret in Developers then Webhooks and update the endpoint. The migration itself does not rotate secrets.\n\nThis purchase is outside the 30-day refund window. If you would like the charge looked at again, reply and we will route the case to Billing Review.\n\n[ESCALATED]\n\nBest regards,\nBilling Support",
+    "tokens": 2612,
+    "cost_usd": 0.013808,
+    "latency_s": 1.3405475830077194,
+    "handoffs": [
+     {
+      "case": "C-04",
+      "arm": "single",
+      "seq": 1,
+      "from": "user",
+      "to": "single agent",
+      "label": "plan + search call",
+      "tokens_in": 433,
+      "tokens_out": 37,
+      "tokens": 470,
+      "error": null
+     },
+     {
+      "case": "C-04",
+      "arm": "single",
+      "seq": 2,
+      "from": "search_help_centre",
+      "to": "single agent",
+      "label": "read chunks, call policy",
+      "tokens_in": 679,
+      "tokens_out": 16,
+      "tokens": 695,
+      "error": null
+     },
+     {
+      "case": "C-04",
+      "arm": "single",
+      "seq": 3,
+      "from": "get_support_policy",
+      "to": "single agent",
+      "label": "write reply",
+      "tokens_in": 1290,
+      "tokens_out": 157,
+      "tokens": 1447,
+      "error": null
+     }
+    ],
+    "grade": {
+     "passed": true,
+     "assertions_failed": [],
+     "verdict": "RESOLVED",
+     "why": "the reply gives the fix for the reported problem"
+    }
+   },
+   {
+    "case_id": "C-05",
+    "question": "We have ERR-4005 on one account and ERR-4112 on another. Are these the same root cause?",
+    "reply": "Hi, thanks for raising ticket TCK-4005.\n\nERR-4005 means Migration halted because usage spiked above the guardrail. Wait for the hourly window to close, then clear the halt from Billing then Advanced then Resume.\n\nERR-4112 means Client is still reading next_payment_attempt, which is null on v2. Update the client to read the retry_schedule array. The field is not restored.\n\nBest regards,\nBilling Support",
+    "tokens": 3060,
+    "cost_usd": 0.017184,
+    "latency_s": 1.9046361249638721,
+    "handoffs": [
+     {
+      "case": "C-05",
+      "arm": "single",
+      "seq": 1,
+      "from": "user",
+      "to": "single agent",
+      "label": "plan + search call",
+      "tokens_in": 444,
+      "tokens_out": 49,
+      "tokens": 493,
+      "error": null
+     },
+     {
+      "case": "C-05",
+      "arm": "single",
+      "seq": 2,
+      "from": "search_help_centre",
+      "to": "single agent",
+      "label": "read chunks, call policy",
+      "tokens_in": 848,
+      "tokens_out": 16,
+      "tokens": 864,
+      "error": null
+     },
+     {
+      "case": "C-05",
+      "arm": "single",
+      "seq": 3,
+      "from": "get_support_policy",
+      "to": "single agent",
+      "label": "write reply",
+      "tokens_in": 1459,
+      "tokens_out": 244,
+      "tokens": 1703,
+      "error": null
+     }
+    ],
+    "grade": {
+     "passed": true,
+     "assertions_failed": [],
+     "verdict": "RESOLVED",
+     "why": "the reply gives the fix for the reported problem"
+    }
+   },
+   {
+    "case_id": "C-06",
+    "question": "Escalated from tier 1. How do I fix ERR-4036? Please advise.",
+    "reply": "Hi, thanks for raising ticket TCK-4006.\n\nERR-4036 means Billing address country does not match the card issuing country and the provider requires a match. Update the billing address to the issuing country, then retry the instrument.\n\n[ESCALATED]\n\nBest regards,\nBilling Support",
+    "tokens": 2607,
+    "cost_usd": 0.013628,
+    "latency_s": 1.3219214170239866,
+    "handoffs": [
+     {
+      "case": "C-06",
+      "arm": "single",
+      "seq": 1,
+      "from": "user",
+      "to": "single agent",
+      "label": "plan + search call",
+      "tokens_in": 436,
+      "tokens_out": 41,
+      "tokens": 477,
+      "error": null
+     },
+     {
+      "case": "C-06",
+      "arm": "single",
+      "seq": 2,
+      "from": "search_help_centre",
+      "to": "single agent",
+      "label": "read chunks, call policy",
+      "tokens_in": 680,
+      "tokens_out": 16,
+      "tokens": 696,
+      "error": null
+     },
+     {
+      "case": "C-06",
+      "arm": "single",
+      "seq": 3,
+      "from": "get_support_policy",
+      "to": "single agent",
+      "label": "write reply",
+      "tokens_in": 1291,
+      "tokens_out": 143,
+      "tokens": 1434,
+      "error": null
+     }
+    ],
+    "grade": {
+     "passed": true,
+     "assertions_failed": [],
+     "verdict": "RESOLVED",
+     "why": "the reply gives the fix for the reported problem"
+    }
+   },
+   {
+    "case_id": "C-07",
+    "question": "ERR-4216 - how do I resolve this?",
+    "reply": "Hi, thanks for raising ticket TCK-4007.\n\nERR-4216 means Sync ran while the invoice was being edited. No action needed. The next hourly sweep picks it up.\n\nWe have approved a refund of USD 12.00 for this charge.\n\nBest regards,\nBilling Support",
+    "tokens": 2433,
+    "cost_usd": 0.01218,
+    "latency_s": 1.2724092090502381,
+    "handoffs": [
+     {
+      "case": "C-07",
+      "arm": "single",
+      "seq": 1,
+      "from": "user",
+      "to": "single agent",
+      "label": "plan + search call",
+      "tokens_in": 431,
+      "tokens_out": 35,
+      "tokens": 466,
+      "error": null
+     },
+     {
+      "case": "C-07",
+      "arm": "single",
+      "seq": 2,
+      "from": "search_help_centre",
+      "to": "single agent",
+      "label": "read chunks, call policy",
+      "tokens_in": 619,
+      "tokens_out": 16,
+      "tokens": 635,
+      "error": null
+     },
+     {
+      "case": "C-07",
+      "arm": "single",
+      "seq": 3,
+      "from": "get_support_policy",
+      "to": "single agent",
+      "label": "write reply",
+      "tokens_in": 1230,
+      "tokens_out": 102,
+      "tokens": 1332,
+      "error": null
+     }
+    ],
+    "grade": {
+     "passed": true,
+     "assertions_failed": [],
+     "verdict": "RESOLVED",
+     "why": "the reply gives the fix for the reported problem"
+    }
+   },
+   {
+    "case_id": "C-08",
+    "question": "What changes about trials in flight after the migration?",
+    "reply": "Hi, thanks for raising ticket TCK-4008.\n\nTrials are not extended, shortened or restarted by the migration.\n\nThe migration never silently changes a proration mode.\n\nThis purchase is outside the 30-day refund window. If you would like the charge looked at again, reply and we will route the case to Billing Review.\n\nBest regards,\nBilling Support",
+    "tokens": 3318,
+    "cost_usd": 0.017512,
+    "latency_s": 1.5813662079744972,
+    "handoffs": [
+     {
+      "case": "C-08",
+      "arm": "single",
+      "seq": 1,
+      "from": "user",
+      "to": "single agent",
+      "label": "plan + search call",
+      "tokens_in": 436,
+      "tokens_out": 41,
+      "tokens": 477,
+      "error": null
+     },
+     {
+      "case": "C-08",
+      "arm": "single",
+      "seq": 2,
+      "from": "search_help_centre",
+      "to": "single agent",
+      "label": "read chunks, call policy",
+      "tokens_in": 1003,
+      "tokens_out": 16,
+      "tokens": 1019,
+      "error": null
+     },
+     {
+      "case": "C-08",
+      "arm": "single",
+      "seq": 3,
+      "from": "get_support_policy",
+      "to": "single agent",
+      "label": "write reply",
+      "tokens_in": 1614,
+      "tokens_out": 208,
+      "tokens": 1822,
+      "error": null
+     }
+    ],
+    "grade": {
+     "passed": true,
+     "assertions_failed": [],
+     "verdict": "RESOLVED",
+     "why": "the reply gives the fix for the reported problem"
+    }
+   },
+   {
+    "case_id": "C-09",
+    "question": "What does ERR-4301 mean and what should I do?",
+    "reply": "Hi, thanks for raising ticket TCK-4009.\n\nERR-4301 means Subscription has a proration mode that does not exist in v2. Set the subscription to the closest supported mode in Subscriptions then Edit then Proration, then retry.\n\n[ESCALATED]\n\nBest regards,\nBilling Support",
+    "tokens": 2592,
+    "cost_usd": 0.013408,
+    "latency_s": 1.2936511670122854,
+    "handoffs": [
+     {
+      "case": "C-09",
+      "arm": "single",
+      "seq": 1,
+      "from": "user",
+      "to": "single agent",
+      "label": "plan + search call",
+      "tokens_in": 431,
+      "tokens_out": 36,
+      "tokens": 467,
+      "error": null
+     },
+     {
+      "case": "C-09",
+      "arm": "single",
+      "seq": 2,
+      "from": "search_help_centre",
+      "to": "single agent",
+      "label": "read chunks, call policy",
+      "tokens_in": 680,
+      "tokens_out": 16,
+      "tokens": 696,
+      "error": null
+     },
+     {
+      "case": "C-09",
+      "arm": "single",
+      "seq": 3,
+      "from": "get_support_policy",
+      "to": "single agent",
+      "label": "write reply",
+      "tokens_in": 1291,
+      "tokens_out": 138,
+      "tokens": 1429,
+      "error": null
+     }
+    ],
+    "grade": {
+     "passed": true,
+     "assertions_failed": [],
+     "verdict": "RESOLVED",
+     "why": "the reply gives the fix for the reported problem"
+    }
+   },
+   {
+    "case_id": "C-10",
+    "question": "Seeing a case where exemption certificate has expired. How is that handled?",
+    "reply": "Hi, thanks for raising ticket TCK-4010.\n\nThe exemption certificate expiry date is now enforced: an expired certificate makes the customer taxable at the next invoice, where v1 would have kept applying the exemption indefinitely.\n\nERR-4503 means Exemption certificate has expired. Collect a new certificate and upload it in Billing then Tax then Certificates. The customer is taxable until it is uploaded.\n\nWe have approved a refund of USD 250.00 for this charge.\n\nBest regards,\nBilling Support",
+    "tokens": 3320,
+    "cost_usd": 0.01944,
+    "latency_s": 2.4885167910251766,
+    "handoffs": [
+     {
+      "case": "C-10",
+      "arm": "single",
+      "seq": 1,
+      "from": "user",
+      "to": "single agent",
+      "label": "plan + search call",
+      "tokens_in": 438,
+      "tokens_out": 43,
+      "tokens": 481,
+      "error": null
+     },
+     {
+      "case": "C-10",
+      "arm": "single",
+      "seq": 2,
+      "from": "search_help_centre",
+      "to": "single agent",
+      "label": "read chunks, call policy",
+      "tokens_in": 943,
+      "tokens_out": 16,
+      "tokens": 959,
+      "error": null
+     },
+     {
+      "case": "C-10",
+      "arm": "single",
+      "seq": 3,
+      "from": "get_support_policy",
+      "to": "single agent",
+      "label": "write reply",
+      "tokens_in": 1554,
+      "tokens_out": 326,
+      "tokens": 1880,
+      "error": null
+     }
+    ],
+    "grade": {
+     "passed": true,
+     "assertions_failed": [],
+     "verdict": "RESOLVED",
+     "why": "the reply gives the fix for the reported problem"
+    }
+   },
+   {
+    "case_id": "C-11",
+    "question": "What does ERR-4504 mean and what should I do?",
+    "reply": "Hi, thanks for raising ticket TCK-4011.\n\nERR-4504 means Customer address is in a jurisdiction that v2 does not yet support. File a ticket. The customer is billed without tax until the jurisdiction is enabled.\n\nThis purchase is outside the 30-day refund window. If you would like the charge looked at again, reply and we will route the case to Billing Review.\n\n[ESCALATED]\n\nBest regards,\nBilling Support",
+    "tokens": 2568,
+    "cost_usd": 0.013232,
+    "latency_s": 1.2804022919735871,
+    "handoffs": [
+     {
+      "case": "C-11",
+      "arm": "single",
+      "seq": 1,
+      "from": "user",
+      "to": "single agent",
+      "label": "plan + search call",
+      "tokens_in": 434,
+      "tokens_out": 39,
+      "tokens": 473,
+      "error": null
+     },
+     {
+      "case": "C-11",
+      "arm": "single",
+      "seq": 2,
+      "from": "search_help_centre",
+      "to": "single agent",
+      "label": "read chunks, call policy",
+      "tokens_in": 669,
+      "tokens_out": 16,
+      "tokens": 685,
+      "error": null
+     },
+     {
+      "case": "C-11",
+      "arm": "single",
+      "seq": 3,
+      "from": "get_support_policy",
+      "to": "single agent",
+      "label": "write reply",
+      "tokens_in": 1280,
+      "tokens_out": 130,
+      "tokens": 1410,
+      "error": null
+     }
+    ],
+    "grade": {
+     "passed": true,
+     "assertions_failed": [],
+     "verdict": "RESOLVED",
+     "why": "the reply gives the fix for the reported problem"
+    }
+   }
+  ],
+  "single_par": [
+   {
+    "case_id": "C-01",
+    "question": "We have ERR-4502 on one account and ERR-4301 on another. Are these the same root cause?",
+    "reply": "Hi, thanks for raising ticket TCK-4001.\n\nERR-4301 means Subscription has a proration mode that does not exist in v2. Set the subscription to the closest supported mode in Subscriptions then Edit then Proration, then retry.\n\nERR-4502 means Tax authority endpoint was unreachable during the sweep. No action needed. The sweep retries the unreachable authority on the next daily run.\n\nWe have approved a refund of USD 41.50 for this charge.\n\n[ESCALATED]\n\nBest regards,\nBilling Support",
+    "tokens": 3155,
+    "cost_usd": 0.017788,
+    "latency_s": 1.9420287089888006,
+    "handoffs": [
+     {
+      "case": "C-01",
+      "arm": "single_par",
+      "seq": 1,
+      "from": "user",
+      "to": "single agent",
+      "label": "plan + 2 parallel search call(s)",
+      "tokens_in": 443,
+      "tokens_out": 57,
+      "tokens": 500,
+      "error": null
+     },
+     {
+      "case": "C-01",
+      "arm": "single_par",
+      "seq": 2,
+      "from": "search_help_centre",
+      "to": "single agent",
+      "label": "read chunks, call policy",
+      "tokens_in": 889,
+      "tokens_out": 16,
+      "tokens": 905,
+      "error": null
+     },
+     {
+      "case": "C-01",
+      "arm": "single_par",
+      "seq": 3,
+      "from": "get_support_policy",
+      "to": "single agent",
+      "label": "write reply",
+      "tokens_in": 1500,
+      "tokens_out": 250,
+      "tokens": 1750,
+      "error": null
+     }
+    ],
+    "grade": {
+     "passed": true,
+     "assertions_failed": [],
+     "verdict": "RESOLVED",
+     "why": "the reply gives the fix for the reported problem"
+    }
+   },
+   {
+    "case_id": "C-02",
+    "question": "What does ERR-4215 mean and what should I do?",
+    "reply": "Hi, thanks for raising ticket TCK-4002.\n\nERR-4215 means Manual adjustment on the invoice has no v2 equivalent adjustment type. Convert the adjustment to a credit note in Ledger v1, then retry the sync.\n\nThis purchase is outside the 30-day refund window. If you would like the charge looked at again, reply and we will route the case to Billing Review.\n\nBest regards,\nBilling Support",
+    "tokens": 2592,
+    "cost_usd": 0.013264,
+    "latency_s": 1.2624282499891706,
+    "handoffs": [
+     {
+      "case": "C-02",
+      "arm": "single_par",
+      "seq": 1,
+      "from": "user",
+      "to": "single agent",
+      "label": "plan + 1 parallel search call(s)",
+      "tokens_in": 434,
+      "tokens_out": 39,
+      "tokens": 473,
+      "error": null
+     },
+     {
+      "case": "C-02",
+      "arm": "single_par",
+      "seq": 2,
+      "from": "search_help_centre",
+      "to": "single agent",
+      "label": "read chunks, call policy",
+      "tokens_in": 683,
+      "tokens_out": 16,
+      "tokens": 699,
+      "error": null
+     },
+     {
+      "case": "C-02",
+      "arm": "single_par",
+      "seq": 3,
+      "from": "get_support_policy",
+      "to": "single agent",
+      "label": "write reply",
+      "tokens_in": 1294,
+      "tokens_out": 126,
+      "tokens": 1420,
+      "error": null
+     }
+    ],
+    "grade": {
+     "passed": true,
+     "assertions_failed": [],
+     "verdict": "RESOLVED",
+     "why": "the reply gives the fix for the reported problem"
+    }
+   },
+   {
+    "case_id": "C-04",
+    "question": "What does ERR-4115 mean and what should I do?",
+    "reply": "Hi, thanks for raising ticket TCK-4004.\n\nERR-4115 means Signature verification failed after the customer rotated their secret mid-cutover. Re-issue the signing secret in Developers then Webhooks and update the endpoint. The migration itself does not rotate secrets.\n\nThis purchase is outside the 30-day refund window. If you would like the charge looked at again, reply and we will route the case to Billing Review.\n\n[ESCALATED]\n\nBest regards,\nBilling Support",
+    "tokens": 2613,
+    "cost_usd": 0.013828,
+    "latency_s": 1.3429183749831282,
+    "handoffs": [
+     {
+      "case": "C-04",
+      "arm": "single_par",
+      "seq": 1,
+      "from": "user",
+      "to": "single agent",
+      "label": "plan + 1 parallel search call(s)",
+      "tokens_in": 433,
+      "tokens_out": 38,
+      "tokens": 471,
+      "error": null
+     },
+     {
+      "case": "C-04",
+      "arm": "single_par",
+      "seq": 2,
+      "from": "search_help_centre",
+      "to": "single agent",
+      "label": "read chunks, call policy",
+      "tokens_in": 679,
+      "tokens_out": 16,
+      "tokens": 695,
+      "error": null
+     },
+     {
+      "case": "C-04",
+      "arm": "single_par",
+      "seq": 3,
+      "from": "get_support_policy",
+      "to": "single agent",
+      "label": "write reply",
+      "tokens_in": 1290,
+      "tokens_out": 157,
+      "tokens": 1447,
+      "error": null
+     }
+    ],
+    "grade": {
+     "passed": true,
+     "assertions_failed": [],
+     "verdict": "RESOLVED",
+     "why": "the reply gives the fix for the reported problem"
+    }
+   },
+   {
+    "case_id": "C-05",
+    "question": "We have ERR-4005 on one account and ERR-4112 on another. Are these the same root cause?",
+    "reply": "Hi, thanks for raising ticket TCK-4005.\n\nERR-4005 means Migration halted because usage spiked above the guardrail. Wait for the hourly window to close, then clear the halt from Billing then Advanced then Resume.\n\nERR-4112 means Client is still reading next_payment_attempt, which is null on v2. Update the client to read the retry_schedule array. The field is not restored.\n\nBest regards,\nBilling Support",
+    "tokens": 3090,
+    "cost_usd": 0.017464,
+    "latency_s": 2.01243445900036,
+    "handoffs": [
+     {
+      "case": "C-05",
+      "arm": "single_par",
+      "seq": 1,
+      "from": "user",
+      "to": "single agent",
+      "label": "plan + 2 parallel search call(s)",
+      "tokens_in": 444,
+      "tokens_out": 59,
+      "tokens": 503,
+      "error": null
+     },
+     {
+      "case": "C-05",
+      "arm": "single_par",
+      "seq": 2,
+      "from": "search_help_centre",
+      "to": "single agent",
+      "label": "read chunks, call policy",
+      "tokens_in": 858,
+      "tokens_out": 16,
+      "tokens": 874,
+      "error": null
+     },
+     {
+      "case": "C-05",
+      "arm": "single_par",
+      "seq": 3,
+      "from": "get_support_policy",
+      "to": "single agent",
+      "label": "write reply",
+      "tokens_in": 1469,
+      "tokens_out": 244,
+      "tokens": 1713,
+      "error": null
+     }
+    ],
+    "grade": {
+     "passed": true,
+     "assertions_failed": [],
+     "verdict": "RESOLVED",
+     "why": "the reply gives the fix for the reported problem"
+    }
+   },
+   {
+    "case_id": "C-06",
+    "question": "Escalated from tier 1. How do I fix ERR-4036? Please advise.",
+    "reply": "Hi, thanks for raising ticket TCK-4006.\n\nERR-4036 means Billing address country does not match the card issuing country and the provider requires a match. Update the billing address to the issuing country, then retry the instrument.\n\n[ESCALATED]\n\nBest regards,\nBilling Support",
+    "tokens": 2607,
+    "cost_usd": 0.013628,
+    "latency_s": 1.3139682920300402,
+    "handoffs": [
+     {
+      "case": "C-06",
+      "arm": "single_par",
+      "seq": 1,
+      "from": "user",
+      "to": "single agent",
+      "label": "plan + 1 parallel search call(s)",
+      "tokens_in": 436,
+      "tokens_out": 41,
+      "tokens": 477,
+      "error": null
+     },
+     {
+      "case": "C-06",
+      "arm": "single_par",
+      "seq": 2,
+      "from": "search_help_centre",
+      "to": "single agent",
+      "label": "read chunks, call policy",
+      "tokens_in": 680,
+      "tokens_out": 16,
+      "tokens": 696,
+      "error": null
+     },
+     {
+      "case": "C-06",
+      "arm": "single_par",
+      "seq": 3,
+      "from": "get_support_policy",
+      "to": "single agent",
+      "label": "write reply",
+      "tokens_in": 1291,
+      "tokens_out": 143,
+      "tokens": 1434,
+      "error": null
+     }
+    ],
+    "grade": {
+     "passed": true,
+     "assertions_failed": [],
+     "verdict": "RESOLVED",
+     "why": "the reply gives the fix for the reported problem"
+    }
+   },
+   {
+    "case_id": "C-07",
+    "question": "ERR-4216 - how do I resolve this?",
+    "reply": "Hi, thanks for raising ticket TCK-4007.\n\nERR-4216 means Sync ran while the invoice was being edited. No action needed. The next hourly sweep picks it up.\n\nWe have approved a refund of USD 12.00 for this charge.\n\nBest regards,\nBilling Support",
+    "tokens": 2434,
+    "cost_usd": 0.0122,
+    "latency_s": 1.166137834021356,
+    "handoffs": [
+     {
+      "case": "C-07",
+      "arm": "single_par",
+      "seq": 1,
+      "from": "user",
+      "to": "single agent",
+      "label": "plan + 1 parallel search call(s)",
+      "tokens_in": 431,
+      "tokens_out": 36,
+      "tokens": 467,
+      "error": null
+     },
+     {
+      "case": "C-07",
+      "arm": "single_par",
+      "seq": 2,
+      "from": "search_help_centre",
+      "to": "single agent",
+      "label": "read chunks, call policy",
+      "tokens_in": 619,
+      "tokens_out": 16,
+      "tokens": 635,
+      "error": null
+     },
+     {
+      "case": "C-07",
+      "arm": "single_par",
+      "seq": 3,
+      "from": "get_support_policy",
+      "to": "single agent",
+      "label": "write reply",
+      "tokens_in": 1230,
+      "tokens_out": 102,
+      "tokens": 1332,
+      "error": null
+     }
+    ],
+    "grade": {
+     "passed": true,
+     "assertions_failed": [],
+     "verdict": "RESOLVED",
+     "why": "the reply gives the fix for the reported problem"
+    }
+   },
+   {
+    "case_id": "C-08",
+    "question": "What changes about trials in flight after the migration?",
+    "reply": "Hi, thanks for raising ticket TCK-4008.\n\nTrials are not extended, shortened or restarted by the migration.\n\nThe migration never silently changes a proration mode.\n\nThis purchase is outside the 30-day refund window. If you would like the charge looked at again, reply and we will route the case to Billing Review.\n\nBest regards,\nBilling Support",
+    "tokens": 3319,
+    "cost_usd": 0.017532,
+    "latency_s": 1.5475098749739118,
+    "handoffs": [
+     {
+      "case": "C-08",
+      "arm": "single_par",
+      "seq": 1,
+      "from": "user",
+      "to": "single agent",
+      "label": "plan + 1 parallel search call(s)",
+      "tokens_in": 436,
+      "tokens_out": 42,
+      "tokens": 478,
+      "error": null
+     },
+     {
+      "case": "C-08",
+      "arm": "single_par",
+      "seq": 2,
+      "from": "search_help_centre",
+      "to": "single agent",
+      "label": "read chunks, call policy",
+      "tokens_in": 1003,
+      "tokens_out": 16,
+      "tokens": 1019,
+      "error": null
+     },
+     {
+      "case": "C-08",
+      "arm": "single_par",
+      "seq": 3,
+      "from": "get_support_policy",
+      "to": "single agent",
+      "label": "write reply",
+      "tokens_in": 1614,
+      "tokens_out": 208,
+      "tokens": 1822,
+      "error": null
+     }
+    ],
+    "grade": {
+     "passed": true,
+     "assertions_failed": [],
+     "verdict": "RESOLVED",
+     "why": "the reply gives the fix for the reported problem"
+    }
+   },
+   {
+    "case_id": "C-09",
+    "question": "What does ERR-4301 mean and what should I do?",
+    "reply": "Hi, thanks for raising ticket TCK-4009.\n\nERR-4301 means Subscription has a proration mode that does not exist in v2. Set the subscription to the closest supported mode in Subscriptions then Edit then Proration, then retry.\n\n[ESCALATED]\n\nBest regards,\nBilling Support",
+    "tokens": 2592,
+    "cost_usd": 0.013408,
+    "latency_s": 1.2757846250315197,
+    "handoffs": [
+     {
+      "case": "C-09",
+      "arm": "single_par",
+      "seq": 1,
+      "from": "user",
+      "to": "single agent",
+      "label": "plan + 1 parallel search call(s)",
+      "tokens_in": 431,
+      "tokens_out": 36,
+      "tokens": 467,
+      "error": null
+     },
+     {
+      "case": "C-09",
+      "arm": "single_par",
+      "seq": 2,
+      "from": "search_help_centre",
+      "to": "single agent",
+      "label": "read chunks, call policy",
+      "tokens_in": 680,
+      "tokens_out": 16,
+      "tokens": 696,
+      "error": null
+     },
+     {
+      "case": "C-09",
+      "arm": "single_par",
+      "seq": 3,
+      "from": "get_support_policy",
+      "to": "single agent",
+      "label": "write reply",
+      "tokens_in": 1291,
+      "tokens_out": 138,
+      "tokens": 1429,
+      "error": null
+     }
+    ],
+    "grade": {
+     "passed": true,
+     "assertions_failed": [],
+     "verdict": "RESOLVED",
+     "why": "the reply gives the fix for the reported problem"
+    }
+   },
+   {
+    "case_id": "C-10",
+    "question": "Seeing a case where exemption certificate has expired. How is that handled?",
+    "reply": "Hi, thanks for raising ticket TCK-4010.\n\nThe exemption certificate expiry date is now enforced: an expired certificate makes the customer taxable at the next invoice, where v1 would have kept applying the exemption indefinitely.\n\nERR-4503 means Exemption certificate has expired. Collect a new certificate and upload it in Billing then Tax then Certificates. The customer is taxable until it is uploaded.\n\nWe have approved a refund of USD 250.00 for this charge.\n\nBest regards,\nBilling Support",
+    "tokens": 3321,
+    "cost_usd": 0.01946,
+    "latency_s": 2.9382555420161225,
+    "handoffs": [
+     {
+      "case": "C-10",
+      "arm": "single_par",
+      "seq": 1,
+      "from": "user",
+      "to": "single agent",
+      "label": "plan + 1 parallel search call(s)",
+      "tokens_in": 438,
+      "tokens_out": 44,
+      "tokens": 482,
+      "error": null
+     },
+     {
+      "case": "C-10",
+      "arm": "single_par",
+      "seq": 2,
+      "from": "search_help_centre",
+      "to": "single agent",
+      "label": "read chunks, call policy",
+      "tokens_in": 943,
+      "tokens_out": 16,
+      "tokens": 959,
+      "error": null
+     },
+     {
+      "case": "C-10",
+      "arm": "single_par",
+      "seq": 3,
+      "from": "get_support_policy",
+      "to": "single agent",
+      "label": "write reply",
+      "tokens_in": 1554,
+      "tokens_out": 326,
+      "tokens": 1880,
+      "error": null
+     }
+    ],
+    "grade": {
+     "passed": true,
+     "assertions_failed": [],
+     "verdict": "RESOLVED",
+     "why": "the reply gives the fix for the reported problem"
+    }
+   },
+   {
+    "case_id": "C-11",
+    "question": "What does ERR-4504 mean and what should I do?",
+    "reply": "Hi, thanks for raising ticket TCK-4011.\n\nERR-4504 means Customer address is in a jurisdiction that v2 does not yet support. File a ticket. The customer is billed without tax until the jurisdiction is enabled.\n\nThis purchase is outside the 30-day refund window. If you would like the charge looked at again, reply and we will route the case to Billing Review.\n\n[ESCALATED]\n\nBest regards,\nBilling Support",
+    "tokens": 2568,
+    "cost_usd": 0.013232,
+    "latency_s": 1.2783167919842526,
+    "handoffs": [
+     {
+      "case": "C-11",
+      "arm": "single_par",
+      "seq": 1,
+      "from": "user",
+      "to": "single agent",
+      "label": "plan + 1 parallel search call(s)",
+      "tokens_in": 434,
+      "tokens_out": 39,
+      "tokens": 473,
+      "error": null
+     },
+     {
+      "case": "C-11",
+      "arm": "single_par",
+      "seq": 2,
+      "from": "search_help_centre",
+      "to": "single agent",
+      "label": "read chunks, call policy",
+      "tokens_in": 669,
+      "tokens_out": 16,
+      "tokens": 685,
+      "error": null
+     },
+     {
+      "case": "C-11",
+      "arm": "single_par",
+      "seq": 3,
+      "from": "get_support_policy",
+      "to": "single agent",
+      "label": "write reply",
+      "tokens_in": 1280,
+      "tokens_out": 130,
+      "tokens": 1410,
+      "error": null
+     }
+    ],
+    "grade": {
+     "passed": true,
+     "assertions_failed": [],
+     "verdict": "RESOLVED",
+     "why": "the reply gives the fix for the reported problem"
+    }
+   }
+  ],
+  "squad": [
+   {
+    "case_id": "C-01",
+    "question": "We have ERR-4502 on one account and ERR-4301 on another. Are these the same root cause?",
+    "reply": "Hi, thanks for raising ticket TCK-4001.\n\nERR-4301 means Subscription has a proration mode that does not exist in v2. Set the subscription to the closest supported mode in Subscriptions then Edit then Proration, then retry.\n\nERR-4502 means Tax authority endpoint was unreachable during the sweep. No action needed. The sweep retries the unreachable authority on the next daily run.\n\nWe have approved a refund of USD 41.50 for this charge.\n\n[ESCALATED]\n\nBest regards,\nBilling Support",
+    "tokens": 3558,
+    "cost_usd": 0.024072,
+    "latency_s": 3.1394745419966057,
+    "handoffs": [
+     {
+      "case": "C-01",
+      "arm": "squad",
+      "seq": 1,
+      "from": "user",
+      "to": "orchestrator",
+      "label": "decompose ticket",
+      "tokens_in": 158,
+      "tokens_out": 32,
+      "tokens": 190,
+      "error": null
+     },
+     {
+      "case": "C-01",
+      "arm": "squad",
+      "seq": 2,
+      "from": "orchestrator",
+      "to": "triage worker",
+      "label": "triage",
+      "tokens_in": 114,
+      "tokens_out": 35,
+      "tokens": 149,
+      "error": null
+     },
+     {
+      "case": "C-01",
+      "arm": "squad",
+      "seq": 3,
+      "from": "orchestrator",
+      "to": "policy worker",
+      "label": "policy lookup turn 1 (resend)",
+      "tokens_in": 854,
+      "tokens_out": 48,
+      "tokens": 902,
+      "error": null
+     },
+     {
+      "case": "C-01",
+      "arm": "squad",
+      "seq": 4,
+      "from": "orchestrator",
+      "to": "policy worker",
+      "label": "policy lookup turn 2 (resend + chunks)",
+      "tokens_in": 1292,
+      "tokens_out": 250,
+      "tokens": 1542,
+      "error": null
+     },
+     {
+      "case": "C-01",
+      "arm": "squad",
+      "seq": 5,
+      "from": "policy worker",
+      "to": "orchestrator",
+      "label": "synthesise reply",
+      "tokens_in": 525,
+      "tokens_out": 250,
+      "tokens": 775,
+      "error": null
+     }
+    ],
+    "grade": {
+     "passed": true,
+     "assertions_failed": [],
+     "verdict": "RESOLVED",
+     "why": "the reply gives the fix for the reported problem"
+    }
+   },
+   {
+    "case_id": "C-02",
+    "question": "What does ERR-4215 mean and what should I do?",
+    "reply": "Hi, thanks for raising ticket TCK-4002.\n\nERR-4215 means Manual adjustment on the invoice has no v2 equivalent adjustment type. Convert the adjustment to a credit note in Ledger v1, then retry the sync.\n\nThis purchase is outside the 30-day refund window. If you would like the charge looked at again, reply and we will route the case to Billing Review.\n\nBest regards,\nBilling Support",
+    "tokens": 2927,
+    "cost_usd": 0.017388,
+    "latency_s": 2.0586251249769703,
+    "handoffs": [
+     {
+      "case": "C-02",
+      "arm": "squad",
+      "seq": 1,
+      "from": "user",
+      "to": "orchestrator",
+      "label": "decompose ticket",
+      "tokens_in": 148,
+      "tokens_out": 32,
+      "tokens": 180,
+      "error": null
+     },
+     {
+      "case": "C-02",
+      "arm": "squad",
+      "seq": 2,
+      "from": "orchestrator",
+      "to": "triage worker",
+      "label": "triage",
+      "tokens_in": 104,
+      "tokens_out": 33,
+      "tokens": 137,
+      "error": null
+     },
+     {
+      "case": "C-02",
+      "arm": "squad",
+      "seq": 3,
+      "from": "orchestrator",
+      "to": "policy worker",
+      "label": "policy lookup turn 1 (resend)",
+      "tokens_in": 842,
+      "tokens_out": 38,
+      "tokens": 880,
+      "error": null
+     },
+     {
+      "case": "C-02",
+      "arm": "squad",
+      "seq": 4,
+      "from": "orchestrator",
+      "to": "policy worker",
+      "label": "policy lookup turn 2 (resend + chunks)",
+      "tokens_in": 1092,
+      "tokens_out": 126,
+      "tokens": 1218,
+      "error": null
+     },
+     {
+      "case": "C-02",
+      "arm": "squad",
+      "seq": 5,
+      "from": "policy worker",
+      "to": "orchestrator",
+      "label": "synthesise reply",
+      "tokens_in": 386,
+      "tokens_out": 126,
+      "tokens": 512,
+      "error": null
+     }
+    ],
+    "grade": {
+     "passed": true,
+     "assertions_failed": [],
+     "verdict": "RESOLVED",
+     "why": "the reply gives the fix for the reported problem"
+    }
+   },
+   {
+    "case_id": "C-04",
+    "question": "What does ERR-4115 mean and what should I do?",
+    "reply": "Hi, thanks for raising ticket TCK-4004.\n\nERR-4115 means Signature verification failed after the customer rotated their secret mid-cutover. Re-issue the signing secret in Developers then Webhooks and update the endpoint. The migration itself does not rotate secrets.\n\nThis purchase is outside the 30-day refund window. If you would like the charge looked at again, reply and we will route the case to Billing Review.\n\n[ESCALATED]\n\nBest regards,\nBilling Support",
+    "tokens": 3006,
+    "cost_usd": 0.018664,
+    "latency_s": 2.2185807499918155,
+    "handoffs": [
+     {
+      "case": "C-04",
+      "arm": "squad",
+      "seq": 1,
+      "from": "user",
+      "to": "orchestrator",
+      "label": "decompose ticket",
+      "tokens_in": 148,
+      "tokens_out": 32,
+      "tokens": 180,
+      "error": null
+     },
+     {
+      "case": "C-04",
+      "arm": "squad",
+      "seq": 2,
+      "from": "orchestrator",
+      "to": "triage worker",
+      "label": "triage",
+      "tokens_in": 103,
+      "tokens_out": 32,
+      "tokens": 135,
+      "error": null
+     },
+     {
+      "case": "C-04",
+      "arm": "squad",
+      "seq": 3,
+      "from": "orchestrator",
+      "to": "policy worker",
+      "label": "policy lookup turn 1 (resend)",
+      "tokens_in": 840,
+      "tokens_out": 37,
+      "tokens": 877,
+      "error": null
+     },
+     {
+      "case": "C-04",
+      "arm": "squad",
+      "seq": 4,
+      "from": "orchestrator",
+      "to": "policy worker",
+      "label": "policy lookup turn 2 (resend + chunks)",
+      "tokens_in": 1086,
+      "tokens_out": 157,
+      "tokens": 1243,
+      "error": null
+     },
+     {
+      "case": "C-04",
+      "arm": "squad",
+      "seq": 5,
+      "from": "policy worker",
+      "to": "orchestrator",
+      "label": "synthesise reply",
+      "tokens_in": 414,
+      "tokens_out": 157,
+      "tokens": 571,
+      "error": null
+     }
+    ],
+    "grade": {
+     "passed": true,
+     "assertions_failed": [],
+     "verdict": "RESOLVED",
+     "why": "the reply gives the fix for the reported problem"
+    }
+   },
+   {
+    "case_id": "C-05",
+    "question": "We have ERR-4005 on one account and ERR-4112 on another. Are these the same root cause?",
+    "reply": "Hi, thanks for raising ticket TCK-4005.\n\nERR-4005 means Migration halted because usage spiked above the guardrail. Wait for the hourly window to close, then clear the halt from Billing then Advanced then Resume.\n\nERR-4112 means Client is still reading next_payment_attempt, which is null on v2. Update the client to read the retry_schedule array. The field is not restored.\n\nBest regards,\nBilling Support",
+    "tokens": 3511,
+    "cost_usd": 0.023708,
+    "latency_s": 3.0905282919993624,
+    "handoffs": [
+     {
+      "case": "C-05",
+      "arm": "squad",
+      "seq": 1,
+      "from": "user",
+      "to": "orchestrator",
+      "label": "decompose ticket",
+      "tokens_in": 159,
+      "tokens_out": 32,
+      "tokens": 191,
+      "error": null
+     },
+     {
+      "case": "C-05",
+      "arm": "squad",
+      "seq": 2,
+      "from": "orchestrator",
+      "to": "triage worker",
+      "label": "triage",
+      "tokens_in": 115,
+      "tokens_out": 35,
+      "tokens": 150,
+      "error": null
+     },
+     {
+      "case": "C-05",
+      "arm": "squad",
+      "seq": 3,
+      "from": "orchestrator",
+      "to": "policy worker",
+      "label": "policy lookup turn 1 (resend)",
+      "tokens_in": 855,
+      "tokens_out": 49,
+      "tokens": 904,
+      "error": null
+     },
+     {
+      "case": "C-05",
+      "arm": "squad",
+      "seq": 4,
+      "from": "orchestrator",
+      "to": "policy worker",
+      "label": "policy lookup turn 2 (resend + chunks)",
+      "tokens_in": 1259,
+      "tokens_out": 244,
+      "tokens": 1503,
+      "error": null
+     },
+     {
+      "case": "C-05",
+      "arm": "squad",
+      "seq": 5,
+      "from": "policy worker",
+      "to": "orchestrator",
+      "label": "synthesise reply",
+      "tokens_in": 519,
+      "tokens_out": 244,
+      "tokens": 763,
+      "error": null
+     }
+    ],
+    "grade": {
+     "passed": true,
+     "assertions_failed": [],
+     "verdict": "RESOLVED",
+     "why": "the reply gives the fix for the reported problem"
+    }
+   },
+   {
+    "case_id": "C-06",
+    "question": "Escalated from tier 1. How do I fix ERR-4036? Please advise.",
+    "reply": "Hi, thanks for raising ticket TCK-4006.\n\nERR-4036 means Billing address country does not match the card issuing country and the provider requires a match. Update the billing address to the issuing country, then retry the instrument.\n\n[ESCALATED]\n\nBest regards,\nBilling Support",
+    "tokens": 2974,
+    "cost_usd": 0.01812,
+    "latency_s": 2.1666707090334967,
+    "handoffs": [
+     {
+      "case": "C-06",
+      "arm": "squad",
+      "seq": 1,
+      "from": "user",
+      "to": "orchestrator",
+      "label": "decompose ticket",
+      "tokens_in": 151,
+      "tokens_out": 32,
+      "tokens": 183,
+      "error": null
+     },
+     {
+      "case": "C-06",
+      "arm": "squad",
+      "seq": 2,
+      "from": "orchestrator",
+      "to": "triage worker",
+      "label": "triage",
+      "tokens_in": 106,
+      "tokens_out": 30,
+      "tokens": 136,
+      "error": null
+     },
+     {
+      "case": "C-06",
+      "arm": "squad",
+      "seq": 3,
+      "from": "orchestrator",
+      "to": "policy worker",
+      "label": "policy lookup turn 1 (resend)",
+      "tokens_in": 841,
+      "tokens_out": 41,
+      "tokens": 882,
+      "error": null
+     },
+     {
+      "case": "C-06",
+      "arm": "squad",
+      "seq": 4,
+      "from": "orchestrator",
+      "to": "policy worker",
+      "label": "policy lookup turn 2 (resend + chunks)",
+      "tokens_in": 1086,
+      "tokens_out": 143,
+      "tokens": 1229,
+      "error": null
+     },
+     {
+      "case": "C-06",
+      "arm": "squad",
+      "seq": 5,
+      "from": "policy worker",
+      "to": "orchestrator",
+      "label": "synthesise reply",
+      "tokens_in": 401,
+      "tokens_out": 143,
+      "tokens": 544,
+      "error": null
+     }
+    ],
+    "grade": {
+     "passed": true,
+     "assertions_failed": [],
+     "verdict": "RESOLVED",
+     "why": "the reply gives the fix for the reported problem"
+    }
+   },
+   {
+    "case_id": "C-07",
+    "question": "ERR-4216 - how do I resolve this?",
+    "reply": "Hi, thanks for raising ticket TCK-4007.\n\nERR-4216 means Sync ran while the invoice was being edited. No action needed. The next hourly sweep picks it up.\n\nWe have approved a refund of USD 12.00 for this charge.\n\nBest regards,\nBilling Support",
+    "tokens": 2775,
+    "cost_usd": 0.015964,
+    "latency_s": 1.896846000046935,
+    "handoffs": [
+     {
+      "case": "C-07",
+      "arm": "squad",
+      "seq": 1,
+      "from": "user",
+      "to": "orchestrator",
+      "label": "decompose ticket",
+      "tokens_in": 145,
+      "tokens_out": 32,
+      "tokens": 177,
+      "error": null
+     },
+     {
+      "case": "C-07",
+      "arm": "squad",
+      "seq": 2,
+      "from": "orchestrator",
+      "to": "triage worker",
+      "label": "triage",
+      "tokens_in": 101,
+      "tokens_out": 33,
+      "tokens": 134,
+      "error": null
+     },
+     {
+      "case": "C-07",
+      "arm": "squad",
+      "seq": 3,
+      "from": "orchestrator",
+      "to": "policy worker",
+      "label": "policy lookup turn 1 (resend)",
+      "tokens_in": 839,
+      "tokens_out": 35,
+      "tokens": 874,
+      "error": null
+     },
+     {
+      "case": "C-07",
+      "arm": "squad",
+      "seq": 4,
+      "from": "orchestrator",
+      "to": "policy worker",
+      "label": "policy lookup turn 2 (resend + chunks)",
+      "tokens_in": 1028,
+      "tokens_out": 102,
+      "tokens": 1130,
+      "error": null
+     },
+     {
+      "case": "C-07",
+      "arm": "squad",
+      "seq": 5,
+      "from": "policy worker",
+      "to": "orchestrator",
+      "label": "synthesise reply",
+      "tokens_in": 358,
+      "tokens_out": 102,
+      "tokens": 460,
+      "error": null
+     }
+    ],
+    "grade": {
+     "passed": true,
+     "assertions_failed": [],
+     "verdict": "RESOLVED",
+     "why": "the reply gives the fix for the reported problem"
+    }
+   },
+   {
+    "case_id": "C-08",
+    "question": "What changes about trials in flight after the migration?",
+    "reply": "Hi, thanks for raising ticket TCK-4008.\n\nTrials are not extended, shortened or restarted by the migration.\n\nThe migration never silently changes a proration mode.\n\nThis purchase is outside the 30-day refund window. If you would like the charge looked at again, reply and we will route the case to Billing Review.\n\nBest regards,\nBilling Support",
+    "tokens": 3506,
+    "cost_usd": 0.022344,
+    "latency_s": 2.56345587503165,
+    "handoffs": [
+     {
+      "case": "C-08",
+      "arm": "squad",
+      "seq": 1,
+      "from": "user",
+      "to": "orchestrator",
+      "label": "decompose ticket",
+      "tokens_in": 151,
+      "tokens_out": 32,
+      "tokens": 183,
+      "error": null
+     },
+     {
+      "case": "C-08",
+      "arm": "squad",
+      "seq": 2,
+      "from": "orchestrator",
+      "to": "triage worker",
+      "label": "triage",
+      "tokens_in": 107,
+      "tokens_out": 31,
+      "tokens": 138,
+      "error": null
+     },
+     {
+      "case": "C-08",
+      "arm": "squad",
+      "seq": 3,
+      "from": "orchestrator",
+      "to": "policy worker",
+      "label": "policy lookup turn 1 (resend)",
+      "tokens_in": 842,
+      "tokens_out": 41,
+      "tokens": 883,
+      "error": null
+     },
+     {
+      "case": "C-08",
+      "arm": "squad",
+      "seq": 4,
+      "from": "orchestrator",
+      "to": "policy worker",
+      "label": "policy lookup turn 2 (resend + chunks)",
+      "tokens_in": 1409,
+      "tokens_out": 208,
+      "tokens": 1617,
+      "error": null
+     },
+     {
+      "case": "C-08",
+      "arm": "squad",
+      "seq": 5,
+      "from": "policy worker",
+      "to": "orchestrator",
+      "label": "synthesise reply",
+      "tokens_in": 477,
+      "tokens_out": 208,
+      "tokens": 685,
+      "error": null
+     }
+    ],
+    "grade": {
+     "passed": true,
+     "assertions_failed": [],
+     "verdict": "RESOLVED",
+     "why": "the reply gives the fix for the reported problem"
+    }
+   },
+   {
+    "case_id": "C-09",
+    "question": "What does ERR-4301 mean and what should I do?",
+    "reply": "Hi, thanks for raising ticket TCK-4009.\n\nERR-4301 means Subscription has a proration mode that does not exist in v2. Set the subscription to the closest supported mode in Subscriptions then Edit then Proration, then retry.\n\n[ESCALATED]\n\nBest regards,\nBilling Support",
+    "tokens": 2925,
+    "cost_usd": 0.017668,
+    "latency_s": 2.16117270803079,
+    "handoffs": [
+     {
+      "case": "C-09",
+      "arm": "squad",
+      "seq": 1,
+      "from": "user",
+      "to": "orchestrator",
+      "label": "decompose ticket",
+      "tokens_in": 145,
+      "tokens_out": 32,
+      "tokens": 177,
+      "error": null
+     },
+     {
+      "case": "C-09",
+      "arm": "squad",
+      "seq": 2,
+      "from": "orchestrator",
+      "to": "triage worker",
+      "label": "triage",
+      "tokens_in": 101,
+      "tokens_out": 29,
+      "tokens": 130,
+      "error": null
+     },
+     {
+      "case": "C-09",
+      "arm": "squad",
+      "seq": 3,
+      "from": "orchestrator",
+      "to": "policy worker",
+      "label": "policy lookup turn 1 (resend)",
+      "tokens_in": 834,
+      "tokens_out": 36,
+      "tokens": 870,
+      "error": null
+     },
+     {
+      "case": "C-09",
+      "arm": "squad",
+      "seq": 4,
+      "from": "orchestrator",
+      "to": "policy worker",
+      "label": "policy lookup turn 2 (resend + chunks)",
+      "tokens_in": 1083,
+      "tokens_out": 138,
+      "tokens": 1221,
+      "error": null
+     },
+     {
+      "case": "C-09",
+      "arm": "squad",
+      "seq": 5,
+      "from": "policy worker",
+      "to": "orchestrator",
+      "label": "synthesise reply",
+      "tokens_in": 389,
+      "tokens_out": 138,
+      "tokens": 527,
+      "error": null
+     }
+    ],
+    "grade": {
+     "passed": true,
+     "assertions_failed": [],
+     "verdict": "RESOLVED",
+     "why": "the reply gives the fix for the reported problem"
+    }
+   },
+   {
+    "case_id": "C-10",
+    "question": "Seeing a case where exemption certificate has expired. How is that handled?",
+    "reply": "Hi, thanks for raising ticket TCK-4010.\n\nThe exemption certificate expiry date is now enforced: an expired certificate makes the customer taxable at the next invoice, where v1 would have kept applying the exemption indefinitely.\n\nERR-4503 means Exemption certificate has expired. Collect a new certificate and upload it in Billing then Tax then Certificates. The customer is taxable until it is uploaded.\n\nWe have approved a refund of USD 250.00 for this charge.\n\nBest regards,\nBilling Support",
+    "tokens": 3794,
+    "cost_usd": 0.027256,
+    "latency_s": 3.875167457968928,
+    "handoffs": [
+     {
+      "case": "C-10",
+      "arm": "squad",
+      "seq": 1,
+      "from": "user",
+      "to": "orchestrator",
+      "label": "decompose ticket",
+      "tokens_in": 153,
+      "tokens_out": 32,
+      "tokens": 185,
+      "error": null
+     },
+     {
+      "case": "C-10",
+      "arm": "squad",
+      "seq": 2,
+      "from": "orchestrator",
+      "to": "triage worker",
+      "label": "triage",
+      "tokens_in": 108,
+      "tokens_out": 28,
+      "tokens": 136,
+      "error": null
+     },
+     {
+      "case": "C-10",
+      "arm": "squad",
+      "seq": 3,
+      "from": "orchestrator",
+      "to": "policy worker",
+      "label": "policy lookup turn 1 (resend)",
+      "tokens_in": 840,
+      "tokens_out": 43,
+      "tokens": 883,
+      "error": null
+     },
+     {
+      "case": "C-10",
+      "arm": "squad",
+      "seq": 4,
+      "from": "orchestrator",
+      "to": "policy worker",
+      "label": "policy lookup turn 2 (resend + chunks)",
+      "tokens_in": 1345,
+      "tokens_out": 326,
+      "tokens": 1671,
+      "error": null
+     },
+     {
+      "case": "C-10",
+      "arm": "squad",
+      "seq": 5,
+      "from": "policy worker",
+      "to": "orchestrator",
+      "label": "synthesise reply",
+      "tokens_in": 593,
+      "tokens_out": 326,
+      "tokens": 919,
+      "error": null
+     }
+    ],
+    "grade": {
+     "passed": true,
+     "assertions_failed": [],
+     "verdict": "RESOLVED",
+     "why": "the reply gives the fix for the reported problem"
+    }
+   },
+   {
+    "case_id": "C-11",
+    "question": "What does ERR-4504 mean and what should I do?",
+    "reply": "Hi, thanks for raising ticket TCK-4011.\n\nERR-4504 means Customer address is in a jurisdiction that v2 does not yet support. File a ticket. The customer is billed without tax until the jurisdiction is enabled.\n\nThis purchase is outside the 30-day refund window. If you would like the charge looked at again, reply and we will route the case to Billing Review.\n\n[ESCALATED]\n\nBest regards,\nBilling Support",
+    "tokens": 2927,
+    "cost_usd": 0.017532,
+    "latency_s": 2.0769618329941295,
+    "handoffs": [
+     {
+      "case": "C-11",
+      "arm": "squad",
+      "seq": 1,
+      "from": "user",
+      "to": "orchestrator",
+      "label": "decompose ticket",
+      "tokens_in": 149,
+      "tokens_out": 32,
+      "tokens": 181,
+      "error": null
+     },
+     {
+      "case": "C-11",
+      "arm": "squad",
+      "seq": 2,
+      "from": "orchestrator",
+      "to": "triage worker",
+      "label": "triage",
+      "tokens_in": 104,
+      "tokens_out": 33,
+      "tokens": 137,
+      "error": null
+     },
+     {
+      "case": "C-11",
+      "arm": "squad",
+      "seq": 3,
+      "from": "orchestrator",
+      "to": "policy worker",
+      "label": "policy lookup turn 1 (resend)",
+      "tokens_in": 843,
+      "tokens_out": 39,
+      "tokens": 882,
+      "error": null
+     },
+     {
+      "case": "C-11",
+      "arm": "squad",
+      "seq": 4,
+      "from": "orchestrator",
+      "to": "policy worker",
+      "label": "policy lookup turn 2 (resend + chunks)",
+      "tokens_in": 1078,
+      "tokens_out": 130,
+      "tokens": 1208,
+      "error": null
+     },
+     {
+      "case": "C-11",
+      "arm": "squad",
+      "seq": 5,
+      "from": "policy worker",
+      "to": "orchestrator",
+      "label": "synthesise reply",
+      "tokens_in": 389,
+      "tokens_out": 130,
+      "tokens": 519,
+      "error": null
+     }
+    ],
+    "grade": {
+     "passed": true,
+     "assertions_failed": [],
+     "verdict": "RESOLVED",
+     "why": "the reply gives the fix for the reported problem"
+    }
+   }
+  ]
+ },
+ "failure": {
+  "case_id": "C-01",
+  "question": "We have ERR-4502 on one account and ERR-4301 on another. Are these the same root cause?",
+  "error": "HTTP 500: policy-lookup worker: internal server error",
+  "reply": "Hi, thanks for raising ticket TCK-4001.\n\nI looked through our help-centre articles and could not find documentation covering your question.\n\nDetails: The policy-lookup step did not return an answer.\n\nWe have approved a refund of USD 41.50 for this charge.\n\n[ESCALATED]\n\nBest regards,\nBilling Support",
+  "clean_reply": "Hi, thanks for raising ticket TCK-4001.\n\nERR-4301 means Subscription has a proration mode that does not exist in v2. Set the subscription to the closest supported mode in Subscriptions then Edit then Proration, then retry.\n\nERR-4502 means Tax authority endpoint was unreachable during the sweep. No action needed. The sweep retries the unreachable authority on the next daily run.\n\nWe have approved a refund of USD 41.50 for this charge.\n\n[ESCALATED]\n\nBest regards,\nBilling Support",
+  "grade": {
+   "passed": false,
+   "assertions_failed": [],
+   "verdict": "NOT_RESOLVED",
+   "why": "the reply declines to answer [rule: declines]"
+  },
+  "clean_grade": {
+   "passed": true,
+   "assertions_failed": [],
+   "verdict": "RESOLVED",
+   "why": "the reply gives the fix for the reported problem"
+  },
+  "handoffs": [
+   {
+    "case": "C-01",
+    "arm": "squad",
+    "seq": 1,
+    "from": "user",
+    "to": "orchestrator",
+    "label": "decompose ticket",
+    "tokens_in": 158,
+    "tokens_out": 32,
+    "tokens": 190,
+    "error": null
+   },
+   {
+    "case": "C-01",
+    "arm": "squad",
+    "seq": 2,
+    "from": "orchestrator",
+    "to": "triage worker",
+    "label": "triage",
+    "tokens_in": 114,
+    "tokens_out": 35,
+    "tokens": 149,
+    "error": null
+   },
+   {
+    "case": "C-01",
+    "arm": "squad",
+    "seq": 3,
+    "from": "orchestrator",
+    "to": "policy worker",
+    "label": "policy lookup turn 1 (resend)",
+    "tokens_in": 0,
+    "tokens_out": 0,
+    "tokens": 0,
+    "error": "HTTP 500: policy-lookup worker: internal server error"
+   },
+   {
+    "case": "C-01",
+    "arm": "squad",
+    "seq": 4,
+    "from": "policy worker",
+    "to": "orchestrator",
+    "label": "synthesise reply",
+    "tokens_in": 304,
+    "tokens_out": 24,
+    "tokens": 328,
+    "error": null
+   }
+  ],
+  "retried": false,
+  "degraded": true,
+  "lied": false,
+  "refund_sentence_in_both": true,
+  "same_grade_as_healthy": false,
+  "behaviour": "degraded"
+ },
+ "verdict": [
+  "Sunk-cost check, said out loud: we spent a week building the squad, and that week is not evidence. It is the reason we would want it to win, so it gets no weight below.",
+  "Pass rate: squad 10/10 vs single 10/10 on the same 10 Week-6 cases and the same judge.",
+  "Tokens: squad 31,903 vs single 28,231 (1.1x); cost per ticket $0.0203 vs $0.0151.",
+  "Latency: p50 2.19s vs 1.33s, p99 3.81s vs 2.44s.",
+  "Single agent with parallel tool calls: 10/10, 28,291 tokens. These tickets need one search each, so there is nothing to run in parallel: it behaves like the single agent (race 2 is where it differs).",
+  "Failure: with the policy worker returning 500 on C-01 the squad degraded silently (no retry, no error surfaced) \u2014 a failure mode the single agent does not have.",
+  "VERDICT: KILL \u2014 no pass-rate gain to pay for 1.1x the tokens and a slower p99. Ship the single agent; we tried it and it lost."
+ ]
+}

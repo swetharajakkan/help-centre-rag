@@ -1,0 +1,123 @@
+# case arm seq from -> to | label | tokens_in tokens_out total | error
+C-01 single 1 user -> single agent | plan + search call | 443 48 491 | -
+C-01 single 2 search_help_centre -> single agent | read chunks, call policy | 881 16 897 | -
+C-01 single 3 get_support_policy -> single agent | write reply | 1492 250 1742 | -
+C-02 single 1 user -> single agent | plan + search call | 434 38 472 | -
+C-02 single 2 search_help_centre -> single agent | read chunks, call policy | 683 16 699 | -
+C-02 single 3 get_support_policy -> single agent | write reply | 1294 126 1420 | -
+C-04 single 1 user -> single agent | plan + search call | 433 37 470 | -
+C-04 single 2 search_help_centre -> single agent | read chunks, call policy | 679 16 695 | -
+C-04 single 3 get_support_policy -> single agent | write reply | 1290 157 1447 | -
+C-05 single 1 user -> single agent | plan + search call | 444 49 493 | -
+C-05 single 2 search_help_centre -> single agent | read chunks, call policy | 848 16 864 | -
+C-05 single 3 get_support_policy -> single agent | write reply | 1459 244 1703 | -
+C-06 single 1 user -> single agent | plan + search call | 436 41 477 | -
+C-06 single 2 search_help_centre -> single agent | read chunks, call policy | 680 16 696 | -
+C-06 single 3 get_support_policy -> single agent | write reply | 1291 143 1434 | -
+C-07 single 1 user -> single agent | plan + search call | 431 35 466 | -
+C-07 single 2 search_help_centre -> single agent | read chunks, call policy | 619 16 635 | -
+C-07 single 3 get_support_policy -> single agent | write reply | 1230 102 1332 | -
+C-08 single 1 user -> single agent | plan + search call | 436 41 477 | -
+C-08 single 2 search_help_centre -> single agent | read chunks, call policy | 1003 16 1019 | -
+C-08 single 3 get_support_policy -> single agent | write reply | 1614 208 1822 | -
+C-09 single 1 user -> single agent | plan + search call | 431 36 467 | -
+C-09 single 2 search_help_centre -> single agent | read chunks, call policy | 680 16 696 | -
+C-09 single 3 get_support_policy -> single agent | write reply | 1291 138 1429 | -
+C-10 single 1 user -> single agent | plan + search call | 438 43 481 | -
+C-10 single 2 search_help_centre -> single agent | read chunks, call policy | 943 16 959 | -
+C-10 single 3 get_support_policy -> single agent | write reply | 1554 326 1880 | -
+C-11 single 1 user -> single agent | plan + search call | 434 39 473 | -
+C-11 single 2 search_help_centre -> single agent | read chunks, call policy | 669 16 685 | -
+C-11 single 3 get_support_policy -> single agent | write reply | 1280 130 1410 | -
+C-01 single_par 1 user -> single agent | plan + 2 parallel search call(s) | 443 57 500 | -
+C-01 single_par 2 search_help_centre -> single agent | read chunks, call policy | 889 16 905 | -
+C-01 single_par 3 get_support_policy -> single agent | write reply | 1500 250 1750 | -
+C-02 single_par 1 user -> single agent | plan + 1 parallel search call(s) | 434 39 473 | -
+C-02 single_par 2 search_help_centre -> single agent | read chunks, call policy | 683 16 699 | -
+C-02 single_par 3 get_support_policy -> single agent | write reply | 1294 126 1420 | -
+C-04 single_par 1 user -> single agent | plan + 1 parallel search call(s) | 433 38 471 | -
+C-04 single_par 2 search_help_centre -> single agent | read chunks, call policy | 679 16 695 | -
+C-04 single_par 3 get_support_policy -> single agent | write reply | 1290 157 1447 | -
+C-05 single_par 1 user -> single agent | plan + 2 parallel search call(s) | 444 59 503 | -
+C-05 single_par 2 search_help_centre -> single agent | read chunks, call policy | 858 16 874 | -
+C-05 single_par 3 get_support_policy -> single agent | write reply | 1469 244 1713 | -
+C-06 single_par 1 user -> single agent | plan + 1 parallel search call(s) | 436 41 477 | -
+C-06 single_par 2 search_help_centre -> single agent | read chunks, call policy | 680 16 696 | -
+C-06 single_par 3 get_support_policy -> single agent | write reply | 1291 143 1434 | -
+C-07 single_par 1 user -> single agent | plan + 1 parallel search call(s) | 431 36 467 | -
+C-07 single_par 2 search_help_centre -> single agent | read chunks, call policy | 619 16 635 | -
+C-07 single_par 3 get_support_policy -> single agent | write reply | 1230 102 1332 | -
+C-08 single_par 1 user -> single agent | plan + 1 parallel search call(s) | 436 42 478 | -
+C-08 single_par 2 search_help_centre -> single agent | read chunks, call policy | 1003 16 1019 | -
+C-08 single_par 3 get_support_policy -> single agent | write reply | 1614 208 1822 | -
+C-09 single_par 1 user -> single agent | plan + 1 parallel search call(s) | 431 36 467 | -
+C-09 single_par 2 search_help_centre -> single agent | read chunks, call policy | 680 16 696 | -
+C-09 single_par 3 get_support_policy -> single agent | write reply | 1291 138 1429 | -
+C-10 single_par 1 user -> single agent | plan + 1 parallel search call(s) | 438 44 482 | -
+C-10 single_par 2 search_help_centre -> single agent | read chunks, call policy | 943 16 959 | -
+C-10 single_par 3 get_support_policy -> single agent | write reply | 1554 326 1880 | -
+C-11 single_par 1 user -> single agent | plan + 1 parallel search call(s) | 434 39 473 | -
+C-11 single_par 2 search_help_centre -> single agent | read chunks, call policy | 669 16 685 | -
+C-11 single_par 3 get_support_policy -> single agent | write reply | 1280 130 1410 | -
+C-01 squad  1 user -> orchestrator | decompose ticket | 158 32 190 | -
+C-01 squad  2 orchestrator -> triage worker | triage | 114 35 149 | -
+C-01 squad  3 orchestrator -> policy worker | policy lookup turn 1 (resend) | 854 48 902 | -
+C-01 squad  4 orchestrator -> policy worker | policy lookup turn 2 (resend + chunks) | 1292 250 1542 | -
+C-01 squad  5 policy worker -> orchestrator | synthesise reply | 525 250 775 | -
+C-02 squad  1 user -> orchestrator | decompose ticket | 148 32 180 | -
+C-02 squad  2 orchestrator -> triage worker | triage | 104 33 137 | -
+C-02 squad  3 orchestrator -> policy worker | policy lookup turn 1 (resend) | 842 38 880 | -
+C-02 squad  4 orchestrator -> policy worker | policy lookup turn 2 (resend + chunks) | 1092 126 1218 | -
+C-02 squad  5 policy worker -> orchestrator | synthesise reply | 386 126 512 | -
+C-04 squad  1 user -> orchestrator | decompose ticket | 148 32 180 | -
+C-04 squad  2 orchestrator -> triage worker | triage | 103 32 135 | -
+C-04 squad  3 orchestrator -> policy worker | policy lookup turn 1 (resend) | 840 37 877 | -
+C-04 squad  4 orchestrator -> policy worker | policy lookup turn 2 (resend + chunks) | 1086 157 1243 | -
+C-04 squad  5 policy worker -> orchestrator | synthesise reply | 414 157 571 | -
+C-05 squad  1 user -> orchestrator | decompose ticket | 159 32 191 | -
+C-05 squad  2 orchestrator -> triage worker | triage | 115 35 150 | -
+C-05 squad  3 orchestrator -> policy worker | policy lookup turn 1 (resend) | 855 49 904 | -
+C-05 squad  4 orchestrator -> policy worker | policy lookup turn 2 (resend + chunks) | 1259 244 1503 | -
+C-05 squad  5 policy worker -> orchestrator | synthesise reply | 519 244 763 | -
+C-06 squad  1 user -> orchestrator | decompose ticket | 151 32 183 | -
+C-06 squad  2 orchestrator -> triage worker | triage | 106 30 136 | -
+C-06 squad  3 orchestrator -> policy worker | policy lookup turn 1 (resend) | 841 41 882 | -
+C-06 squad  4 orchestrator -> policy worker | policy lookup turn 2 (resend + chunks) | 1086 143 1229 | -
+C-06 squad  5 policy worker -> orchestrator | synthesise reply | 401 143 544 | -
+C-07 squad  1 user -> orchestrator | decompose ticket | 145 32 177 | -
+C-07 squad  2 orchestrator -> triage worker | triage | 101 33 134 | -
+C-07 squad  3 orchestrator -> policy worker | policy lookup turn 1 (resend) | 839 35 874 | -
+C-07 squad  4 orchestrator -> policy worker | policy lookup turn 2 (resend + chunks) | 1028 102 1130 | -
+C-07 squad  5 policy worker -> orchestrator | synthesise reply | 358 102 460 | -
+C-08 squad  1 user -> orchestrator | decompose ticket | 151 32 183 | -
+C-08 squad  2 orchestrator -> triage worker | triage | 107 31 138 | -
+C-08 squad  3 orchestrator -> policy worker | policy lookup turn 1 (resend) | 842 41 883 | -
+C-08 squad  4 orchestrator -> policy worker | policy lookup turn 2 (resend + chunks) | 1409 208 1617 | -
+C-08 squad  5 policy worker -> orchestrator | synthesise reply | 477 208 685 | -
+C-09 squad  1 user -> orchestrator | decompose ticket | 145 32 177 | -
+C-09 squad  2 orchestrator -> triage worker | triage | 101 29 130 | -
+C-09 squad  3 orchestrator -> policy worker | policy lookup turn 1 (resend) | 834 36 870 | -
+C-09 squad  4 orchestrator -> policy worker | policy lookup turn 2 (resend + chunks) | 1083 138 1221 | -
+C-09 squad  5 policy worker -> orchestrator | synthesise reply | 389 138 527 | -
+C-10 squad  1 user -> orchestrator | decompose ticket | 153 32 185 | -
+C-10 squad  2 orchestrator -> triage worker | triage | 108 28 136 | -
+C-10 squad  3 orchestrator -> policy worker | policy lookup turn 1 (resend) | 840 43 883 | -
+C-10 squad  4 orchestrator -> policy worker | policy lookup turn 2 (resend + chunks) | 1345 326 1671 | -
+C-10 squad  5 policy worker -> orchestrator | synthesise reply | 593 326 919 | -
+C-11 squad  1 user -> orchestrator | decompose ticket | 149 32 181 | -
+C-11 squad  2 orchestrator -> triage worker | triage | 104 33 137 | -
+C-11 squad  3 orchestrator -> policy worker | policy lookup turn 1 (resend) | 843 39 882 | -
+C-11 squad  4 orchestrator -> policy worker | policy lookup turn 2 (resend + chunks) | 1078 130 1208 | -
+C-11 squad  5 policy worker -> orchestrator | synthesise reply | 389 130 519 | -
+C-01 squad+500 1 user -> orchestrator | decompose ticket | 158 32 190 | -
+C-01 squad+500 2 orchestrator -> triage worker | triage | 114 35 149 | -
+C-01 squad+500 3 orchestrator -> policy worker | policy lookup turn 1 (resend) | 0 0 0 | HTTP 500: policy-lookup worker: internal server error
+C-01 squad+500 4 policy worker -> orchestrator | synthesise reply | 304 24 328 | -
+
+# squad tokens by hand-off
+orchestrator -> policy worker: 22,419 (70%)
+policy worker -> orchestrator: 6,275 (20%)
+user -> orchestrator: 1,827 (6%)
+orchestrator -> triage worker: 1,382 (4%)
+
+Context re-send multiplier: 31,903 / 28,231 = 1.1x — largest share: orchestrator -> policy worker resend (ticket + triage + full SP-001, sent again with the chunks), 70% of all squad tokens

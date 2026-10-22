@@ -44,7 +44,7 @@ function Detail({ id }) {
       <div className="res-head">
         <Badge r={r} />
         <span className="res-meta">
-          {r.username} ({r.role}) · {when(r.ts)} · {secs(r.ms)} · model {r.model || '—'}
+          {r.username} ({r.role}) · {when(r.ts)} · {secs(r.ms)}
         </span>
       </div>
       <p className="tr-q">“{r.question}”</p>
@@ -52,10 +52,10 @@ function Detail({ id }) {
       <div className="tr-stats">
         <div><b>{r.agents.length}</b><span>agents</span></div>
         <div><b>{r.agents.reduce((n, a) => n + (a.runs || 1), 0)}</b><span>agent runs</span></div>
-        <div><b>{tools.length}</b><span>tools/call</span></div>
+        <div><b>{tools.length}</b><span>tool calls</span></div>
         <div><b>{tools.filter((t) => t.is_error).length}</b><span>failed calls</span></div>
         <div><b>{r.steps.filter((s) => s.kind === 'model').length}</b><span>model turns</span></div>
-        <div><b>{verifier?.calls?.length ?? 0}</b><span>verifier re-fetches</span></div>
+        <div><b>{verifier?.calls?.length ?? 0}</b><span>verifier checks</span></div>
       </div>
 
       {r.error && <div className="banner bad"><strong>The agent failed.</strong><pre>{r.error}</pre></div>}
@@ -73,7 +73,7 @@ function Detail({ id }) {
         {r.kind !== 'smalltalk' && <li>
           <span className="tr-who host">Host</span>
           {r.context.length
-            ? <>attached {r.context.length} resource{r.context.length === 1 ? '' : 's'} as context (resources/read, no model involved): {r.context.map((u) => <code key={u}>{u}</code>)}</>
+            ? <>attached {r.context.length} resource{r.context.length === 1 ? '' : 's'} as context: {r.context.map((u) => <code key={u}>{u}</code>)}</>
             : 'attached no context'}
         </li>}
         {r.steps.map((s, i) => s.kind === 'model' ? (
@@ -86,16 +86,16 @@ function Detail({ id }) {
           </li>
         ) : (
           <li key={i} className={s.is_error ? 'err' : ''}>
-            <span className="tr-who tool">tools/call</span>
+            <span className="tr-who tool">Tool</span>
             <b>{s.tool}</b> on <b>{s.server}</b> <code>{JSON.stringify(s.args)}</code>
-            <span className="tr-mut"> · {s.ms} ms{s.is_error ? ' · isError' : ''}</span>
+            <span className="tr-mut"> · {s.ms} ms{s.is_error ? ' · error' : ''}</span>
             <details><summary>result</summary><pre className="w9-pre">{s.result}</pre></details>
           </li>
         ))}
         {verifier?.calls?.map((c, i) => (
           <li key={`v${i}`} className={c.is_error ? 'err' : ''}>
             <span className="tr-who verif">Verifier</span>
-            re-fetched {c.resource
+            checked {c.resource
               ? <>resource <code>{c.resource}</code></>
               : <><b>{c.tool}</b> on <b>{c.server}</b> <code>{JSON.stringify(c.args)}</code></>}
             {c.ms != null && <span className="tr-mut"> · {c.ms} ms</span>}
@@ -109,7 +109,7 @@ function Detail({ id }) {
               {x.checks.map((c, i) => (
                 <li key={i}>
                   <b className={c.ok ? 'okc' : 'badc'}>{c.ok ? '✓' : '✗'}</b> {c.text}
-                  <span className="tr-mut"> · source {c.source_id} via {c.refetched_via || '—'}
+                  <span className="tr-mut"> · source {c.source_id}
                     {c.reasons.length ? ` · ${c.reasons.join('; ')}` : ''}</span>
                 </li>
               ))}
@@ -162,7 +162,7 @@ export default function TrackView() {
         </div>
         {err && <p className="note bad">{err}</p>}
         {data && !data.items.length && (
-          <p className="tr-mut tr-empty">Nothing yet. Questions asked by {role || 'anyone'} appear here as they are asked.</p>
+          <p className="tr-mut tr-empty">No questions yet.</p>
         )}
         {data?.items.map((r) => (
           <button key={r.id} className={`tr-item ${open === r.id ? 'on' : ''}`} onClick={() => setOpen(r.id)}>

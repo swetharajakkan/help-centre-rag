@@ -1,10 +1,11 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import Sidebar from './Sidebar.jsx'
+import Sidebar, { latestQuestions } from './Sidebar.jsx'
 import Chat from './Chat.jsx'
 import EvalView from './EvalView.jsx'
 import Week7View from './Week7View.jsx'
 import Week8View from './Week8View.jsx'
 import Week9View from './Week9View.jsx'
+import Week10View, { ArmPicker } from './Week10View.jsx'
 import { streamSSE } from './sse'
 
 const BACKEND_HINT =
@@ -30,40 +31,65 @@ async function getJSON(url) {
   return data
 }
 
-// The filter bar. Weeks 3-5 are retrieval arms of the streamed RAG answer;
-// Week 6 drafts a ticket reply and grades it with a judge; Week 7 runs the
-// refund-chase ticket through the agent or the fixed workflow.
+// The filter bar: which system answers.
 const WEEKS = [
-  { value: 'week3', short: 'Week 3', label: 'Week 3 — baseline retrieval' },
-  { value: 'week4', short: 'Week 4', label: 'Week 4 — reranked' },
-  { value: 'week5', short: 'Week 5', label: 'Week 5 — area-filter fallback' },
-  { value: 'week6', short: 'Week 6', label: 'Week 6 — ticket reply + judge' },
-  { value: 'week7', short: 'Week 7', label: 'Week 7 — agent vs workflow' },
-  { value: 'week8', short: 'Week 8', label: 'Week 8 — trajectory-scored agent (sampled engine)' },
-  { value: 'week9', short: 'Week 9', label: 'Week 9 — MCP tools, Responder + Verifier' },
+  { value: 'week3', short: 'Baseline search' },
+  { value: 'week4', short: 'Reranked search' },
+  { value: 'week5', short: 'Smart filter' },
+  { value: 'week6', short: 'Ticket reply' },
+  { value: 'week7', short: 'Refund agent' },
+  { value: 'week8', short: 'Path-checked agent' },
+  { value: 'week9', short: 'Support crew' },
+  { value: 'week10', short: 'Triage squad' },
 ]
+// Support crew questions: fixed, so they live here.
+const SUPPORT_CREW = [
+  ['S-1', 'Why was TCK-4403 escalated?'],
+  ['S-2', 'What is the status of TCK-4405?'],
+  ['S-3', 'Open help article BM-4'],
+  ['S-4', 'What happens to stored cards during the migration?'],
+  ['S-5', 'Show me the escalation history for TCK-4401.'],
+  ['S-6', 'What is ticket TCK-44 about?'],
+  ['S-7', 'How do I reset my password?'],
+].map(([id, question]) => ({ id, question }))
+
+/** Every question set, latest first; each answered by its own system. */
+function questionGroups(sets) {
+  return [
+    ['week10', 'Triage squad', latestQuestions(sets.week6)],
+    ['week9', 'Support crew', SUPPORT_CREW],
+    ['week8', 'Path-checked agent', sets.week8],
+    ['week7', 'Refund agent', sets.week7],
+    ['week6', 'Ticket reply', sets.week6],
+    ['week5', 'Smart filter', sets.week5],
+    ['week4', 'Reranked search', sets.golden],
+  ].map(([mode, label, items]) => ({ mode, label, items: items || [] }))
+    .filter((g) => g.items.length)
+}
+
 const JUDGES = [['judge_v1', 'Judge v1'], ['judge_v2', 'Judge v2']]
 const SYSTEMS = [['agent', 'Agent'], ['workflow', 'Fixed workflow']]
 const MITIGATION = [[false, 'Off'], [true, 'Arg validation']]
 // Week 6's drafter uses Week 4 retrieval, and Week 7 retrieves nothing, so
 // the chunk comparison runs on the Week 4 arm for both.
 const RETRIEVAL_ARM = { week3: 'week3', week4: 'week4', week5: 'week5',
-                        week6: 'week4', week7: 'week4', week8: 'week4', week9: 'week4' }
+                        week6: 'week4', week7: 'week4', week8: 'week4', week9: 'week4',
+                        week10: 'week4' }
 
 const VIEWS = [
   ['chat', 'Chat'], ['chunks', 'Chunks'], ['eval', 'Eval'],
-  ['agent', 'Agent · W7'], ['trajectory', 'Trajectory · W8'], ['mcp', 'MCP · W9'],
-  ['documents', 'Documents'],
+  ['agent', 'Refund agent'], ['trajectory', 'Path check'], ['mcp', 'Support crew'],
+  ['race', 'Agent race'], ['documents', 'Documents'],
 ]
 // Links shared before the views were renamed keep working.
-const OLD_HASH = { compare: 'chunks', errors: 'eval', evals: 'eval', week7: 'agent', week8: 'trajectory', week9: 'mcp' }
+const OLD_HASH = { compare: 'chunks', errors: 'eval', evals: 'eval', week7: 'agent', week8: 'trajectory', week9: 'mcp', week10: 'race' }
 
 function filterLabel(week, judge, system, mitigate, seed) {
   const w = WEEKS.find((x) => x.value === week)
   if (week === 'week8') return `${w.short} · seed ${seed} · mitigation ${mitigate ? 'on' : 'off'}`
   if (week === 'week6') return `${w.short} · ${JUDGES.find((j) => j[0] === judge)[1]}`
   if (week === 'week7') return `${w.short} · ${SYSTEMS.find((x) => x[0] === system)[1]}`
-  return w.label
+  return w.short
 }
 
 function Seg({ options, value, onChange, label }) {
@@ -132,37 +158,24 @@ function DocumentsView({ documents }) {
 }
 
 function CompareView({ compare, week }) {
-  const note = RETRIEVAL_ARM[week] !== week
-    ? <p className="filter-note">{['week7', 'week8', 'week9'].includes(week) ? `${{ week7: 'Week 7', week8: 'Week 8', week9: 'Week 9' }[week]} calls tools instead of retrieving chunks`
-        : 'Week 6 drafts from Week 4 retrieval'}, so chunks are compared on the Week 4 arm.</p>
-    : null
   if (!compare) {
     return (
       <div className="view">
         <div className="empty">
-          <h2>Compare chunkers</h2>
-          <p>
-            Ask a question below to run it through both chunking strategies at
-            once, with the retriever and every other variable held constant.
-          </p>
-          {note}
+          <h2>Chunks</h2>
+          <p>Type a query below.</p>
         </div>
       </div>
     )
   }
   return (
     <div className="view">
-      {note}
       <div className="cols">
         {['fixed_window', 'structure_aware'].map((s) => (
           <div key={s}>
             <h3>{s}</h3>
             {compare.by_strategy[s].map((h) => (
               <div className="hit" key={h.chunk_id}>
-                <div className="score">
-                  #{h.rank} fused {h.score} · dense {h.dense} · bm25 {h.bm25}
-                  {h.rerank_score != null ? ` · rerank ${h.rerank_score}` : ''}
-                </div>
                 <div className="cite">{h.chunk_id}</div>
                 <pre className="claim-text" style={{ fontSize: 11.5, color: 'var(--mut)' }}>
                   {h.text}
@@ -194,12 +207,11 @@ function ErrorAnalysisView({ analysis, onAsk }) {
       <div className="view">
         <div className="empty">
           <h2>No error analysis found</h2>
-          <p>Run the Week 5 scripts to generate <code>week5/coding.json</code>.</p>
         </div>
       </div>
     )
   }
-  const { modes, traces, seed, population, sample_size: size } = analysis
+  const { modes, traces, sample_size: size } = analysis
   const byId = Object.fromEntries(modes.map((m) => [m.id, m]))
   const shown = onlyTrace
     ? traces.filter((t) => t.trace_id === onlyTrace)
@@ -212,8 +224,7 @@ function ErrorAnalysisView({ analysis, onAsk }) {
         <div>
           <h2>Error analysis</h2>
           <p className="ea-sub">
-            {size} traces drawn at random from {population}, seed <b>{seed}</b>,
-            read one at a time before any category existed.
+            {size} traces
           </p>
         </div>
         <div className="ea-stats">
@@ -321,7 +332,7 @@ function EvalPage({ analysis, onAsk }) {
     <div className="eval-page">
       <div className="subbar">
         <Seg label="Evaluation" value={which} onChange={setWhich}
-          options={[['week6', 'Week 6 · judges vs human'], ['week5', 'Week 5 · error analysis']]} />
+          options={[['week6', 'Ticket reply'], ['week5', 'Error analysis']]} />
       </div>
       {which === 'week6'
         ? <EvalView onAsk={onAsk} />
@@ -375,7 +386,10 @@ export default function App({ user = null, onLogout = null }) {
   const [compare, setCompare] = useState(null)
   const [q, setQ] = useState('')
   // The filter bar.
-  const [week, setWeek] = useState('week4')
+  const [weekSel, setWeek] = useState('week10')
+  const [arms, setArms] = useState(['single', 'single_par', 'squad'])
+  const [autoArm, setAutoArm] = useState(false)
+  const week = weekSel
   const [judge, setJudge] = useState('judge_v2')
   const [system, setSystem] = useState('agent')
   const [mitigate, setMitigate] = useState(false)
@@ -437,8 +451,8 @@ export default function App({ user = null, onLogout = null }) {
     })
 
   // Weeks 3-5: the streamed, grounded RAG answer.
-  const streamAnswer = async (question, useArea, controller) => {
-    const body = { question, k: Number(k), mode: week, session_id: sessionId }
+  const streamAnswer = async (question, useArea, controller, mode) => {
+    const body = { question, k: Number(k), mode, session_id: sessionId }
     if (useArea) body.product_area = useArea
     await streamSSE('/api/chat', body, (event, data) => {
       if (event === 'meta') patch((m) => ({ ...m, meta: data }))
@@ -479,11 +493,14 @@ export default function App({ user = null, onLogout = null }) {
     // under; the AREA dropdown is moved to match so the filter stays honest.
     const useArea = opts.area === undefined ? area : opts.area
     if (opts.area !== undefined) setArea(opts.area)
+    // A question picked from a group is answered by that group's system.
+    const week = opts.mode || weekSel
+    if (opts.mode) setWeek(opts.mode)
     setView('chat')
     setQ('')
     setErr(null)
     setBusy(true)
-    const kind = ['week6', 'week7', 'week8', 'week9'].includes(week) ? week : 'rag'
+    const kind = ['week6', 'week7', 'week8', 'week9', 'week10'].includes(week) ? week : 'rag'
     const label = filterLabel(week, judge, system, mitigate, seed)
     setMessages((ms) => [...ms,
       { role: 'user', text: question, filter: label },
@@ -496,12 +513,16 @@ export default function App({ user = null, onLogout = null }) {
     setAbort(controller)
     try {
       if (kind === 'rag') {
-        await streamAnswer(question, useArea, controller)
+        await streamAnswer(question, useArea, controller, week)
       } else if (kind === 'week6') {
         const body = { question, judge, session_id: sessionId,
                        case_id: opts.caseId || null }
         if (useArea) body.product_area = useArea
         const data = await postJSON('/api/ask_week6', body, controller.signal)
+        patch((m) => ({ ...m, data, streaming: false }))
+      } else if (kind === 'week10') {
+        const data = await postJSON('/api/w10/ask',
+          { question, session_id: sessionId, arms, auto: autoArm }, controller.signal)
         patch((m) => ({ ...m, data, streaming: false }))
       } else if (kind === 'week9') {
         const data = await postJSON('/api/w9/ask', { question, session_id: sessionId },
@@ -556,13 +577,12 @@ export default function App({ user = null, onLogout = null }) {
   }
 
   const showFilters = view === 'chat' || view === 'chunks'
-  const retrieves = !['week7', 'week8', 'week9'].includes(week)
+  const retrieves = !['week7', 'week8', 'week9', 'week10'].includes(week)
 
   return (
     <div className="shell">
       <Sidebar
-        documents={documents} sets={sets} week={week}
-        answerWith={filterLabel(week, judge, system, mitigate, seed)} onAsk={ask}
+        documents={documents} groups={questionGroups(sets)} onAsk={ask}
         onUploaded={refresh} onDelete={removeDocument}
         onClear={() => { setMessages([]); setCompare(null); setSessionId(crypto.randomUUID()) }}
         ocrEngines={health ? (health.ocr_engines || []) : null}
@@ -581,25 +601,8 @@ export default function App({ user = null, onLogout = null }) {
           <span className={`health ${healthErr ? 'off' : ''}`}
             title={healthErr || 'Backend online'}>
             <i className="led" />
-            {healthErr ? 'offline' : `${health?.indexed_chunks ?? '—'} chunks`}
+            {healthErr ? 'offline' : 'online'}
           </span>
-
-          {/* Every answer is recorded when this is lit. Shown because the
-              Week 5 analysis was blocked on there being no trace log at all. */}
-          {health?.tracing ? (
-            health.tracing.enabled ? (
-              <a className="health trace-on" href={health.tracing.host}
-                target="_blank" rel="noreferrer"
-                title={`Every answer is traced to ${health.tracing.host} · prompt ${health.tracing.prompt_version}`}>
-                <i className="led" />traced
-              </a>
-            ) : (
-              <span className="health off"
-                title={`Answers are NOT being recorded — ${health.tracing.reason}`}>
-                <i className="led" />not traced
-              </span>
-            )
-          ) : null}
 
           {user && (
             <span className="who" title={`signed in as ${user.role}`}>
@@ -626,6 +629,12 @@ export default function App({ user = null, onLogout = null }) {
               <div className="fgroup">
                 <span className="flabel">System</span>
                 <Seg label="System" value={system} onChange={setSystem} options={SYSTEMS} />
+              </div>
+            )}
+            {week === 'week10' && (
+              <div className="fgroup">
+                <span className="flabel">Agents</span>
+                <ArmPicker arms={arms} setArms={setArms} auto={autoArm} setAuto={setAutoArm} />
               </div>
             )}
             {week === 'week8' && (
@@ -661,7 +670,6 @@ export default function App({ user = null, onLogout = null }) {
                 </label>
               </>
             )}
-            <span className="fdesc">{WEEKS.find((w) => w.value === week).label}</span>
           </div>
         )}
 
@@ -681,6 +689,7 @@ export default function App({ user = null, onLogout = null }) {
           {view === 'agent' && <Week7View />}
           {view === 'trajectory' && <Week8View />}
           {view === 'mcp' && <Week9View />}
+          {view === 'race' && <Week10View />}
           {view === 'documents' && <DocumentsView documents={documents} />}
         </ErrorBoundary>
 
@@ -691,17 +700,7 @@ export default function App({ user = null, onLogout = null }) {
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && submit()}
-                placeholder={view === 'chunks'
-                  ? 'Query to run through both chunkers…'
-                  : week === 'week9'
-                  ? 'Ask about the migration or a ticket (e.g. “Why was TCK-4403 escalated?”) — answered over MCP, then verified…'
-                : week === 'week8'
-                    ? 'Pick a ticket (e.g. TCK-7001) or type a message — the path is scored, not just the answer…'
-                  : week === 'week7'
-                    ? 'Type a customer message (e.g. “Refund ORD-5101 please”) or a ticket id like TCK-7004…'
-                    : week === 'week6'
-                      ? 'Ask a customer question — a ticket reply is drafted and judged…'
-                      : 'Ask about the billing migration, or your uploaded documents…'}
+                placeholder={view === 'chunks' ? 'Query…' : 'Ask a question…'}
               />
               {busy && view === 'chat' && abort ? (
                 <button className="send stop" onClick={() => abort.abort()}>Stop</button>

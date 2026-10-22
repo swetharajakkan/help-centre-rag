@@ -43,7 +43,7 @@ SECRET = (os.environ.get("HELP_CENTRE_AUTH_SECRET") or secrets.token_hex(32)).en
 
 PUBLIC = ("/api/auth/login", "/api/auth/signup", "/api/auth/me", "/api/auth/logout",
           "/api/health")
-USER_ALLOWED = PUBLIC + ("/api/w9/ask", "/api/w9/questions")
+USER_ALLOWED = PUBLIC + ("/api/w9/ask", "/api/w9/questions", "/api/w10/auto")
 
 
 def enabled() -> bool:

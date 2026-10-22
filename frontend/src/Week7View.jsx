@@ -11,16 +11,14 @@ import React, { useEffect, useMemo, useState } from 'react'
  */
 
 const TABS = [
-  ['race', 'Race & Workflow vs Agent'],
-  ['react', 'ReAct Trace'],
+  ['race', 'Agent vs workflow'],
+  ['react', 'Reasoning trace'],
   ['branching', 'Branching'],
-  ['budgets', 'Budgets & Stop Conditions'],
-  ['tool', 'Tool Definitions'],
-  ['memory', 'Memory & Vector Recall'],
-  ['mem0', 'mem0 Library'],
-  ['graph', 'LangGraph Framework'],
-  ['bonus', '30-Turn Threads'],
-  // ['code', 'Source Code'],
+  ['budgets', 'Budgets'],
+  ['memory', 'Memory'],
+  ['mem0', 'Memory search'],
+  ['graph', 'Graph run'],
+  ['bonus', 'Long threads'],
 ]
 const CLS_LABEL = { straight: 'straight', branch: 'branch', multi_order: 'multi-order' }
 const FIELDS = ['decision', 'refund_order_id', 'refund_amount_usd', 'escalate']
@@ -93,7 +91,7 @@ function Comparison({ summary }) {
   return (
     <table className="w7-cmp">
       <thead>
-        <tr><th>metric (same 10 tickets)</th><th>Agent</th><th>Fixed workflow</th><th>gap</th></tr>
+        <tr><th>metric</th><th>Agent</th><th>Fixed workflow</th><th>gap</th></tr>
       </thead>
       <tbody>
         {rows.map(([m, av, wv, better, note]) => (
@@ -170,7 +168,7 @@ function RunCard({ title, run, other, onRerun, busy }) {
         </p>
       )}
       {!!run.grade?.assertions_failed?.length && (
-        <p className="w7-miss">Week-6 assertions failed: {run.grade.assertions_failed.join(', ')}</p>
+        <p className="w7-miss">Ticket reply checks failed: {run.grade.assertions_failed.join(', ')}</p>
       )}
       <pre className="w7-reply">{run.output.reply}</pre>
       <details>
@@ -202,7 +200,7 @@ function TicketDetail({ tid, race, runs, setRun }) {
           {t.order_ids.length ? t.order_ids.join(', ') : 'none named'}
         </p>
         <p className="w7-exp">
-          <span className="ev-k">expected contract</span>
+          <span className="ev-k">expected</span>
           {FIELDS.map((f) => <span key={f}><b>{f}</b> {String(exp[f])}</span>)}
         </p>
       </div>
@@ -217,94 +215,28 @@ function TicketDetail({ tid, race, runs, setRun }) {
   )
 }
 
-const CLASS_INFO = [
-  ['straight', 'Straight',
-    'One paid order. The policy table decides the answer (refund, outside the 30-day window, …) and nothing the tools return changes which step comes next.'],
-  ['branch', 'Branch',
-    'What step 3 has to do depends on what step 2 found: the order is missing, already refunded, under a bank chargeback, over the USD 100 approval limit, or the customer gave no order number at all.'],
-  ['multi_order', 'Multi-order',
-    'The customer names two orders (a double charge). How many get_order calls are needed is only known after reading the ticket, and the two charges must be compared to find the duplicate.'],
-]
-
-function Legend({ race }) {
-  const ids = (cls) => race.ticket_ids.filter((t) => race.expected[t].cls === cls)
-  return (
-    <section className="w7-card">
-      <h3>What the ticket classes and tools mean</h3>
-      <div className="w7-legend">
-        {CLASS_INFO.map(([cls, name, text]) => (
-          <div key={cls} className="w7-leg">
-            <span className={`w7-cls ${cls}`}>{name}</span>
-            <p>{text}</p>
-            <p className="mut">{ids(cls).length} ticket{ids(cls).length === 1 ? '' : 's'}: {ids(cls).join(', ')}</p>
-          </div>
-        ))}
-      </div>
-      <div className="w7-legend">
-        <div className="w7-leg">
-          <b>3 tools</b>
-          <p><code>get_ticket</code> reads the helpdesk ticket · <code>get_order</code> reads one
-            billing order · <code>lookup_refund_policy</code> <span className="w7-badge added">new in Week 7</span>{' '}
-            turns the facts into the SP-001 decision.</p>
-        </div>
-        <div className="w7-leg">
-          <b>How many are used</b>
-          <p><b>Agent:</b> the model picks each call from the previous result, usually 3 tool
-            calls and 4 model calls; 4 tools on the double charge (two get_order), 2 when no order is named.</p>
-          <p><b>Fixed workflow:</b> always the same 3 tool calls and 1 model call.</p>
-        </div>
-        <div className="w7-leg">
-          <b>How a tool is made</b>
-          <p>In <code>week7/tools.py</code>: a JSON definition (name, one-job description,
-            typed parameters with enums) that the model reads, plus a plain Python function
-            that does the work. The agent loop runs whichever one the model asks for.
-            The <b>Third tool</b> tab shows the definitions before and after.</p>
-        </div>
-      </div>
-    </section>
-  )
-}
-
 function RaceTab({ race, runs, setRun, onRerace, racing }) {
   const [open, setOpen] = useState(null)
   return (
     <>
       <section className="w7-card">
         <div className="w7-h">
-          <h3>Agent vs fixed workflow — the four numbers</h3>
+          <h3>Agent vs fixed workflow</h3>
           <span className="spacer" />
           <button type="button" className="w7-btn" onClick={onRerace} disabled={racing}>
             {racing ? 'racing 20 runs… (~25 s)' : 'Re-run the race'}
           </button>
         </div>
         <Comparison summary={race.summary} />
-        <p className="w7-foot">
-          Ran {new Date(race.ran_at).toLocaleString()} · model <b>{race.engine.model}</b>,
-          the same one for both systems · tokens {race.engine.tokens} · cost priced
-          as {race.engine.priced_as} (${race.engine.price_in_per_mtok}/M in,
-          ${race.engine.price_out_per_mtok}/M out) · latency {race.engine.latency}.
-          Written to <code>week7/race.csv</code>.
-        </p>
       </section>
 
       <section className="w7-card verdict">
-        <div className="w7-h">
-          <h3>Verdict</h3>
-          <span className={`w7-wc ${race.verdict_words < 150 ? 'ok' : 'bad'}`}>
-            {race.verdict_words} words
-          </span>
-        </div>
+        <h3>Verdict</h3>
         <p className="w7-verdict">{race.verdict}</p>
-        <p className="w7-foot">
-          Generated from the measured results by <code>race.py</code>, so it is
-          rewritten, and cannot contradict the table, whenever the race is re-run.
-        </p>
       </section>
 
-      <Legend race={race} />
-
       <section className="w7-card">
-        <h3>Per ticket — click a row for both outputs, step traces and live re-runs</h3>
+        <h3>Per ticket</h3>
         <div className="w7-scroll">
           <table className="w7-tickets">
             <thead>
@@ -358,7 +290,7 @@ function BranchingTab({ race }) {
   const broke = p.filter((r) => r.outcome_differs)
   return (
     <section className="w7-card">
-      <h3>Does the execution path change with the input?</h3>
+      <h3>Path by ticket</h3>
       <div className="ev-band">
         <div className="ev-stat"><span className="ev-k">tickets where step 3 depends on step 2</span>
           <b>{p.filter((r) => r.cls !== 'straight').length}<i>/</i>{p.length}</b>
@@ -368,7 +300,7 @@ function BranchingTab({ race }) {
           <span className="ev-sub2">{varied.map((r) => r.ticket_id).join(', ') || 'none'}</span></div>
         <div className="ev-stat big"><span className="ev-k">outcome differed</span>
           <b>{broke.length}<i>/</i>{p.length}</b>
-          <span className="ev-sub2">{broke.map((r) => r.ticket_id).join(', ') || 'none'} — the only place the path mattered</span></div>
+          <span className="ev-sub2">{broke.map((r) => r.ticket_id).join(', ') || 'none'}</span></div>
       </div>
       <div className="w7-scroll">
         <table className="w7-tickets">
@@ -393,13 +325,6 @@ function BranchingTab({ race }) {
           </tbody>
         </table>
       </div>
-      <p className="w7-foot">
-        Missing, refunded, charged-back and over-limit orders all take the same
-        three tools. The branch lives in the <b>result</b> of lookup_refund_policy,
-        not in the choice of the next tool, so the fixed path handles it. The path
-        only has to change when the number of get_order calls depends on the
-        ticket's contents.
-      </p>
     </section>
   )
 }
@@ -430,7 +355,7 @@ function BudgetsTab({ data, onSaved }) {
   return (
     <>
       <section className="w7-card">
-        <h3>The four budgets, enforced in the agent loop</h3>
+        <h3>Budgets</h3>
         <div className="w7-budgets">
           {Object.entries(defaults).map(([k, v]) => (
             <div key={k} className={`ev-stat ${k === budget ? 'big' : ''}`}>
@@ -440,13 +365,6 @@ function BudgetsTab({ data, onSaved }) {
             </div>
           ))}
         </div>
-        <p className="w7-foot">
-          Checked before every model call (tokens and cost are checked again right
-          after one, so a call that crosses the line cannot also trigger tool calls).
-          On breach the loop stops, the ticket goes to a human with an [ESCALATED]
-          reply, and the event is scored on the Langfuse trace.
-        </p>
-
         <div className="w7-form">
           <label>ticket
             <select value={ticket} onChange={(e) => setTicket(e.target.value)}>
@@ -470,7 +388,7 @@ function BudgetsTab({ data, onSaved }) {
           </label>
           <label className="chk">
             <input type="checkbox" checked={save} onChange={(e) => setSave(e.target.checked)} />
-            save as week7/budget_termination.log
+            save log
           </label>
           <button type="button" className="w7-btn" onClick={run} disabled={busy}>
             {busy ? 'running…' : 'Run agent under this budget'}
@@ -498,50 +416,10 @@ function BudgetsTab({ data, onSaved }) {
       </section>
 
       <section className="w7-card">
-        <h3>Saved termination log — week7/budget_termination.log</h3>
-        <pre className="w7-log">{data.budget_log || 'No log yet. Run `.venv/bin/python week7/budget_demo.py`.'}</pre>
+        <h3>Saved termination log</h3>
+        <pre className="w7-log">{data.budget_log || 'No log yet.'}</pre>
       </section>
     </>
-  )
-}
-
-/* -------------------------------------------------------------- tool tab */
-
-function ToolTab({ data }) {
-  return (
-    <section className="w7-card">
-      <h3>Tool descriptions and parameters: before Week 7 → now</h3>
-      <p className="w7-foot">
-        The new tool has one job: map one order's facts to the SP-001 decision.
-        Adding it forced a change to get_order, whose old description ("check
-        whether it can be refunded") would have overlapped with it.
-      </p>
-      <div className="w7-tools">
-        {data.tool_diff.map((t) => (
-          <div key={t.name} className="w7-tool">
-            <div className="w7-h">
-              <code className="w7-tname">{t.name}</code>
-              <span className={`w7-badge ${t.status}`}>{t.status}</span>
-            </div>
-            {t.before && (
-              <p className="w7-desc old"><span className="ev-k">before</span>{t.before.description}</p>
-            )}
-            <p className="w7-desc new"><span className="ev-k">now</span>{t.after.description}</p>
-            <pre className="w7-diff">
-              {t.diff.map((l, i) => (
-                <div key={i} className={l.startsWith('+') ? 'add' : l.startsWith('-') ? 'del' : ''}>{l}</div>
-              ))}
-            </pre>
-          </div>
-        ))}
-      </div>
-      <h3>Enums</h3>
-      <div className="w7-enums">
-        {Object.entries(data.enums).map(([k, vs]) => (
-          <div key={k}><code>{k}</code>{vs.map((v) => <span key={v} className="w7-chip">{v}</span>)}</div>
-        ))}
-      </div>
-    </section>
   )
 }
 
@@ -565,11 +443,7 @@ function ReActTab({ ticketIds }) {
 
   return (
     <section className="w7-card">
-      <h3>ReAct Loop (Reason + Act) — Explicit Audit Trail</h3>
-      <p className="w7-foot">
-        Before taking an action, the agent writes an explicit <b>Thought</b>. After executing the tool call (<b>Action</b>),
-        it receives an <b>Observation</b>. This reasoning loop provides complete transparency.
-      </p>
+      <h3>Reasoning trace</h3>
       <div className="w7-form">
         <label>Ticket:
           <select value={tid} onChange={(e) => { setTid(e.target.value); runReAct(e.target.value) }}>
@@ -577,13 +451,13 @@ function ReActTab({ ticketIds }) {
           </select>
         </label>
         <button type="button" className="w7-btn" onClick={() => runReAct()} disabled={busy}>
-          {busy ? 'Running ReAct loop…' : 'Re-run ReAct Trace'}
+          {busy ? 'Running…' : 'Re-run'}
         </button>
       </div>
       {err && <div className="banner bad"><pre>{err}</pre></div>}
       {res && (
         <div style={{ marginTop: '16px' }}>
-          <h4>ReAct Trace for <code>{res.ticket_id}</code> ({res.trace?.length || 0} steps)</h4>
+          <h4>Trace for <code>{res.ticket_id}</code> ({res.trace?.length || 0} steps)</h4>
           <ol className="w7-steps">
             {res.trace?.map((step, i) => (
               <li key={i} className="tool" style={{ marginBottom: '14px', background: 'rgba(255,255,255,0.02)', padding: '12px', borderRadius: '8px', border: '1px solid var(--bd)' }}>
@@ -640,17 +514,12 @@ function MemoryTab() {
   return (
     <section className="w7-card">
       <div className="w7-h">
-        <h3>Agent Memory: Short-Term, Rolling Summary vs Vector Memory</h3>
+        <h3>Memory</h3>
         <span className="spacer" />
         <button type="button" className="w7-btn" onClick={runMemory} disabled={busy}>
-          {busy ? 'Evaluating memory…' : 'Re-evaluate Memory'}
+          {busy ? 'Running…' : 'Re-run'}
         </button>
       </div>
-      <p className="w7-foot">
-        Evaluates context retention across 3 long threads.
-        <b>Rolling summarisation is lossy:</b> it drops Director waiver code <code>MGR-AUTH-8821</code> on TCK-LONG-03.
-        <b>Vector memory</b> embeds turns with <code>fastembed bge-small</code> and recalls exact texts on demand.
-      </p>
       {err && <div className="banner bad"><pre>{err}</pre></div>}
       {data && (
         <div className="w7-scroll" style={{ marginTop: '16px' }}>
@@ -678,11 +547,11 @@ function MemoryTab() {
                     </td>
                     <td>
                       <Pass ok={ws?.passed} /> <span className="mut">({num(ws?.tokens)} tok)</span>
-                      {!ws?.passed && <div style={{ color: '#ef4444', fontSize: '11px', marginTop: '2px' }}>⚠️ Lossy summary dropped MGR-AUTH-8821</div>}
+                      {!ws?.passed && <div style={{ color: '#ef4444', fontSize: '11px', marginTop: '2px' }}>Summary dropped MGR-AUTH-8821</div>}
                     </td>
                     <td>
                       <Pass ok={wsv?.passed} /> <span className="mut">({num(wsv?.tokens)} tok)</span>
-                      {wsv?.waiver_recalled && <div style={{ color: '#22c55e', fontSize: '11px', marginTop: '2px' }}>✅ Vector recalled waiver code</div>}
+                      {wsv?.waiver_recalled && <div style={{ color: '#22c55e', fontSize: '11px', marginTop: '2px' }}>Recalled waiver code</div>}
                     </td>
                   </tr>
                 )
@@ -716,29 +585,26 @@ function Mem0Tab() {
 
   return (
     <section className="w7-card">
-      <h3>mem0 Library Integration</h3>
-      <p className="w7-foot">
-        <code>mem0</code> is a production-grade long-term memory framework: local fastembed <code>bge-small-en-v1.5</code>, embedded Qdrant vector store on disk, SQLite history DB, and automatic user-id scoping.
-      </p>
+      <h3>Memory search</h3>
       <div className="w7-form" style={{ gap: '12px' }}>
         <label>User ID:
           <select value={user} onChange={(e) => setUser(e.target.value)}>
             <option value="CUST-901">CUST-901 (Standard)</option>
             <option value="CUST-902">CUST-902 (VIP)</option>
-            <option value="CUST-903">CUST-903 (Priority - holds waiver)</option>
+            <option value="CUST-903">CUST-903 (Priority)</option>
           </select>
         </label>
         <label style={{ flex: 1 }}>Query:
           <input type="text" value={query} onChange={(e) => setQuery(e.target.value)} style={{ width: '100%' }} />
         </label>
         <button type="button" className="w7-btn" onClick={queryMem0} disabled={busy}>
-          {busy ? 'Querying mem0…' : 'Search mem0 Memory'}
+          {busy ? 'Searching…' : 'Search'}
         </button>
       </div>
       {err && <div className="banner bad"><pre>{err}</pre></div>}
       {res && (
         <div style={{ marginTop: '16px' }}>
-          <h4>Top Search Hits for User <code>{res.user_id}</code></h4>
+          <h4>Results for <code>{res.user_id}</code></h4>
           {res.results?.length === 0 ? (
             <p className="mut">No matching memories found for this user.</p>
           ) : (
@@ -782,11 +648,7 @@ function GraphTab({ race }) {
 
   return (
     <section className="w7-card">
-      <h3>LangChain & LangGraph Framework Implementation</h3>
-      <p className="w7-foot">
-        LangGraph models the agent as a cyclic graph (<code>START -&gt; model &lt;--&gt; tools -&gt; END</code>) and the workflow as a DAG (<code>START -&gt; ticket -&gt; order -&gt; policy -&gt; draft -&gt; END</code>).
-        Includes built-in checkpointers for short-term thread memory and state recovery.
-      </p>
+      <h3>Graph run</h3>
       <div className="w7-form">
         <label>Select Ticket:
           <select value={tid} onChange={(e) => { setTid(e.target.value); runGraph(e.target.value) }}>
@@ -794,7 +656,7 @@ function GraphTab({ race }) {
           </select>
         </label>
         <button type="button" className="w7-btn" onClick={() => runGraph()} disabled={busy}>
-          {busy ? 'Running LangGraph…' : 'Run LangGraph Agent'}
+          {busy ? 'Running…' : 'Run'}
         </button>
       </div>
       {err && <div className="banner bad"><pre>{err}</pre></div>}
@@ -802,19 +664,19 @@ function GraphTab({ race }) {
         <div style={{ marginTop: '16px' }}>
           <div className="w7-runs">
             <div className="w7-run pass">
-              <b>LangGraph Agent</b>
+              <b>Agent</b>
               <p className="mut">LLM Calls: {data.agent.llm_calls} · Path: {data.agent.path.join(' ➔ ')}</p>
               <pre className="w7-reply">{JSON.stringify(data.agent.output, null, 2)}</pre>
             </div>
             <div className="w7-run pass">
-              <b>LangGraph Fixed Workflow</b>
+              <b>Fixed workflow</b>
               <p className="mut">LLM Calls: {data.workflow.llm_calls} · Path: {data.workflow.path.join(' ➔ ')}</p>
               <pre className="w7-reply">{JSON.stringify(data.workflow.output, null, 2)}</pre>
             </div>
           </div>
 
           <div style={{ marginTop: '20px' }}>
-            <h4>State Checkpoints Saved for {data.ticket_id} ({data.checkpoints?.length || 0} snapshots)</h4>
+            <h4>Checkpoints for {data.ticket_id} ({data.checkpoints?.length || 0})</h4>
             <table className="w7-tickets">
               <thead>
                 <tr><th>Step</th><th>Next Node</th><th>Last Message</th></tr>
@@ -831,53 +693,8 @@ function GraphTab({ race }) {
             </table>
           </div>
 
-          {data.mermaid && (
-            <div style={{ marginTop: '20px' }}>
-              <h4>Mermaid Graph Specs</h4>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-                <div>
-                  <b>Agent Graph (Cyclic)</b>
-                  <pre className="w7-code" style={{ fontSize: '11px' }}>{data.mermaid.agent}</pre>
-                </div>
-                <div>
-                  <b>Workflow Graph (DAG)</b>
-                  <pre className="w7-code" style={{ fontSize: '11px' }}>{data.mermaid.workflow}</pre>
-                </div>
-              </div>
-            </div>
-          )}
         </div>
       )}
-    </section>
-  )
-}
-
-/* -------------------------------------------------------------- code tab */
-
-const CODE_NOTES = {
-  'agent.py': 'The agent: model-driven tool loop and the four budgets. One command: .venv/bin/python week7/agent.py',
-  'react.py': 'ReAct: Reason + Act loop printing Thought -> Action -> Observation step by step.',
-  'workflow.py': 'The fixed workflow: four hard-coded steps, no loop. One command: .venv/bin/python week7/workflow.py',
-  'tools.py': 'The three tools and their definitions, before and after.',
-  'model.py': 'The shared offline model: what is real (decisions, wall-clock) and what is estimated (tokens).',
-  'store.py': 'The 10 tickets, the orders, and the answer key neither system can read.',
-  'bonus.py': 'Bonus challenge: sliding window + summarisation over 30-turn threads, persistent tier store, and failure analysis.',
-  'memory.py': 'Short vs long-term memory: why rolling summary needs a vector memory behind it.',
-  'mem0_demo.py': 'mem0 library integration: packaged fastembed, vector store, SQLite history and user scoping.',
-  'graph.py': 'LangGraph: agent loop as a cyclic graph vs workflow as a linear DAG, with state checkpoints.',
-}
-
-function CodeTab({ data }) {
-  const [file, setFile] = useState('agent.py')
-  return (
-    <section className="w7-card">
-      <div className="ev-filters">
-        {Object.keys(data.source).map((f) => (
-          <button key={f} type="button" data-on={file === f ? 1 : 0} onClick={() => setFile(f)}>{f}</button>
-        ))}
-      </div>
-      <p className="w7-foot">{CODE_NOTES[file]}</p>
-      <pre className="w7-code">{data.source[file]}</pre>
     </section>
   )
 }
@@ -905,10 +722,10 @@ function BonusTab({ data, onRefresh }) {
   if (!bonus) {
     return (
       <section className="w7-card">
-        <h3>Bonus Challenge: Memory & 30-Turn Threads</h3>
-        <p className="w7-foot">No bonus results found yet.</p>
+        <h3>Long threads</h3>
+        <p className="w7-foot">No results yet.</p>
         <button type="button" className="w7-btn" onClick={rerunBonus} disabled={running}>
-          {running ? 'Running 3 long threads…' : 'Run Bonus Challenge'}
+          {running ? 'Running…' : 'Run'}
         </button>
       </section>
     )
@@ -918,58 +735,33 @@ function BonusTab({ data, onRefresh }) {
     <>
       <section className="w7-card">
         <div className="w7-h">
-          <h3>Bonus Challenge — Sliding Window, Summarisation & Persistent Memory</h3>
+          <h3>Long threads</h3>
           <span className="spacer" />
           <button type="button" className="w7-btn" onClick={rerunBonus} disabled={running}>
-            {running ? 'Running 30-turn threads…' : 'Re-run 3 Long Threads'}
+            {running ? 'Running…' : 'Re-run'}
           </button>
         </div>
-        <p className="w7-foot">
-          Evaluates an agent across <b>30-turn ticket threads</b> with a sliding window (last 6 messages)
-          plus rolling summarisation. Persists the customer tier in <code>tier_store.json</code> across full
-          process restarts, and identifies the exact detail lost to lossy compression.
-        </p>
-
         <div className="ev-band">
-          <div className="ev-stat">
-            <span className="ev-k">Persisted fact across restart</span>
-            <b>Customer Tier</b>
-            <span className="ev-sub2">Saved to disk (tier_store.json)</span>
-          </div>
-          <div className="ev-stat">
-            <span className="ev-k">Context window management</span>
-            <b>Sliding + Summary</b>
-            <span className="ev-sub2">~70% token reduction per lap</span>
-          </div>
           <div className="ev-stat big">
-            <span className="ev-k">Ticket broken by summarisation</span>
+            <span className="ev-k">Failed thread</span>
             <b className="bad">{bonus.broken_ticket || 'None'}</b>
-            <span className="ev-sub2">1 of 3 threads failed</span>
           </div>
         </div>
 
         {bonus.destroyed_detail && (
           <div className="w7-destroyed-box">
             <div className="w7-destroyed-title">
-              ⚠️ <b>Detail destroyed by summarisation</b> (Broke ticket <code>{bonus.broken_ticket}</code>):
+              <b>Detail lost</b> · <code>{bonus.broken_ticket}</code>
             </div>
             <div className="w7-destroyed-text">
               {bonus.destroyed_detail}
             </div>
-            <p className="w7-destroyed-explanation">
-              <b>Why it broke:</b> On Turn 12 of the conversation, the customer provided Director waiver code{' '}
-              <code>MGR-AUTH-8821</code> to approve a $240 refund directly without manager escalation. As the thread
-              continued for 18 more turns of general billing inquiries, the sliding window pushed Turn 12 into the summariser.
-              The lossy summary retained the generic topic ("account and billing inquiries") but compressed out the specific
-              exemption code. At Turn 30, the agent fell back to the default SP-001 $100 ceiling and escalated to a manager,
-              failing the customer contract.
-            </p>
           </div>
         )}
       </section>
 
       <section className="w7-card">
-        <h3>The 3 Long Threads (30 Turns Each)</h3>
+        <h3>Threads</h3>
         <div className="w7-bonus-threads">
           {Object.entries(bonus.threads).map(([tid, t]) => {
             const w = t.with_window
@@ -1001,7 +793,7 @@ function BonusTab({ data, onRefresh }) {
                     <span>{num(w.raw_tokens_without_window)} tok ➔ <b>{num(w.active_tokens)} tok</b></span>
                   </div>
                   <div>
-                    <span className="ev-k">Tier persistence state</span>
+                    <span className="ev-k">Tier source</span>
                     <span className="mono">{w.tier_source}</span>
                   </div>
                 </div>
@@ -1011,7 +803,7 @@ function BonusTab({ data, onRefresh }) {
                     <pre className="w7-reply">{w.output.reply}</pre>
                     {w.detail_destroyed && (
                       <div className="banner bad">
-                        <strong>Failure diagnosis:</strong> {w.detail_destroyed} was purged during sliding window compression!
+                        <strong>Lost:</strong> {w.detail_destroyed}
                       </div>
                     )}
                   </div>
@@ -1057,14 +849,13 @@ export default function Week7View() {
     ? Object.values(runs).flatMap((s) => Object.values(s)).filter((r) => r.live).length : 0, [runs])
 
   if (err && !data) {
-    return <div className="view"><div className="banner bad"><strong>Week 7 failed to load.</strong><pre>{err}</pre></div></div>
+    return <div className="view"><div className="banner bad"><strong>Failed to load.</strong><pre>{err}</pre></div></div>
   }
-  if (!data) return <div className="view"><p className="ev-note">Loading Week 7…</p></div>
+  if (!data) return <div className="view"><p className="ev-note">Loading…</p></div>
   if (!data.ok) {
     return (
       <div className="view"><div className="empty">
         <h2>No race results yet</h2>
-        <p>Run <code>.venv/bin/python week7/race.py</code>, or:</p>
         <button type="button" className="w7-btn" onClick={rerace} disabled={racing}>
           {racing ? 'racing…' : 'Run the race now'}
         </button>
@@ -1075,14 +866,7 @@ export default function Week7View() {
   return (
     <div className="view ev w7">
       <header className="ev-head">
-        <h2>Does it need to be an agent? — Week 7</h2>
-        {/* <p className="ev-sub">
-          The Week 6 ticket-reply task, built twice with the same three tools, the
-          same model and the same output contract: once as a model-driven agent
-          loop, once as four hard-coded steps. Raced over the same 10 refund-chase
-          tickets. The engine is offline (no ANTHROPIC_API_KEY): decisions and
-          wall-clock are real, tokens are estimated.
-        </p> */}
+        <h2>Refund agent</h2>
       </header>
 
       <nav className="ev-filters w7-tabs">
@@ -1094,8 +878,7 @@ export default function Week7View() {
       {err && <div className="banner bad"><pre>{err}</pre></div>}
       {liveCount > 0 && tab === 'race' && (
         <p className="ev-note">
-          {liveCount} row{liveCount === 1 ? '' : 's'} replaced by a live re-run. The four
-          headline numbers stay those of the recorded race until it is re-run.
+          {liveCount} row{liveCount === 1 ? '' : 's'} from a live re-run.
         </p>
       )}
 
@@ -1104,12 +887,10 @@ export default function Week7View() {
       {tab === 'react' && <ReActTab ticketIds={data.race?.ticket_ids} />}
       {tab === 'branching' && <BranchingTab race={data.race} />}
       {tab === 'budgets' && <BudgetsTab data={data} onSaved={refresh} />}
-      {tab === 'tool' && <ToolTab data={data} />}
       {tab === 'memory' && <MemoryTab />}
       {tab === 'mem0' && <Mem0Tab />}
       {tab === 'graph' && <GraphTab race={data.race} />}
       {tab === 'bonus' && <BonusTab data={data} onRefresh={refresh} />}
-      {tab === 'code' && <CodeTab data={data} />}
     </div>
   )
 }

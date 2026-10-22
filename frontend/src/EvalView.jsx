@@ -53,9 +53,7 @@ function Case({ c, onAsk, grader }) {
         <span className="ev-cid">{c.case_id}</span>
         <span className={`ev-tag ${MODE_CLS[c.mode]}`}>{MODE_LABEL[c.mode]}</span>
         {c.replay_verbatim && (
-          <span className="ev-tag verbatim" title={`Replayed verbatim from ${c.source_trace}`}>
-            regression · {c.source_trace}
-          </span>
+          <span className="ev-tag verbatim">regression</span>
         )}
         {c.tier === 'Priority' && <span className="ev-tag prio">Priority</span>}
         <span className="ev-meta">
@@ -106,8 +104,7 @@ function Case({ c, onAsk, grader }) {
           )}
         </div>
         {c.ragas && (
-          <div className="ev-ragas"
-            title="RAGAS faithfulness / context precision (policy-backed case)">
+          <div className="ev-ragas">
             <span className="ev-vl">ragas</span>
             <span className="ev-num">faith {c.ragas.faithfulness?.toFixed(2) ?? '—'}</span>
             <span className="ev-num">ctx {c.ragas.context_precision?.toFixed(2) ?? '—'}</span>
@@ -158,17 +155,14 @@ export default function EvalView({ onAsk }) {
   }, [grader])
 
   if (!evals && loading) {
-    return <div className="view"><p className="ev-note">Loading Week 6 eval…</p></div>
+    return <div className="view"><p className="ev-note">Loading…</p></div>
   }
   if (!evals || !evals.ok) {
     return (
       <div className="view">
         <div className="empty">
-          <h2>No Week 6 eval found</h2>
-          <p>
-            Run it with <code>.venv-test/bin/python week6/run_week6.py</code>,
-            then reload.{error && <><br />{error}</>}
-          </p>
+          <h2>No results yet</h2>
+          {error && <p>{error}</p>}
         </div>
       </div>
     )
@@ -188,12 +182,9 @@ export default function EvalView({ onAsk }) {
     <div className="view ev">
       <header className="ev-head">
         <div>
-          <h2>Judge validation — Week 6</h2>
+          <h2>Ticket reply</h2>
           <p className="ev-sub">
-            {s.n_cases} cases, {s.n_verbatim} replayed verbatim from real failed
-            traces. {s.n_judged} hand-labelled blind on{' '}
-            {new Date(s.labelled_at).toLocaleString()}, before the judge was
-            ever run. Judge engine <b>{s.engine}</b> ({s.judge_model}).
+            {s.n_cases} cases · {s.n_verbatim} regression · {s.n_judged} hand-labelled
           </p>
         </div>
         <div className="ev-grader">
@@ -229,38 +220,22 @@ export default function EvalView({ onAsk }) {
         <div className="ev-stat big">
           <span className="ev-k">Cohen's kappa</span>
           <b>{s.kappa_before} <i>→</i> {s.kappa_after}</b>
-          <span className="ev-sub2">
-            the honest one: {s.human_resolved_rate}% of replies are RESOLVED, so
-            a judge that always says NOT_RESOLVED already scores{' '}
-            {(100 - s.human_resolved_rate).toFixed(0)}%
-          </span>
+          <span className="ev-sub2">{s.human_resolved_rate}% of replies RESOLVED</span>
         </div>
         <div className="ev-stat">
-          <span className="ev-k">assertions vs judged criteria</span>
+          <span className="ev-k">checks / judged criteria</span>
           <b>{s.n_assertions} <i>/</i> {s.n_judged_criteria}</b>
-          <span className="ev-sub2">
-            4 criteria moved out of the judge into code, 1 deleted, 1 kept and
-            made binary
-          </span>
         </div>
         <div className="ev-stat big sel">
           <span className="ev-k">cases passing · {GRADER_SHORT[grader]}</span>
           <b>{s.pass_total}<i>/</i>{s.n_cases}</b>
-          <span className="ev-sub2">
-            every assertion passes and {grader === 'human'
-              ? 'the human label says RESOLVED'
-              : `${GRADER_SHORT[grader]} says RESOLVED`} (unjudged cases pass
-            on assertions alone)
-          </span>
         </div>
         <div className="ev-stat">
           <span className="ev-k">{GRADER_SHORT[grader]} vs human</span>
           <b>{grader === 'human' ? 'reference' : `${evals.grader_agreement}%`}</b>
-          <span className="ev-sub2">
-            {grader === 'human'
-              ? 'the hand labels are the yardstick the judges are scored against'
-              : `agreement on the ${s.n_judged} hand-labelled cases; ${evals.grader_resolved} RESOLVED verdicts`}
-          </span>
+          {grader !== 'human' && (
+            <span className="ev-sub2">{evals.grader_resolved} RESOLVED verdicts</span>
+          )}
         </div>
       </div>
 
@@ -289,24 +264,10 @@ export default function EvalView({ onAsk }) {
               )
             })}
           </div>
-          {grader === 'judge_v2' ? (
-            <p className="ev-warn">
-              <b>mode 5 reads 100%.</b> That row is one case, and it passes only
-              because the judge got it wrong. Switch the grader to Human and it
-              drops to 0/1 — a pass rate computed from a judge inherits every
-              blind spot that judge has.
-            </p>
-          ) : (
-            <p className="ev-warn">
-              Graded by <b>{GRADER_SHORT[grader]}</b>. Compare with the other
-              graders to see which rows move: a row that changes is a case the
-              graders disagree on.
-            </p>
-          )}
         </section>
 
         <section>
-          <h3>Deterministic assertions</h3>
+          <h3>Checks</h3>
           <table className="ev-atable">
             <thead>
               <tr><th>check</th><th>PASS</th><th>FAIL</th><th>n/a</th></tr>
@@ -322,12 +283,6 @@ export default function EvalView({ onAsk }) {
               ))}
             </tbody>
           </table>
-          <p className="ev-warn">
-            <b>The 30-day window check is 0 PASS / 7 FAIL.</b> The drafter has
-            no date check at all — every ticket past day 30 that asked for a
-            refund got one promised, including day 61. No judge had ever
-            flagged it.
-          </p>
         </section>
       </div>
 

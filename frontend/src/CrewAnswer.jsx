@@ -11,14 +11,14 @@ import React from 'react'
  */
 export function Verdict({ data }) {
   if (data.kind === 'smalltalk') {
-    return <span className="pf na" title="Small talk: no facts stated, so nothing to verify">CHAT</span>
+    return <span className="pf na">CHAT</span>
   }
   if (data.kind === 'refusal') {
     return <span className="pf na">NOT COVERED</span>
   }
   return data.approved
-    ? <span className="pf ok" title="Every claim was re-fetched and matched by the Verifier">VERIFIED · {data.verified_claims} claim{data.verified_claims === 1 ? '' : 's'}</span>
-    : <span className="pf bad" title="Some claims could not be verified and were removed">PARTLY VERIFIED</span>
+    ? <span className="pf ok">VERIFIED · {data.verified_claims} claim{data.verified_claims === 1 ? '' : 's'}</span>
+    : <span className="pf bad">PARTLY VERIFIED</span>
 }
 
 export function Sources({ ids }) {
@@ -33,7 +33,7 @@ export function Sources({ ids }) {
 
 function CrewTrace({ full }) {
   if (full.kind === 'smalltalk') {
-    return <p className="foot">Router: small talk ({full.agents?.Router?.kind}) — answered directly, no tools called, nothing to verify.</p>
+    return <p className="foot">Small talk · no tools called</p>
   }
   const steps = full.responder.steps
   const tools = steps.filter((s) => s.kind === 'tool')
@@ -42,7 +42,7 @@ function CrewTrace({ full }) {
     <>
       <div className="path">
         {full.responder.context.map((c) => (
-          <span key={c.uri} className="step ctx" title="attached by the host (resources/read), not called by the model">
+          <span key={c.uri} className="step ctx">
             ⊕ {c.uri}
           </span>
         ))}
@@ -55,13 +55,13 @@ function CrewTrace({ full }) {
       <details className="trace">
         <summary>
           Responder · {full.responder.model_turns} model turn{full.responder.model_turns === 1 ? '' : 's'} ·{' '}
-          {tools.length} tools/call · {full.model}
+          {tools.length} tool call{tools.length === 1 ? '' : 's'}
         </summary>
         <ol className="steps">
           {steps.map((s, i) => s.kind === 'model'
             ? <li key={i}><b>model</b> · {s.stop_reason}{s.tool_uses.length ? ` → ${s.tool_uses.map((u) => u.name).join(', ')}` : ''} · {s.input_tokens} in / {s.output_tokens} out</li>
             : <li key={i}><b>{s.qualified}</b> <code>{JSON.stringify(s.args)}</code> · {s.ms} ms<br />
-              <span className={`res ${s.is_error ? 'bad' : ''}`}>→ {s.is_error ? 'isError: ' : ''}{s.text.slice(0, 400)}</span></li>)}
+              <span className={`res ${s.is_error ? 'bad' : ''}`}>→ {s.is_error ? 'error: ' : ''}{s.text.slice(0, 400)}</span></li>)}
         </ol>
       </details>
       <details className="trace" open={!full.approved}>
@@ -70,8 +70,8 @@ function CrewTrace({ full }) {
           {last.verdict.checks.map((c, i) => (
             <li key={i}>
               <b className={c.ok ? 'okc' : 'badc'}>{c.ok ? '✓' : '✗'}</b> {c.claim.text}
-              <br /><span className="res">source {c.claim.source_id} re-fetched via {c.refetched_via || '—'}
-                {c.reasons.length ? ` · ${c.reasons.join('; ')}` : ' · quote verbatim, facts and figures match'}</span>
+              <br /><span className="res">source {c.claim.source_id}
+                {c.reasons.length ? ` · ${c.reasons.join('; ')}` : ''}</span>
             </li>
           ))}
         </ol>

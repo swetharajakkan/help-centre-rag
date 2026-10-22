@@ -1,3 +1,4 @@
+import { FanoutArms } from './Week10View.jsx'
 import React, { useEffect, useRef } from 'react'
 import CrewAnswer from './CrewAnswer.jsx'
 
@@ -8,36 +9,17 @@ const STAGE = {
   refusing: 'no verifiable answer — writing the refusal…',
 }
 
-const ARM_LABEL = {
-  week5: ' · reranked · area filter retried',
-  week4: ' · reranked',
-  week3: ' · fused score only',
-}
-
-function Trace({ retrieval, mode, fallback }) {
+function Trace({ retrieval }) {
   if (!retrieval) return null
   return (
     <details className="trace">
       <summary>
         retrieved {retrieval.hits.length} chunk
         {retrieval.hits.length === 1 ? '' : 's'} in {retrieval.ms} ms
-        {ARM_LABEL[mode] || ' · fused score only'}
-        {fallback?.fired ? ` · retried without “${fallback.dropped_filter}”` : ''}
       </summary>
-      {fallback?.fired ? (
-        <p className="fallback-note">
-          The <b>{fallback.dropped_filter}</b> area filter returned no usable
-          answer, so the search ran again across every article. Chunks below are
-          from that second, unfiltered search.
-        </p>
-      ) : null}
       <ol>
         {retrieval.hits.map((h) => (
           <li key={h.chunk_id}>
-            <div className="score">
-              #{h.rank} fused {h.score} · dense {h.dense} · bm25 {h.bm25}
-              {h.rerank_score != null ? ` · rerank ${h.rerank_score}` : ''}
-            </div>
             <div className="cite">{h.chunk_id}</div>
             <pre>{h.text}</pre>
           </li>
@@ -114,9 +96,6 @@ function Week6Answer({ m }) {
           ))}
         </div>
       )}
-      <div className="foot">
-        drafted by week6/draft.py · 4 SP-001 assertions · judged by {judgeName} ({d.judge_engine})
-      </div>
     </>
   )
 }
@@ -167,7 +146,7 @@ function Week7Answer({ m }) {
         </ol>
       </details>
       <div className="foot">
-        {d.total_tokens.toLocaleString()} tokens · {usd(d.cost_usd)} · {d.latency_s.toFixed(2)} s · offline model, tokens estimated
+        {d.total_tokens.toLocaleString()} tokens · {usd(d.cost_usd)} · {d.latency_s.toFixed(2)} s
       </div>
     </>
   )
@@ -191,12 +170,11 @@ function Week8Answer({ m }) {
         ) : <span className="pf na">NEW TICKET</span>}
         <span className="res-meta">
           {d.ticket.ticket_id} · seed {d.seed} · mitigation {d.mitigate ? 'on' : 'off'}
-          {d.wording === 'week7' ? ' · Week 7 wording (no figures quoted)' : ''}
           {!d.known ? ' · no expected path, so not scored' : ''}
         </span>
       </div>
       {s && s.outcome_pass && !s.trajectory_pass && (
-        <p className="miss"><span><b>Right answer, wrong path.</b> The outcome eval passes this run; the trajectory eval does not.</span></p>
+        <p className="miss"><span><b>Right answer, wrong path.</b></span></p>
       )}
       {s && (
         <p className="miss">
@@ -234,7 +212,7 @@ function Week8Answer({ m }) {
         </ol>
       </details>
       <div className="foot">
-        {d.total_tokens.toLocaleString()} tokens · {usd(d.cost_usd)} · {d.latency_s.toFixed(2)} s simulated · sampled offline engine
+        {d.total_tokens.toLocaleString()} tokens · {usd(d.cost_usd)} · {d.latency_s.toFixed(2)} s
       </div>
     </>
   )
@@ -244,16 +222,23 @@ const WAIT = {
   week6: 'drafting the reply and running the judge…',
   week7: 'resolving the ticket…',
   week8: 'running the ticket and scoring its path…',
-  week9: 'Responder is calling MCP tools, Verifier is re-checking…',
+  week9: 'writing the answer and checking it…',
+  week10: 'running the selected agents…',
+}
+
+/** Triage squad: the same question through both arms, with each bill. */
+function SquadAnswer({ d }) {
+  return <FanoutArms d={d} />
 }
 
 function Answer({ m }) {
-  if (['week6', 'week7', 'week8', 'week9'].includes(m.kind)) {
+  if (['week6', 'week7', 'week8', 'week9', 'week10'].includes(m.kind)) {
     return (
       <div className={`msg bot ${m.error ? 'failed' : ''}`}>
         <span className="ftag">{m.filter}</span>
         {m.data && (m.kind === 'week6' ? <Week6Answer m={m} />
           : m.kind === 'week9' ? <CrewAnswer data={m.data} />
+          : m.kind === 'week10' ? <SquadAnswer d={m.data} />
             : m.kind === 'week8' ? <Week8Answer m={m} /> : <Week7Answer m={m} />)}
         {m.error && (
           <div className="claim">
@@ -279,7 +264,7 @@ function RagAnswer({ m }) {
   return (
     <div className={`msg bot ${refused ? 'refused' : ''} ${m.error ? 'failed' : ''}`}>
       {m.filter && <span className="ftag">{m.filter}</span>}
-      <Trace retrieval={m.retrieval} mode={m.meta?.mode} fallback={m.fallback} />
+      <Trace retrieval={m.retrieval} />
 
       {m.claims.map((c) => (
         <div className="claim" key={c.index}>
@@ -325,11 +310,7 @@ function RagAnswer({ m }) {
 
       {m.done && (
         <div className="foot">
-          {m.meta?.engine} · {m.meta?.mode_label} · top {m.meta?.k} · retrieval{' '}
-          {m.done.timings.retrieval_ms} ms · generation {m.done.timings.generation_ms} ms
-          {m.done.rejected_claims?.length
-            ? ` · ${m.done.rejected_claims.length} claim(s) dropped by verify()`
-            : ''}
+          {m.done.timings.retrieval_ms + m.done.timings.generation_ms} ms
         </div>
       )}
       {m.stopped && <div className="foot">stopped</div>}
@@ -338,14 +319,11 @@ function RagAnswer({ m }) {
 }
 
 const EMPTY = {
-  week6: ['Draft and judge a ticket reply',
-    'Each question becomes a support-ticket reply, checked by the four SP-001 rules and graded by the judge you picked. Eval-set questions also show the human label, so you can see where Judge v1 and v2 disagree with it.'],
-  week7: ['Resolve a refund-chase ticket',
-    'Type a customer message or pick a Week 7 ticket. The agent chooses its own tool calls; the fixed workflow always runs the same four steps. Switch between them and ask again to compare.'],
-  week8: ['Score the path, not just the answer',
-    'Pick a Week 8 ticket or type a message. The sampled agent runs it at the chosen seed and both evals score it: the outcome (is the answer right?) and the trajectory (did it get there by an accepted path, with real ids?). Try TCK-7001 at seed 2, then turn on the mitigation. The full analysis is in the Trajectory · W8 view.'],
-  week9: ['Two MCP servers, two agents',
-    'The Responder discovers its tools from the help-centre RAG server and the ticket-history server over MCP and answers; the Verifier re-fetches every cited record and checks each claim before it is shown. Try “Why was TCK-4403 escalated?” or “Open help article BM-4”. Servers, tools/list and the wire capture are in the MCP · W9 view.'],
+  week6: 'Ticket reply',
+  week7: 'Refund agent',
+  week8: 'Path-checked agent',
+  week9: 'Support crew',
+  week10: 'Triage squad',
 }
 
 export default function Chat({ messages, health, week }) {
@@ -356,14 +334,8 @@ export default function Chat({ messages, health, week }) {
     return (
       <div className="view">
         <div className="empty">
-          <h2>{EMPTY[week]?.[0] || 'Ask about the billing migration'}</h2>
-          <p>
-            {EMPTY[week]?.[1] || 'Every answer is quoted from an indexed chunk and carries a citation you can open. When the corpus cannot support an answer, it refuses instead of guessing.'}
-          </p>
-          <p>
-            Pick a question on the left, drop your own documents in
-            to index them, or just type below.
-          </p>
+          <h2>{EMPTY[week] || 'Ask about the billing migration'}</h2>
+          <p>Pick a question on the left, or type below.</p>
           <div className="hints">
             <span className="hint-chip">
               <b>{health?.indexed_chunks ?? '—'}</b> chunks indexed
@@ -372,9 +344,6 @@ export default function Chat({ messages, health, week }) {
               <b>{health?.articles_indexed ?? '—'}</b> shipped
               {health?.uploaded_documents
                 ? <> · <b>{health.uploaded_documents}</b> yours</> : null}
-            </span>
-            <span className="hint-chip">
-              engine <b>{health?.generation_engine ?? '—'}</b>
             </span>
           </div>
         </div>
